@@ -20,7 +20,7 @@ export function Textarea({
       <textarea
         id={id}
         required={required}
-        className={`min-h-32 resize-y rounded-lg border border-border bg-white px-3.5 py-3 text-base outline-none placeholder:text-slate-400 focus:border-accent focus:ring-3 focus:ring-emerald-900/10 ${className}`}
+        className={`min-h-36 resize-y rounded-xl border border-[rgba(148,163,184,0.16)] bg-[var(--sor-bg-soft)] px-4 py-3.5 text-base text-[var(--sor-text)] outline-none placeholder:text-[var(--sor-text-soft)] hover:border-[rgba(148,163,184,0.26)] focus:border-[rgba(14,165,164,0.45)] focus:ring-4 focus:ring-[rgba(14,165,164,0.08)] ${className}`}
         {...props}
       />
     </label>

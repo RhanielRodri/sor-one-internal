@@ -9,8 +9,8 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "SOR ONE | Tecnologia simples para pequenos negócios",
-    template: "%s | SOR ONE",
+    default: "SOR OS | Sistema operacional digital",
+    template: "%s | SOR OS",
   },
   description:
     "Páginas profissionais, catálogos digitais e sistemas simples para pequenos negócios.",
@@ -22,7 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} antialiased`}>
+    <html
+      lang="pt-BR"
+      data-scroll-behavior="smooth"
+      className={`${geistSans.variable} antialiased`}
+    >
       <body>{children}</body>
     </html>
   );

@@ -12,13 +12,13 @@ export function SectionHeading({
   centered?: boolean;
 }) {
   return (
-    <div className={`max-w-2xl ${centered ? "mx-auto text-center" : ""}`}>
+    <div className={`max-w-3xl ${centered ? "mx-auto text-center" : ""}`}>
       <Badge>{eyebrow}</Badge>
-      <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+      <h2 className="text-balance mt-5 text-3xl font-extrabold tracking-[-0.035em] text-foreground sm:text-4xl lg:text-5xl">
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-base leading-7 text-muted sm:text-lg">{description}</p>
+        <p className="mt-5 text-base leading-7 text-muted sm:text-lg sm:leading-8">{description}</p>
       ) : null}
     </div>
   );

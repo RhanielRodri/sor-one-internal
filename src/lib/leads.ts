@@ -1,40 +1,19 @@
 import "server-only";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  LEAD_STATUSES,
+  type Lead,
+  type LeadHistory,
+  type LeadStatus,
+} from "@/lib/lead-types";
 
-export const LEAD_STATUSES = [
-  "novo",
-  "diagnostico_solicitado",
-  "diagnostico_enviado",
-  "proposta_enviada",
-  "fechado",
-] as const;
-
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
-
-export type Lead = {
-  id: string | number;
-  nome: string;
-  empresa: string | null;
-  whatsapp: string;
-  email: string | null;
-  segmento: string | null;
-  problema: string;
-  urgencia: string | null;
-  orcamento: string | null;
-  origem: string | null;
-  status: string;
-  observacoes: string | null;
-  criado_em: string;
-  atualizado_em: string | null;
-};
-
-export const STATUS_LABELS: Record<LeadStatus, string> = {
-  novo: "Novo",
-  diagnostico_solicitado: "Diagnóstico solicitado",
-  diagnostico_enviado: "Diagnóstico enviado",
-  proposta_enviada: "Proposta enviada",
-  fechado: "Fechado",
-};
+export {
+  LEAD_STATUSES,
+  STATUS_LABELS,
+  type Lead,
+  type LeadHistory,
+  type LeadStatus,
+} from "@/lib/lead-types";
 
 export async function getLeads(status?: string) {
   const supabase = getSupabaseAdminClient();
@@ -67,4 +46,31 @@ export async function getLeads(status?: string) {
   });
 
   return (data ?? []) as Lead[];
+}
+
+export async function getLeadHistories(leadIds: Array<string | number>) {
+  if (leadIds.length === 0) {
+    return [] as LeadHistory[];
+  }
+
+  const supabase = getSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("lead_historico")
+    .select(
+      "id,lead_id,status_anterior,novo_status,acao,motivo_perda,criado_em",
+    )
+    .in("lead_id", leadIds.map(String))
+    .order("criado_em", { ascending: false });
+
+  if (error) {
+    console.error("[Supabase Admin] Erro ao consultar histórico de leads", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    });
+    throw new Error(error.message);
+  }
+
+  return (data ?? []) as LeadHistory[];
 }

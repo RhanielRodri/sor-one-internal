@@ -1,33 +1,202 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  budgetOptions,
-  segmentOptions,
-  sourceOptions,
-  urgencyOptions,
-} from "@/data/segments";
+  DIAGNOSTIC_BUDGETS,
+  DIAGNOSTIC_OBJECTIVES,
+  DIAGNOSTIC_SERVICES,
+  DIAGNOSTIC_TIMELINES,
+  getDiagnosticService,
+  type DiagnosticQuestion,
+} from "@/lib/diagnostic-config";
 
-export function DiagnosticForm() {
-  const formRef = useRef<HTMLFormElement>(null);
+type DiagnosticFormProps = {
+  initialServiceSlug?: string;
+};
+
+type ContactData = {
+  nome: string;
+  empresa: string;
+  whatsapp: string;
+  email: string;
+};
+
+const initialContact: ContactData = {
+  nome: "",
+  empresa: "",
+  whatsapp: "",
+  email: "",
+};
+
+function ChoiceGroup({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly string[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <fieldset>
+      <legend className="text-sm font-bold text-foreground">{label}</legend>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            aria-pressed={value === option}
+            onClick={() => onChange(option)}
+            className={`min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${
+              value === option
+                ? "border-accent bg-accent-light text-foreground shadow-[0_0_24px_rgba(37,99,235,0.1)]"
+                : "border-[rgba(148,163,184,0.16)] bg-[var(--sor-bg-soft)] text-muted hover:border-accent/35 hover:text-foreground"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function SmartQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: DiagnosticQuestion;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  if (question.type === "select") {
+    return (
+      <ChoiceGroup
+        label={question.label}
+        options={question.options ?? []}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+
+  if (question.type === "textarea") {
+    return (
+      <Textarea
+        id={question.id}
+        label={question.label}
+        placeholder={question.placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    );
+  }
+
+  return (
+    <Input
+      id={question.id}
+      label={question.label}
+      type={question.type ?? "text"}
+      placeholder={question.placeholder}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  );
+}
+
+export function DiagnosticForm({ initialServiceSlug }: DiagnosticFormProps) {
+  const initialService = getDiagnosticService(initialServiceSlug);
+  const [step, setStep] = useState(1);
+  const [serviceSlug, setServiceSlug] = useState(initialService.slug);
+  const [objective, setObjective] = useState("");
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [timeline, setTimeline] = useState("");
+  const [budget, setBudget] = useState("");
+  const [additionalContext, setAdditionalContext] = useState("");
+  const [contact, setContact] = useState<ContactData>(initialContact);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const service = getDiagnosticService(serviceSlug);
+  const progress = `${step * 25}%`;
+
+  function updateContact(field: keyof ContactData, value: string) {
+    setContact((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateAnswer(id: string, value: string) {
+    setAnswers((current) => ({ ...current, [id]: value }));
+  }
+
+  function validateStep() {
+    if (step === 1 && !objective) {
+      return "Selecione o objetivo principal.";
+    }
+
+    if (step === 2) {
+      const missingAnswer = service.questions.some(
+        (question) => question.id !== "link_site" && !answers[question.id]?.trim(),
+      );
+      if (missingAnswer) {
+        return "Responda às perguntas desta etapa.";
+      }
+    }
+
+    if (step === 3 && (!timeline || !budget)) {
+      return "Informe quando pretende começar e a faixa de investimento.";
+    }
+
+    return "";
+  }
+
+  function goNext() {
+    const validationError = validateStep();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError("");
+    setStep((current) => Math.min(current + 1, 4));
+  }
+
+  function changeService(nextSlug: string) {
+    setServiceSlug(nextSlug);
+    setAnswers({});
+    setError("");
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsSubmitting(true);
-    setFeedback(null);
 
-    const formData = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(formData.entries());
+    if (!contact.nome.trim() || !contact.whatsapp.trim()) {
+      setError("Nome e WhatsApp são obrigatórios.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    const diagnosticAnswers = service.questions
+      .map((question) => `${question.label}: ${answers[question.id]?.trim() || "Não informado"}`)
+      .join("\n");
+
+    const problem = [
+      `SOLUÇÃO:\n${service.name}`,
+      `OBJETIVO:\n${objective}`,
+      `PRAZO:\n${timeline}`,
+      `INVESTIMENTO:\n${budget}`,
+      `RESPOSTAS DO DIAGNÓSTICO:\n${diagnosticAnswers}`,
+      `CONTEXTO ADICIONAL:\n${additionalContext.trim() || "Não informado"}`,
+    ].join("\n\n");
 
     try {
       const response = await fetch("/api/leads", {
@@ -35,106 +204,185 @@ export function DiagnosticForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...contact,
+          segmento: service.name,
+          problema: problem,
+          urgencia: timeline,
+          orcamento: budget,
+          origem: "site",
+        }),
       });
-      const result = (await response.json()) as {
-        message?: string;
-        error?: string;
-      };
+      const result = (await response.json()) as { error?: string };
 
       if (!response.ok) {
         throw new Error(result.error || "Não foi possível enviar o diagnóstico.");
       }
 
-      formRef.current?.reset();
-      setFeedback({
-        type: "success",
-        message:
-          result.message ||
-          "Diagnóstico enviado com sucesso. Entraremos em contato em breve.",
-      });
-    } catch (error) {
-      setFeedback({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Não foi possível enviar o diagnóstico.",
-      });
+      setSuccess(true);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Não foi possível enviar o diagnóstico.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  if (success) {
+    return (
+      <Card className="glass-panel grid min-h-[32rem] place-items-center overflow-hidden rounded-[2rem] p-7 text-center sm:p-10">
+        <div className="max-w-md">
+          <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl border border-green-400/20 bg-green-500/8 text-2xl text-green-400">✓</span>
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-green-400">Diagnóstico recebido.</p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.04em]">Contexto enviado com sucesso.</h2>
+          <p className="mt-4 leading-7 text-muted">
+            Recebemos seu contexto e vamos analisar a melhor forma de transformar sua necessidade em uma solução viável.
+          </p>
+          <Button href="/solucoes" variant="secondary" className="mt-7">
+            Voltar para soluções
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="p-5 sm:p-8">
-      <form ref={formRef} className="grid gap-5" onSubmit={handleSubmit}>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Input id="nome" name="nome" label="Nome" placeholder="Seu nome" required />
-          <Input
-            id="whatsapp"
-            name="whatsapp"
-            label="WhatsApp"
-            placeholder="(27) 99999-9999"
-            inputMode="tel"
-            required
-          />
-          <Input id="empresa" name="empresa" label="Empresa" placeholder="Nome do negócio" />
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            label="E-mail"
-            placeholder="voce@empresa.com"
-          />
-          <Select
-            id="segmento"
-            name="segmento"
-            label="Segmento"
-            options={segmentOptions}
-          />
-          <Select
-            id="urgencia"
-            name="urgencia"
-            label="Urgência"
-            options={urgencyOptions}
-          />
-          <Select
-            id="orcamento"
-            name="orcamento"
-            label="Orçamento estimado"
-            options={budgetOptions}
-          />
-          <Select
-            id="origem"
-            name="origem"
-            label="Como conheceu o SOR?"
-            options={sourceOptions}
+    <Card className="glass-panel min-w-0 overflow-hidden rounded-[2rem] p-0">
+      <div className="os-window-bar px-5 py-5 sm:px-8">
+        <div className="flex min-w-0 items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-[var(--sor-champagne)]">
+              Diagnóstico para: {service.name}
+            </p>
+            <h2 className="mt-2 text-xl font-extrabold">Conte o momento do seu negócio</h2>
+          </div>
+          <span className="shrink-0 rounded-full border border-accent/25 bg-accent/10 px-3 py-1.5 text-xs font-bold text-accent">
+            {step}/4
+          </span>
+        </div>
+        <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/6">
+          <div
+            className="h-full rounded-full bg-[linear-gradient(90deg,var(--sor-blue),var(--sor-petrol))] transition-[width] duration-300"
+            style={{ width: progress }}
           />
         </div>
-        <Textarea
-          id="problema"
-          name="problema"
-          label="Qual problema você precisa resolver?"
-          placeholder="Conte brevemente o que hoje atrapalha seu negócio e o resultado que você busca."
-          required
-        />
-        <Button type="submit" fullWidth disabled={isSubmitting}>
-          {isSubmitting ? "Enviando..." : "Enviar diagnóstico"}
-        </Button>
-        {feedback ? (
-          <p
-            role="status"
-            aria-live="polite"
-            className={`rounded-lg border px-4 py-3 text-center text-sm ${
-              feedback.type === "success"
-                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                : "border-red-200 bg-red-50 text-red-700"
-            }`}
+      </div>
+
+      <form className="grid min-w-0 gap-6 p-5 sm:p-8" onSubmit={handleSubmit}>
+        <label className="grid gap-2 text-sm font-medium text-foreground">
+          Solução de interesse
+          <select
+            value={serviceSlug}
+            onChange={(event) => changeService(event.target.value)}
+            className="min-h-12 min-w-0 rounded-xl border border-[rgba(148,163,184,0.16)] bg-[var(--sor-bg-soft)] px-4 text-base text-[var(--sor-text)] outline-none focus:border-[rgba(14,165,164,0.45)]"
           >
-            {feedback.message}
+            {DIAGNOSTIC_SERVICES.map((item) => (
+              <option key={item.slug} value={item.slug}>{item.name}</option>
+            ))}
+          </select>
+        </label>
+
+        {step === 1 ? (
+          <ChoiceGroup
+            label="O que você quer melhorar primeiro?"
+            options={DIAGNOSTIC_OBJECTIVES}
+            value={objective}
+            onChange={setObjective}
+          />
+        ) : null}
+
+        {step === 2 ? (
+          <div className="grid gap-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">Perguntas sobre a solução</p>
+              <h3 className="mt-2 text-2xl font-black">{service.name}</h3>
+            </div>
+            {service.questions.map((question) => (
+              <SmartQuestion
+                key={question.id}
+                question={question}
+                value={answers[question.id] ?? ""}
+                onChange={(value) => updateAnswer(question.id, value)}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {step === 3 ? (
+          <div className="grid gap-7">
+            <ChoiceGroup
+              label="Quando pretende começar?"
+              options={DIAGNOSTIC_TIMELINES}
+              value={timeline}
+              onChange={setTimeline}
+            />
+            <ChoiceGroup
+              label="Faixa de investimento"
+              options={DIAGNOSTIC_BUDGETS}
+              value={budget}
+              onChange={setBudget}
+            />
+            <Textarea
+              id="contexto_adicional"
+              label="Existe mais alguma informação importante?"
+              placeholder={service.finalPlaceholder}
+              value={additionalContext}
+              onChange={(event) => setAdditionalContext(event.target.value)}
+            />
+          </div>
+        ) : null}
+
+        {step === 4 ? (
+          <div className="grid gap-6">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Input id="nome" label="Nome" placeholder="Seu nome" required value={contact.nome} onChange={(event) => updateContact("nome", event.target.value)} />
+              <Input id="whatsapp" label="WhatsApp" placeholder="(27) 99999-9999" inputMode="tel" required value={contact.whatsapp} onChange={(event) => updateContact("whatsapp", event.target.value)} />
+              <Input id="empresa" label="Empresa" placeholder="Nome do negócio" value={contact.empresa} onChange={(event) => updateContact("empresa", event.target.value)} />
+              <Input id="email" type="email" label="E-mail" placeholder="voce@empresa.com" value={contact.email} onChange={(event) => updateContact("email", event.target.value)} />
+            </div>
+
+            <div className="rounded-2xl border border-blue-400/14 bg-[#080d18] p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">Resumo do diagnóstico</p>
+              <dl className="mt-4 grid gap-4 sm:grid-cols-2">
+                {[
+                  ["Solução escolhida", service.name],
+                  ["Objetivo principal", objective],
+                  ["Prazo desejado", timeline],
+                  ["Faixa de investimento", budget],
+                ].map(([label, value]) => (
+                  <div key={label} className="min-w-0">
+                    <dt className="text-xs text-soft">{label}</dt>
+                    <dd className="mt-1 break-words text-sm font-bold text-foreground">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        ) : null}
+
+        {error ? (
+          <p role="alert" className="rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300">
+            {error}
           </p>
         ) : null}
+
+        <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-between">
+          {step > 1 ? (
+            <Button type="button" variant="secondary" onClick={() => { setError(""); setStep((current) => current - 1); }}>
+              Voltar
+            </Button>
+          ) : <span />}
+          {step < 4 ? (
+            <Button type="button" onClick={goNext}>Continuar</Button>
+          ) : (
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Enviando..." : "Enviar diagnóstico"}
+            </Button>
+          )}
+        </div>
       </form>
     </Card>
   );

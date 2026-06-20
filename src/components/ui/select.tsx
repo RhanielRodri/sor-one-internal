@@ -26,7 +26,7 @@ export function Select({
         id={id}
         required={required}
         defaultValue=""
-        className={`min-h-11 rounded-lg border border-border bg-white px-3.5 text-base outline-none focus:border-accent focus:ring-3 focus:ring-emerald-900/10 ${className}`}
+        className={`min-h-12 rounded-xl border border-[rgba(148,163,184,0.16)] bg-[var(--sor-bg-soft)] px-4 text-base text-[var(--sor-text)] outline-none hover:border-[rgba(148,163,184,0.26)] focus:border-[rgba(14,165,164,0.45)] focus:ring-4 focus:ring-[rgba(14,165,164,0.08)] ${className}`}
         {...props}
       >
         <option value="" disabled>
