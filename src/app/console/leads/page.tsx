@@ -41,8 +41,6 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   let leads: Lead[] = [];
   let histories: LeadHistory[] = [];
   let error = "";
-  let historyWarning = "";
-
   try {
     leads = await getLeads(selectedStatus);
   } catch (caughtError) {
@@ -61,8 +59,6 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
         "[Console Leads] Falha ao carregar histórico",
         caughtError instanceof Error ? caughtError.message : "Erro desconhecido",
       );
-      historyWarning =
-        "A migration do histórico ainda precisa ser aplicada no Supabase.";
     }
   }
 
@@ -93,12 +89,6 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
           </Link>
         ))}
       </nav>
-
-      {historyWarning ? (
-        <p className="mt-5 rounded-xl border border-amber-400/20 bg-amber-500/8 p-4 text-sm text-amber-200">
-          {historyWarning}
-        </p>
-      ) : null}
 
       {error ? (
         <p className="mt-8 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">

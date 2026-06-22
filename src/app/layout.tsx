@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,13 +7,19 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "SOR OS | Sistema operacional digital",
-    template: "%s | SOR OS",
+    default: "SOR ONE | Soluções digitais para pequenos negócios",
+    template: "%s | SOR ONE",
   },
   description:
-    "Páginas profissionais, catálogos digitais e sistemas simples para pequenos negócios.",
+    "Sites, sistemas e automações para pequenos negócios que querem atrair mais clientes, organizar processos e reduzir trabalho manual.",
 };
 
 export default function RootLayout({
@@ -25,7 +31,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} antialiased`}
+      className={`${geistSans.variable} ${spaceGrotesk.variable} antialiased`}
     >
       <body>{children}</body>
     </html>

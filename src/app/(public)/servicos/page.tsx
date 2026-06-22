@@ -7,6 +7,7 @@ import {
   getActiveServices,
   type PublicService,
 } from "@/lib/services";
+import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Serviços",
@@ -192,14 +193,17 @@ export default async function ServicesPage() {
                     </p>
                   </div>
 
-                  <Button
-                    href="/diagnostico"
-                    variant="secondary"
-                    fullWidth
-                    className="mt-auto min-h-11 border-blue-400/18 bg-[rgba(8,13,20,0.78)] py-2.5 hover:border-blue-400/38 hover:shadow-[0_0_24px_rgba(37,99,235,0.1)]"
-                  >
-                    Solicitar diagnóstico
-                  </Button>
+                  <div className="mt-auto grid gap-3 pt-6">
+                    <Button href="/diagnostico" fullWidth>
+                      Solicitar diagnóstico
+                    </Button>
+                    <a
+                      href={SOR_WHATSAPP_URL}
+                      className="text-center text-xs font-semibold text-soft underline-offset-4 hover:text-blue-300 hover:underline"
+                    >
+                      Falar agora
+                    </a>
+                  </div>
                 </Card>
               ))}
             </div>

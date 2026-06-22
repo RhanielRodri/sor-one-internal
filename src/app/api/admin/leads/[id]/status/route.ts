@@ -12,6 +12,7 @@ type StatusRequest = {
   status?: unknown;
   action?: unknown;
   lossReason?: unknown;
+  force?: unknown;
 };
 
 const ALLOWED_TRANSITIONS: Record<LeadStatus, LeadStatus[]> = {
@@ -50,6 +51,7 @@ export async function PATCH(
   const nextStatus = getText(body.status) as LeadStatus;
   const action = getText(body.action);
   const lossReason = getText(body.lossReason);
+  const force = body.force === true;
 
   if (!LEAD_STATUSES.includes(nextStatus) || !action) {
     return NextResponse.json(
@@ -81,8 +83,9 @@ export async function PATCH(
 
   const currentStatus = lead.status as LeadStatus;
   if (
-    !LEAD_STATUSES.includes(currentStatus) ||
-    !ALLOWED_TRANSITIONS[currentStatus].includes(nextStatus)
+    !force &&
+    (!LEAD_STATUSES.includes(currentStatus) ||
+      !ALLOWED_TRANSITIONS[currentStatus].includes(nextStatus))
   ) {
     return NextResponse.json(
       { error: "Transição de status não permitida." },
@@ -90,14 +93,19 @@ export async function PATCH(
     );
   }
 
-  const { data: updatedLead, error: updateError } = await supabase
+  const updateQuery = supabase
     .from("leads")
     .update({
       status: nextStatus,
       atualizado_em: new Date().toISOString(),
     })
-    .eq("id", id)
-    .eq("status", currentStatus)
+    .eq("id", id);
+
+  if (!force) {
+    updateQuery.eq("status", currentStatus);
+  }
+
+  const { data: updatedLead, error: updateError } = await updateQuery
     .select("id")
     .single();
 

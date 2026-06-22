@@ -13,6 +13,7 @@ import {
   getDiagnosticService,
   type DiagnosticQuestion,
 } from "@/lib/diagnostic-config";
+import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
 
 type DiagnosticFormProps = {
   initialServiceSlug?: string;
@@ -236,14 +237,19 @@ export function DiagnosticForm({ initialServiceSlug }: DiagnosticFormProps) {
       <Card className="glass-panel grid min-h-[32rem] place-items-center overflow-hidden rounded-[2rem] p-7 text-center sm:p-10">
         <div className="max-w-md">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl border border-green-400/20 bg-green-500/8 text-2xl text-green-400">✓</span>
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-green-400">Diagnóstico recebido.</p>
-          <h2 className="mt-3 text-3xl font-black tracking-[-0.04em]">Contexto enviado com sucesso.</h2>
+          <h2 className="mt-6 text-3xl font-black tracking-[-0.04em]">Diagnóstico enviado com sucesso</h2>
           <p className="mt-4 leading-7 text-muted">
-            Recebemos seu contexto e vamos analisar a melhor forma de transformar sua necessidade em uma solução viável.
+            Recebi suas respostas e vou analisar o melhor caminho para o seu projeto. Se fizer sentido, retorno por WhatsApp ou e-mail com os próximos passos.
           </p>
-          <Button href="/solucoes" variant="secondary" className="mt-7">
-            Voltar para soluções
+          <Button href="/" className="mt-7">
+            Voltar para o início
           </Button>
+          <a
+            href={SOR_WHATSAPP_URL}
+            className="mt-5 block text-sm font-semibold text-soft underline-offset-4 hover:text-blue-300 hover:underline"
+          >
+            Tenho urgência, falar pelo WhatsApp
+          </a>
         </div>
       </Card>
     );

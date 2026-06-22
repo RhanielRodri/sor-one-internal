@@ -23,16 +23,16 @@ export function PublicNav() {
               aria-current={isActive ? "page" : undefined}
               className={`relative py-2 text-sm font-medium transition-colors ${
                 isActive
-                  ? "text-[var(--sor-text)]"
-                  : "text-[#a0a0a0] hover:text-blue-300"
+                  ? "text-[var(--sor-champagne)]"
+                  : "text-[#8A8D94] hover:text-[var(--sor-text)]"
               }`}
             >
               {item.label}
               <span
                 aria-hidden="true"
-                className={`absolute inset-x-0 -bottom-1 mx-auto h-0.5 bg-[linear-gradient(90deg,transparent,#3b82f6,transparent)] transition-all ${
+                className={`absolute inset-x-0 -bottom-1 mx-auto h-0.5 bg-[linear-gradient(90deg,transparent,#C9A86A,transparent)] transition-all ${
                   isActive
-                    ? "w-full opacity-100 shadow-[0_0_12px_rgba(59,130,246,0.7)]"
+                    ? "w-full opacity-100 shadow-[0_0_10px_rgba(201,168,106,0.5)]"
                     : "w-0 opacity-0"
                 }`}
               />
@@ -60,7 +60,7 @@ export function PublicNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-[#b4b4b4] hover:bg-blue-500/8 hover:text-blue-200"
+              className="rounded-xl px-4 py-3 text-sm font-medium text-[#8A8D94] hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)]"
             >
               {item.label}
             </Link>

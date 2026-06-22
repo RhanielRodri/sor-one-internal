@@ -12,14 +12,17 @@ export function Footer() {
           <p className="mt-4 max-w-md text-sm leading-6 text-[var(--sor-text-muted)]">
             Sistema operacional digital para pequenos negócios venderem, atenderem e operarem com mais clareza.
           </p>
-          <p className="mt-5 text-xs text-[var(--sor-text-soft)]">Vila Velha — ES · Tecnologia aplicada a negócios reais.</p>
+          <p className="mt-3 text-xs text-[var(--sor-text-soft)]">
+            <a href="mailto:rhanielrodrigs@gmail.com" className="hover:text-[var(--sor-champagne)]">rhanielrodrigs@gmail.com</a>
+          </p>
+          <p className="mt-2 text-xs text-[var(--sor-text-soft)]">Vila Velha — ES · Tecnologia aplicada a negócios reais.</p>
         </div>
         <div className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-[var(--sor-text-muted)] hover:text-[var(--sor-petrol)]"
+              className="text-sm font-medium text-[var(--sor-text-muted)] hover:text-[var(--sor-champagne)]"
             >
               {item.label}
             </Link>
