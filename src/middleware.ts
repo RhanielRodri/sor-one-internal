@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  SESSION_COOKIE_NAME,
-  verifySessionToken,
-} from "@/lib/auth/session";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth/session";
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/admin") {
+    return NextResponse.redirect(new URL("/console/dashboard", request.url));
+  }
+
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const secret = process.env.ADMIN_SESSION_SECRET;
   const isAuthenticated =
@@ -20,5 +21,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/console/:path*"],
+  matcher: ["/console/:path*", "/admin"],
 };

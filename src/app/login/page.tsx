@@ -25,7 +25,7 @@ export default function LoginPage() {
             {["Captação", "Operação", "Insights"].map((item) => <div key={item} className="rounded-2xl border border-[var(--sor-border-petrol)] bg-[rgba(17,26,32,0.72)] p-4 text-sm font-bold">{item}</div>)}
           </div>
         </div>
-        <p className="relative text-xs text-[var(--sor-text-soft)]">Acesso restrito · SOR OS Internal</p>
+        <p className="relative text-xs text-[var(--sor-text-soft)]">Acesso restrito · SOR ONE Console</p>
       </section>
       <section className="relative flex items-center justify-center overflow-hidden bg-[var(--sor-bg)] px-5 py-12">
         <div className="premium-grid absolute inset-0" />
@@ -34,7 +34,7 @@ export default function LoginPage() {
             <SorLogo variant="horizontal" />
           </Link>
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[var(--sor-petrol)]">Console privado</p>
-          <h2 className="mt-3 text-4xl font-black tracking-[-0.04em]">Acessar SOR OS Console.</h2>
+          <h2 className="mt-3 text-4xl font-black tracking-[-0.04em]">Acessar SOR ONE Console.</h2>
           <p className="mt-3 mb-8 leading-7 text-muted">Entre com a senha administrativa para acompanhar a operação.</p>
           <div className="relative rounded-2xl border border-[var(--sor-border-champagne)] bg-[var(--sor-panel)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.34)] sm:p-8">
             <Suspense fallback={<p className="text-sm text-muted">Carregando...</p>}>

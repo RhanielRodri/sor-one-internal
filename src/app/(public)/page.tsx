@@ -412,7 +412,7 @@ export default async function HomePage() {
                 </span>
                 <div>
                   <Badge>Plataforma própria</Badge>
-                  <h3 className="mt-2 text-xl font-black" translate="no">SOR ONE Internal</h3>
+                  <h3 className="mt-2 text-xl font-black" translate="no">SOR ONE Console</h3>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-7 text-muted">

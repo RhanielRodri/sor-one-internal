@@ -107,7 +107,7 @@ export default async function ServicesPage() {
         <div className="hero-orbit pointer-events-none absolute left-1/2 top-[-21rem] hidden h-[42rem] w-[42rem] -translate-x-1/2 md:block" />
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <Badge>Serviços SOR OS</Badge>
+            <Badge>Serviços SOR ONE</Badge>
             <h1 className="text-balance mt-6 text-4xl font-black tracking-[-0.055em] sm:text-5xl lg:text-6xl">
               O que podemos desenvolver{" "}
               <span className="bg-[linear-gradient(90deg,#93c5fd,#2563eb_58%,#0ea5a4)] bg-clip-text text-transparent">
@@ -170,7 +170,7 @@ export default async function ServicesPage() {
                     )}
                   </div>
                   <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.18em] text-blue-300/80">
-                    Solução SOR OS
+                    Solução SOR ONE
                   </p>
                   <h2 className="mt-2 text-2xl font-black tracking-[-0.025em]">{service.nome}</h2>
                   <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted">{service.descricao}</p>

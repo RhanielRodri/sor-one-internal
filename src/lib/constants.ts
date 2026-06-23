@@ -1,4 +1,4 @@
-export const SITE_NAME = "SOR OS";
+export const SITE_NAME = "SOR ONE";
 
 export const NAV_ITEMS = [
   { label: "Início", href: "/" },

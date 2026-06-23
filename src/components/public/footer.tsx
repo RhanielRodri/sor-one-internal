@@ -10,7 +10,7 @@ export function Footer() {
         <div>
           <SorLogo variant="horizontal" />
           <p className="mt-4 max-w-md text-sm leading-6 text-[var(--sor-text-muted)]">
-            Sistema operacional digital para pequenos negócios venderem, atenderem e operarem com mais clareza.
+            O SOR ONE reúne meus serviços, projetos publicados e soluções digitais para pequenos negócios.
           </p>
           <p className="mt-3 text-xs text-[var(--sor-text-soft)]">
             <a href="mailto:rhanielrodrigs@gmail.com" className="hover:text-[var(--sor-champagne)]">rhanielrodrigs@gmail.com</a>
