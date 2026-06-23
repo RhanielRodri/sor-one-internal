@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Projetos",
-  description: "Sistemas publicados, acessíveis online e desenvolvidos para resolver problemas reais de negócios.",
+  description: "Soluções publicadas e desenvolvidas para resolver problemas reais de negócios.",
 };
 
 const mainProjects = [
@@ -59,7 +59,7 @@ const supportingProjects = [
     description:
       "Cardápio digital com carrinho, Pix e integração com WhatsApp para pequenos negócios.",
     highlights: ["Cardápio digital", "Carrinho", "Pix", "WhatsApp", "QR Code", "Mobile first"],
-    stack: ["HTML", "CSS", "JavaScript", "Vercel"],
+    stack: ["HTML", "CSS", "JavaScript", "WhatsApp", "QR Code", "Vercel"],
     demoUrl: "https://menuzap-cardapio-digital.vercel.app/",
     codeUrl: "https://github.com/RhanielRodri/menuzap-cardapio-digital",
   },
@@ -69,10 +69,10 @@ const supportingProjects = [
     category: "Hub Profissional",
     status: "Online",
     description:
-      "Hub profissional utilizado para apresentar projetos, serviços e soluções digitais.",
-    highlights: ["Página de captação", "Portfólio", "Serviços digitais", "CTA comercial"],
+      "Plataforma própria utilizada para apresentar serviços, projetos, processos e soluções digitais desenvolvidas para negócios.",
+    highlights: ["Captação de leads", "Diagnóstico digital", "Console administrativo", "Deploy em produção"],
     stack: ["Next.js", "Supabase", "Vercel"],
-    demoUrl: "https://sor-one-internal.vercel.app/",
+    demoUrl: null,
     codeUrl: null,
   },
 ];
@@ -95,15 +95,15 @@ export default function ProjectsPage() {
         <div className="services-hero-glow pointer-events-none absolute left-1/2 top-1/2 h-80 w-[44rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2" />
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <Badge>Projetos em produção</Badge>
+            <Badge>Cases e projetos realizados</Badge>
             <h1 className="text-balance mt-6 text-4xl font-black tracking-[-0.055em] sm:text-5xl lg:text-6xl">
-              Projetos em produção.
+              Cases e projetos realizados.
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted">
-              Sistemas publicados, acessíveis online e desenvolvidos para resolver problemas reais de negócios.
+              Soluções publicadas e desenvolvidas para resolver problemas reais de negócios.
             </p>
             <p className="mt-4 text-sm text-soft">
-              Demonstrações reais com deploy ativo, painel administrativo e código disponível no GitHub.
+              Todos os projetos podem ser testados online e possuem código disponível para consulta.
             </p>
           </div>
         </Container>
@@ -122,9 +122,14 @@ export default function ProjectsPage() {
                   <span className="service-icon-shell grid h-12 w-12 place-items-center rounded-xl border border-[rgba(201,168,106,0.18)] bg-[rgba(201,168,106,0.06)] text-lg text-[var(--sor-champagne)]">
                     {project.icon}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(34,197,94,0.7)]" />
-                    <span className="text-xs font-semibold text-green-400">{project.status}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-2.5 py-1 text-[9px] font-black tracking-[0.18em] text-[var(--sor-champagne)]">
+                      FULL STACK
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(34,197,94,0.7)]" />
+                      <span className="text-xs font-semibold text-green-400">{project.status}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -204,14 +209,20 @@ export default function ProjectsPage() {
                   ))}
                 </div>
 
-                <div className="mt-auto flex flex-wrap gap-3 pt-6">
-                  <Button href={project.demoUrl} variant="secondary">
-                    {project.name === "SOR ONE" ? "Acessar" : "Ver demonstração"}
-                  </Button>
-                  {project.codeUrl && (
-                    <Button href={project.codeUrl} variant="ghost">
-                      Ver código
-                    </Button>
+                <div className="mt-auto pt-6">
+                  {project.demoUrl ? (
+                    <div className="flex flex-wrap gap-3">
+                      <Button href={project.demoUrl} variant="secondary">
+                        Ver demonstração
+                      </Button>
+                      {project.codeUrl && (
+                        <Button href={project.codeUrl} variant="ghost">
+                          Ver código
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-soft">Este site faz parte do ecossistema SOR ONE.</p>
                   )}
                 </div>
               </Card>
