@@ -18,12 +18,6 @@ const operationalMetrics = [
   ["R$ 18k", "Receita potencial", "+24%"],
 ];
 
-const recentActivities = [
-  ["Clínica Sorriso", "Diagnóstico enviado", "Concluído"],
-  ["Studio Prime", "Nova oportunidade", "Em análise"],
-  ["Café da Vila", "Catálogo publicado", "Ativo"],
-];
-
 const problems = [
   {
     icon: "↗",
@@ -120,20 +114,25 @@ export default async function HomePage() {
         <div className="absolute -right-[18rem] top-[-14rem] hidden h-[54rem] w-[54rem] rounded-full border border-[rgba(201,168,106,0.06)] lg:block" />
         <div className="absolute -right-[7rem] top-[-4rem] hidden h-[42rem] w-[42rem] rounded-full border border-[rgba(201,168,106,0.04)] lg:block" />
 
-        <div className="relative mx-auto grid w-full max-w-[92rem] gap-14 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[0.68fr_1.32fr] lg:items-center lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
+        <div className="relative mx-auto grid w-full max-w-[92rem] gap-14 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
           <div className="relative z-10">
             <Badge>
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--sor-status)] shadow-[0_0_10px_rgba(34,197,94,0.7)]" />
               Tecnologia aplicada a negócios reais
             </Badge>
-            <h1 className="text-balance mt-7 max-w-3xl text-4xl font-black leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-[3.8rem] xl:text-[4.2rem]">
-              Transformo seu atendimento, site e captação de clientes em uma{" "}
-              <span className="bg-[linear-gradient(90deg,#C9A86A,#D4B87A_55%,#e8d9b8)] bg-clip-text text-transparent">
-                operação digital simples, profissional e pronta para crescer.
+            <h1 className="mt-7 max-w-2xl tracking-[-0.04em]">
+              <span className="block text-3xl font-normal leading-[1.1] text-[var(--sor-text)] sm:text-4xl lg:text-[2.6rem]">
+                Tecnologia que
+              </span>
+              <span
+                className="block font-black leading-[1.05] text-[var(--sor-champagne)]"
+                style={{ fontSize: "clamp(40px, 5.5vw, 68px)" }}
+              >
+                gera resultado.
               </span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
-              Crio sites, sistemas e automações para pequenos negócios que querem atrair mais clientes, organizar processos e reduzir trabalho manual.
+            <p className="mt-6 max-w-[480px] text-[17px] leading-7 text-muted">
+              Crio sites, sistemas e automações para negócios locais venderem mais e trabalharem menos.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button href="/diagnostico">Solicitar diagnóstico</Button>
@@ -196,73 +195,29 @@ export default async function HomePage() {
                   ))}
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
-                  <div className="console-inner-card rounded-2xl border border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.68)] p-5 transition">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-extrabold">Oportunidades</p>
-                        <p className="mt-1 text-[10px] text-soft">Últimos 30 dias</p>
-                      </div>
-                      <span className="rounded-full bg-[rgba(201,168,106,0.08)] px-2.5 py-1 text-[9px] font-bold text-[var(--sor-champagne)]">+21%</span>
-                    </div>
-                    <div className="relative mt-7 flex h-36 items-end gap-2">
-                      <svg aria-hidden="true" className="absolute inset-0 h-full w-full overflow-visible opacity-70" viewBox="0 0 320 120" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="chartLine" x1="0" x2="1">
-                            <stop offset="0%" stopColor="#C9A86A" />
-                            <stop offset="100%" stopColor="#D4B87A" />
-                          </linearGradient>
-                        </defs>
-                        <path d="M0 96 C42 82, 58 89, 88 66 S145 76, 174 48 S224 55, 252 28 S294 33, 320 10" fill="none" stroke="url(#chartLine)" strokeWidth="2.5" />
-                      </svg>
-                      {[34, 48, 42, 61, 55, 76, 70, 88, 82, 96].map((height, index) => (
-                        <span
-                          key={height}
-                          className="animate-bar-rise flex-1 rounded-t bg-[linear-gradient(to_top,#8B6B2A,#C9A86A_70%,#D4B87A)]"
-                          style={{ height: `${height}%`, opacity: 0.4 + index * 0.05, animationDelay: `${index * 70}ms` }}
-                        />
-                      ))}
+                <div className="console-inner-card rounded-2xl border border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.68)] p-5 transition">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-extrabold">Oportunidades</p>
+                      <p className="mt-0.5 text-[9px] text-soft">Últimos 30 dias</p>
                     </div>
                   </div>
-
-                  <div className="console-inner-card rounded-2xl border border-green-400/10 bg-[linear-gradient(145deg,rgba(10,14,18,0.72),rgba(14,165,164,0.03))] p-5 transition">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-extrabold">IA & Automação</p>
-                        <p className="mt-1 text-[10px] text-soft">Fluxos ativos</p>
-                      </div>
-                      <span className="flex items-center gap-2 rounded-full border border-green-400/15 bg-green-500/8 px-2.5 py-1 text-[9px] font-bold text-green-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--sor-status)] shadow-[0_0_10px_rgba(34,197,94,0.65)]" />
-                        Ativa
-                      </span>
-                    </div>
-                    <div className="mt-6 grid gap-3">
-                      {[
-                        ["Captura de leads", "Ativa"],
-                        ["Organização comercial", "Ativa"],
-                        ["Alertas operacionais", "Online"],
-                      ].map(([name, status]) => (
-                        <div key={name} className="flex items-center justify-between border-b border-white/6 pb-3 last:border-0 last:pb-0">
-                          <span className="text-[10px] text-muted">{name}</span>
-                          <span className="text-[9px] font-bold text-green-400">{status}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="console-inner-card rounded-2xl border border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.58)] p-4 transition sm:p-5">
-                  <div className="mb-4 flex items-center justify-between">
-                    <p className="text-sm font-extrabold">Atividades recentes</p>
-                    <span className="text-[9px] font-bold text-[var(--sor-champagne)]">Agora</span>
-                  </div>
-                  <div className="grid gap-2">
-                    {recentActivities.map(([name, activity, status], index) => (
-                      <div key={name} className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-3 sm:grid-cols-[1fr_1fr_auto]">
-                        <p className="text-[11px] font-bold">{name}</p>
-                        <p className="hidden text-[10px] text-soft sm:block">{activity}</p>
-                        <span className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${index === 1 ? "bg-[rgba(201,168,106,0.1)] text-[var(--sor-champagne)]" : "bg-green-500/8 text-green-400"}`}>{status}</span>
-                      </div>
+                  <div className="relative mt-5 flex h-24 items-end gap-1.5">
+                    <svg aria-hidden="true" className="absolute inset-0 h-full w-full overflow-visible opacity-60" viewBox="0 0 320 120" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="chartLine" x1="0" x2="1">
+                          <stop offset="0%" stopColor="#C9A86A" />
+                          <stop offset="100%" stopColor="#D4B87A" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M0 96 C42 82, 58 89, 88 66 S145 76, 174 48 S224 55, 252 28 S294 33, 320 10" fill="none" stroke="url(#chartLine)" strokeWidth="2.5" />
+                    </svg>
+                    {[34, 48, 42, 61, 55, 76, 70, 88, 82, 96].map((height, index) => (
+                      <span
+                        key={height}
+                        className="animate-bar-rise flex-1 rounded-t bg-[linear-gradient(to_top,#8B6B2A,#C9A86A_70%,#D4B87A)]"
+                        style={{ height: `${height}%`, opacity: 0.34 + index * 0.04, animationDelay: `${index * 70}ms` }}
+                      />
                     ))}
                   </div>
                 </div>
