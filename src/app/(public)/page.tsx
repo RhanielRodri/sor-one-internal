@@ -290,14 +290,11 @@ export default async function HomePage() {
           <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
           <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[rgba(201,168,106,0.04)] blur-3xl" />
           <Container>
-            <div className="relative flex flex-col justify-between gap-5 md:flex-row md:items-end">
-              <SectionHeading
-                eyebrow="Soluções"
-                title="O que posso desenvolver para você"
-                description="Escolha uma estrutura ou solicite um diagnóstico para receber uma proposta personalizada."
-              />
-              <Button href="/solucoes" variant="secondary" className="shrink-0">Ver todas as soluções</Button>
-            </div>
+            <SectionHeading
+              eyebrow="Soluções"
+              title="O que posso desenvolver para você"
+              description="Escolha uma estrutura ou solicite um diagnóstico para receber uma proposta personalizada."
+            />
             <div className="relative mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {dbServices.map((service) => (
                 <Card key={service.id} className="home-service-card group relative flex min-h-[290px] flex-col overflow-hidden rounded-[1.5rem] border-[var(--sor-border-main)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]">
@@ -321,20 +318,20 @@ export default async function HomePage() {
                 </Card>
               ))}
             </div>
+            <div className="mt-8 flex justify-center">
+              <Button href="/solucoes" variant="secondary">Ver soluções</Button>
+            </div>
           </Container>
         </section>
       ) : (
         <section className="relative overflow-hidden border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-16 sm:py-20">
           <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
           <Container>
-            <div className="relative flex flex-col justify-between gap-5 md:flex-row md:items-end">
-              <SectionHeading
-                eyebrow="Soluções"
-                title="O que posso desenvolver para você"
-                description="Do site ao sistema, escolha a estrutura certa para o seu negócio."
-              />
-              <Button href="/solucoes" variant="secondary" className="shrink-0">Ver todas as soluções</Button>
-            </div>
+            <SectionHeading
+              eyebrow="Soluções"
+              title="O que posso desenvolver para você"
+              description="Do site ao sistema, escolha a estrutura certa para o seu negócio."
+            />
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {services.map((s) => (
                 <div key={s.name} className="home-service-card group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-[var(--sor-border-main)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]">
@@ -344,6 +341,9 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
+            <div className="mt-8 flex justify-center">
+              <Button href="/solucoes" variant="secondary">Ver soluções</Button>
+            </div>
           </Container>
         </section>
       )}
@@ -351,53 +351,18 @@ export default async function HomePage() {
       {/* PROJETOS */}
       <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] py-20 sm:py-24">
         <Container>
-          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-            <SectionHeading
-              eyebrow="Portfólio"
-              title="Projetos construídos e em produção"
-              description="Sistemas reais criados para organizar operações e gerar resultado."
-            />
-            <Button href="/projetos" variant="secondary" className="shrink-0">Ver todos os projetos</Button>
-          </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <Card className="console-shell glass-panel relative overflow-hidden rounded-[1.75rem] border-[rgba(201,168,106,0.16)] p-7">
-              <div className="flex items-center gap-4">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[rgba(201,168,106,0.18)] bg-[rgba(201,168,106,0.06)]">
-                  <SorLogo variant="mark" className="h-9 w-9" />
-                </span>
-                <div>
-                  <Badge>Plataforma própria</Badge>
-                  <h3 className="mt-2 text-xl font-black" translate="no">SOR ONE Console</h3>
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-7 text-muted">
-                Plataforma full stack em produção para captação de diagnósticos, gestão de leads, console operacional e integração com serviços.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["Next.js", "Supabase", "TypeScript", "Deploy ativo"].map((tag) => (
-                  <span key={tag} className="rounded-full border border-[var(--sor-border-main)] bg-[rgba(201,168,106,0.04)] px-3 py-1.5 text-xs font-semibold text-soft">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </Card>
-            <Card className="service-card-shell relative overflow-hidden rounded-[1.75rem] border-[var(--sor-border-main)] p-7">
-              <div className="flex items-start justify-between">
-                <span className="service-icon-shell grid h-10 w-10 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-base text-[var(--sor-champagne)]">◇</span>
-                <Badge>Case técnico</Badge>
-              </div>
-              <h3 className="mt-5 text-xl font-black">CatalogPro</h3>
-              <p className="mt-3 text-sm leading-6 text-muted">
-                Catálogo digital para empresas B2B/B2C com produtos, categorias, solicitação de orçamento e painel administrativo.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["Catálogo B2B/B2C", "Painel admin", "Pedidos online"].map((tag) => (
-                  <span key={tag} className="rounded-full border border-[var(--sor-border-main)] bg-[rgba(201,168,106,0.04)] px-3 py-1.5 text-xs font-semibold text-soft">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </Card>
+          <SectionHeading
+            eyebrow="Portfólio"
+            title="Cases e projetos realizados"
+            description="Sistemas reais criados para organizar operações e gerar resultado."
+          />
+          <div className="mt-8">
+            <p className="max-w-[520px] text-[17px] leading-7 text-muted">
+              Demonstrações reais dos sistemas que desenvolvo — acesse, explore e veja funcionando.
+            </p>
+            <div className="mt-6">
+              <Button href="/projetos" variant="secondary">Ver projetos →</Button>
+            </div>
           </div>
         </Container>
       </section>
