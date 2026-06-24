@@ -5,8 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Projetos",
-  description: "Soluções publicadas e desenvolvidas para resolver problemas reais de negócios.",
+  title: "Projetos | SOR ONE — Sistemas publicados e em produção",
+  description: "CatalogPro, AgendaFácil e MenuZap: sistemas full stack publicados e acessíveis online. Desenvolvidos por freelancer em Vila Velha, ES para resolver problemas reais de negócios.",
+  keywords: ["portfólio desenvolvedor", "sistema de agendamento", "catálogo digital B2B", "freelancer full stack", "projetos Next.js React"],
+  openGraph: {
+    title: "Projetos em produção | SOR ONE",
+    description: "Sistemas reais desenvolvidos para resolver problemas de negócios. Acesse e teste online.",
+    url: "https://sor-one-internal.vercel.app/projetos",
+    siteName: "SOR ONE",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 const mainProjects = [
@@ -212,7 +221,7 @@ export default function ProjectsPage() {
                 <div className="mt-auto pt-6">
                   {project.demoUrl ? (
                     <div className="flex flex-wrap gap-3">
-                      <Button href={project.demoUrl} variant="secondary">
+                      <Button href={project.demoUrl}>
                         Ver demonstração
                       </Button>
                       {project.codeUrl && (

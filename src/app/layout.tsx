@@ -14,12 +14,22 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sor-one-internal.vercel.app"),
   title: {
-    default: "SOR ONE | Soluções digitais para pequenos negócios",
+    default: "SOR ONE | Desenvolvedor freelance — Sites e sistemas para pequenos negócios",
     template: "%s | SOR ONE",
   },
   description:
-    "Sites, sistemas e automações para pequenos negócios que querem atrair mais clientes, organizar processos e reduzir trabalho manual.",
+    "Desenvolvedor freelance em Vila Velha, ES. Crio sites, sistemas e automações para pequenos negócios venderem mais, organizarem processos e reduzirem trabalho manual.",
+  keywords: ["desenvolvedor freelance Vila Velha", "sites para pequenos negócios", "sistemas digitais ES", "automação pequenos negócios", "freelancer Espírito Santo"],
+  openGraph: {
+    title: "SOR ONE | Desenvolvedor freelance em Vila Velha, ES",
+    description: "Sites, sistemas e automações para pequenos negócios. Atendimento remoto em todo o Brasil.",
+    url: "https://sor-one-internal.vercel.app",
+    siteName: "SOR ONE",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

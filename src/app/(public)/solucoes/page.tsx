@@ -7,8 +7,17 @@ import { getServiceSlug } from "@/lib/diagnostic-config";
 import { getActiveServices, type PublicService } from "@/lib/services";
 
 export const metadata: Metadata = {
-  title: "Soluções",
-  description: "Soluções digitais para vender, atender e organizar melhor.",
+  title: "Soluções | SOR ONE — Sites, sistemas e automações para pequenos negócios",
+  description: "Sites profissionais, catálogos digitais, sistemas de agendamento e automações para pequenos negócios em Vila Velha, ES e em todo o Brasil. Preços a partir de R$497.",
+  keywords: ["site para barbearia", "catálogo digital", "sistema de agendamento", "site para pequenos negócios", "freelancer Vila Velha ES"],
+  openGraph: {
+    title: "Soluções digitais para pequenos negócios | SOR ONE",
+    description: "Sites, catálogos e sistemas de agendamento a partir de R$497. Diagnóstico gratuito.",
+    url: "https://sor-one-internal.vercel.app/solucoes",
+    siteName: "SOR ONE",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 export const dynamic = "force-dynamic";

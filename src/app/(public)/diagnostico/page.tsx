@@ -4,8 +4,17 @@ import { DiagnosticForm } from "@/components/public/diagnostic-form";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-  title: "Diagnóstico digital",
-  description: "Receba uma análise inicial e três melhorias práticas para seu negócio.",
+  title: "Diagnóstico gratuito | SOR ONE — Análise da sua presença digital",
+  description: "Responda 5 perguntas em 3 minutos e receba uma análise da sua presença digital. Gratuito, sem compromisso. Desenvolvedor freelance em Vila Velha, ES.",
+  keywords: ["diagnóstico digital gratuito", "análise presença digital", "consultoria grátis pequenos negócios"],
+  openGraph: {
+    title: "Diagnóstico gratuito de presença digital | SOR ONE",
+    description: "5 perguntas, 3 minutos, análise gratuita. Sem compromisso.",
+    url: "https://sor-one-internal.vercel.app/diagnostico",
+    siteName: "SOR ONE",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 type DiagnosticPageProps = {
