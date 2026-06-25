@@ -8,68 +8,12 @@ import {
   getActiveServices,
   type PublicService,
 } from "@/lib/services";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
-const operationalMetrics = [
-  ["32", "Leads capturados", "+18%"],
-  ["11", "Diagnósticos", "8 enviados"],
-  ["06", "Serviços ativos", "Online"],
-  ["R$ 18k", "Receita potencial", "+24%"],
-];
-
-const problems = [
-  {
-    icon: "↗",
-    title: "Clientes não te encontram",
-    text: "Seu negócio fica invisível enquanto o concorrente aparece no Google. Você perde venda antes de abrir a boca.",
-  },
-  {
-    icon: "◎",
-    title: "Você perde cliente no WhatsApp",
-    text: "Orçamentos sem resposta, atendimento desorganizado, cliente some. Falta de processo custa dinheiro todo dia.",
-  },
-  {
-    icon: "◇",
-    title: "Produto bom que ninguém vê",
-    text: "Catálogo em PDF ou foto no story não converte. Sem vitrine profissional, sem credibilidade, sem pedido.",
-  },
-  {
-    icon: "▦",
-    title: "Tempo gasto no que não vende",
-    text: "Tarefas manuais ocupam seu dia inteiro. Sem automação, você trabalha mais e cresce menos.",
-  },
-];
-
-const steps = [
-  {
-    number: "01",
-    title: "Diagnóstico gratuito",
-    text: "Responda 5 perguntas em 3 minutos. Analiso seu cenário e identifico o que está travando sua captação e vendas.",
-  },
-  {
-    number: "02",
-    title: "Proposta clara",
-    text: "Escopo definido, prazo real, preço justo. Você sabe exatamente o que vai receber antes de fechar.",
-  },
-  {
-    number: "03",
-    title: "Entrega e suporte",
-    text: "Projeto no ar e funcionando. Você aprende a usar e tem suporte para evoluir conforme o negócio cresce.",
-  },
-];
-
-const services = [
-  { icon: "↗", name: "Sites institucionais", text: "Sua empresa na internet com profissionalismo e clareza." },
-  { icon: "⚡", name: "Landing pages", text: "Páginas focadas em converter visitantes em contatos." },
-  { icon: "◇", name: "Catálogos digitais B2B/B2C", text: "Vitrine digital com produtos, categorias e pedidos." },
-  { icon: "◎", name: "Agendamento online", text: "Agenda, horários e atendimentos organizados automaticamente." },
-  { icon: "▦", name: "Dashboards administrativos", text: "Painel para visualizar e controlar sua operação." },
-  { icon: "⟳", name: "Automações com IA", text: "Fluxos automáticos para WhatsApp, leads e atendimento." },
-];
-
-function formatPrice(value: number | null) {
-  if (value === null) return "Sob consulta";
+function formatPrice(value: number | null, locale: string) {
+  if (value === null) return locale === "en" ? "Quote on request" : "Sob consulta";
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -83,12 +27,15 @@ function getServiceIcon(name: string) {
   if (n.includes("catálogo") || n.includes("catalogo")) return "◇";
   if (n.includes("agenda")) return "◎";
   if (n.includes("manutenção") || n.includes("manutencao")) return "↻";
-  if (n.includes("ajuste")) return "⌁";
+  if (n.includes("ajuste")) return "✕";
   if (n.includes("site") || n.includes("presença")) return "↗";
   return "▦";
 }
 
 export default async function HomePage() {
+  const t = await getTranslations("home");
+  const locale = await getLocale();
+
   let dbServices: PublicService[] = [];
 
   try {
@@ -99,6 +46,35 @@ export default async function HomePage() {
       caughtError instanceof Error ? caughtError.message : "Erro desconhecido",
     );
   }
+
+  const operationalMetrics = [
+    ["32", t("console_metric_leads"), "+18%"],
+    ["11", t("console_metric_diag"), t("console_metric_diag_detail")],
+    ["06", t("console_metric_services"), "Online"],
+    ["R$ 18k", t("console_metric_revenue"), "+24%"],
+  ];
+
+  const problems = [
+    { icon: "↗", title: t("problem_1_title"), text: t("problem_1_text") },
+    { icon: "◎", title: t("problem_2_title"), text: t("problem_2_text") },
+    { icon: "◇", title: t("problem_3_title"), text: t("problem_3_text") },
+    { icon: "▦", title: t("problem_4_title"), text: t("problem_4_text") },
+  ];
+
+  const steps = [
+    { number: "01", title: t("step_1_title"), text: t("step_1_text") },
+    { number: "02", title: t("step_2_title"), text: t("step_2_text") },
+    { number: "03", title: t("step_3_title"), text: t("step_3_text") },
+  ];
+
+  const services = [
+    { icon: "↗", name: locale === "en" ? "Institutional websites" : "Sites institucionais", text: t("service_institutional") },
+    { icon: "⚡", name: "Landing pages", text: t("service_landing") },
+    { icon: "◇", name: locale === "en" ? "B2B/B2C digital catalogs" : "Catálogos digitais B2B/B2C", text: t("service_catalog") },
+    { icon: "◎", name: locale === "en" ? "Online scheduling" : "Agendamento online", text: t("service_scheduling") },
+    { icon: "▦", name: locale === "en" ? "Admin dashboards" : "Dashboards administrativos", text: t("service_dashboard") },
+    { icon: "⟳", name: locale === "en" ? "AI automations" : "Automações com IA", text: t("service_ai") },
+  ];
 
   return (
     <>
@@ -118,31 +94,31 @@ export default async function HomePage() {
           <div className="relative z-10">
             <Badge>
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--sor-status)] shadow-[0_0_10px_rgba(34,197,94,0.7)]" />
-              Tecnologia aplicada a negócios reais
+              {t("badge")}
             </Badge>
             <h1 className="mt-7 max-w-2xl tracking-[-0.04em]">
               <span className="block text-3xl font-normal leading-[1.1] text-[var(--sor-text)] sm:text-4xl lg:text-[2.6rem]">
-                Tecnologia que
+                {t("hero_line1")}
               </span>
               <span
                 className="block font-black leading-[1.05] text-[var(--sor-champagne)]"
                 style={{ fontSize: "clamp(40px, 5.5vw, 68px)" }}
               >
-                gera resultado.
+                {t("hero_line2")}
               </span>
             </h1>
             <p className="mt-6 max-w-[480px] text-[17px] leading-7 text-muted">
-              Crio sites, sistemas e automações para negócios locais venderem mais e trabalharem menos.
+              {t("hero_sub")}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button href="/diagnostico">Solicitar diagnóstico</Button>
-              <Button href="/solucoes" variant="secondary">Conhecer serviços</Button>
+              <Button href="/diagnostico">{t("cta_diagnosis")}</Button>
+              <Button href="/solucoes" variant="secondary">{t("cta_solutions")}</Button>
             </div>
             <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 border-t border-white/6 pt-6 sm:grid-cols-3">
               {[
-                ["Estratégia", "Prioridade clara"],
-                ["Tecnologia", "Solução proporcional"],
-                ["Operação", "Evolução contínua"],
+                [t("pillar_strategy"), t("pillar_strategy_sub")],
+                [t("pillar_tech"), t("pillar_tech_sub")],
+                [t("pillar_ops"), t("pillar_ops_sub")],
               ].map(([title, text]) => (
                 <div key={title}>
                   <p className="text-sm font-extrabold text-[var(--sor-champagne)]">{title}</p>
@@ -168,12 +144,12 @@ export default async function HomePage() {
                   </span>
                   <div>
                     <p className="text-sm font-extrabold" translate="no">SOR ONE Console</p>
-                    <p className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-soft">Centro operacional</p>
+                    <p className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-soft">{t("console_ops")}</p>
                   </div>
                 </div>
                 <span className="flex items-center gap-2 rounded-full border border-green-400/15 bg-green-500/8 px-3 py-1.5 text-[10px] font-bold text-green-400">
                   <span className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-green-400" />
-                  Sistema online
+                  {t("console_online")}
                 </span>
               </div>
 
@@ -198,8 +174,8 @@ export default async function HomePage() {
                 <div className="console-inner-card rounded-2xl border border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.68)] p-5 transition">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[11px] font-extrabold">Oportunidades</p>
-                      <p className="mt-0.5 text-[9px] text-soft">Últimos 30 dias</p>
+                      <p className="text-[11px] font-extrabold">{t("console_opportunities")}</p>
+                      <p className="mt-0.5 text-[9px] text-soft">{t("console_last30")}</p>
                     </div>
                   </div>
                   <div className="relative mt-5 flex h-24 items-end gap-1.5">
@@ -227,13 +203,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* PROBLEMAS QUE RESOLVO */}
+      {/* PROBLEMS */}
       <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-20 sm:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Problemas que resolvo"
-            title="Se isso parece familiar, é hora de resolver."
-            description="Esses problemas custam clientes todo dia. A boa notícia: todos têm solução."
+            eyebrow={t("problems_eyebrow")}
+            title={t("problems_title")}
+            description={t("problems_desc")}
             centered
           />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -253,13 +229,13 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* COMO FUNCIONA */}
+      {/* HOW IT WORKS */}
       <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] py-20 sm:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Como funciona"
-            title="Do diagnóstico à entrega em 3 passos."
-            description="Processo direto, sem reuniões intermináveis. Você vê resultado rápido."
+            eyebrow={t("how_eyebrow")}
+            title={t("how_title")}
+            description={t("how_desc")}
             centered
           />
           <div className="mt-14 grid gap-6 sm:grid-cols-3">
@@ -284,42 +260,44 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* SOLUÇÕES */}
+      {/* SOLUTIONS */}
       {dbServices.length > 0 ? (
         <section className="relative overflow-hidden border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-16 sm:py-20">
           <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
           <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[rgba(201,168,106,0.04)] blur-3xl" />
           <Container>
             <SectionHeading
-              eyebrow="Soluções"
-              title="O que posso desenvolver para você"
-              description="Escolha uma estrutura ou solicite um diagnóstico para receber uma proposta personalizada."
+              eyebrow={t("solutions_eyebrow")}
+              title={t("solutions_title")}
+              description={t("solutions_desc_db")}
             />
             <div className="relative mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {dbServices.map((service) => (
                 <Card key={service.id} className="home-service-card group relative flex min-h-[290px] flex-col overflow-hidden rounded-[1.5rem] border-[var(--sor-border-main)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]">
                   <div className="flex items-start justify-between gap-4">
                     <span className="service-icon-shell grid h-11 w-11 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-lg text-[var(--sor-champagne)]">{getServiceIcon(service.nome)}</span>
-                    {service.destaque ? <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-2.5 py-1 text-[9px] font-bold text-[var(--sor-champagne)]">Destaque</span> : null}
+                    {service.destaque ? <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-2.5 py-1 text-[9px] font-bold text-[var(--sor-champagne)]">{t("service_highlight")}</span> : null}
                   </div>
                   <h3 className="mt-5 text-xl font-black">{service.nome}</h3>
                   <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted">{service.descricao}</p>
                   <div className="mt-auto flex items-end justify-between gap-4 pt-6">
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">A partir de</p>
-                      <p className="mt-1 font-extrabold">{formatPrice(service.preco_inicio)}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">{t("service_from")}</p>
+                      <p className="mt-1 font-extrabold">{formatPrice(service.preco_inicio, locale)}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">Prazo</p>
-                      <p className="mt-1 text-sm font-extrabold">{service.prazo_dias ? `${service.prazo_dias} dias` : "A definir"}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">{t("service_deadline")}</p>
+                      <p className="mt-1 text-sm font-extrabold">
+                        {service.prazo_dias ? t("service_days", { days: service.prazo_dias }) : t("service_tbd")}
+                      </p>
                     </div>
                   </div>
-                  <Button href="/diagnostico" variant="secondary" fullWidth className="mt-5 min-h-10 py-2">Solicitar diagnóstico</Button>
+                  <Button href="/diagnostico" variant="secondary" fullWidth className="mt-5 min-h-10 py-2">{t("btn_request_diag")}</Button>
                 </Card>
               ))}
             </div>
             <div className="mt-8 flex justify-center">
-              <Button href="/solucoes" variant="secondary">Ver soluções</Button>
+              <Button href="/solucoes" variant="secondary">{t("btn_see_solutions")}</Button>
             </div>
           </Container>
         </section>
@@ -328,9 +306,9 @@ export default async function HomePage() {
           <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
           <Container>
             <SectionHeading
-              eyebrow="Soluções"
-              title="O que posso desenvolver para você"
-              description="Do site ao sistema, escolha a estrutura certa para o seu negócio."
+              eyebrow={t("solutions_eyebrow")}
+              title={t("solutions_title")}
+              description={t("solutions_desc_fallback")}
             />
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {services.map((s) => (
@@ -342,26 +320,26 @@ export default async function HomePage() {
               ))}
             </div>
             <div className="mt-8 flex justify-center">
-              <Button href="/solucoes" variant="secondary">Ver soluções</Button>
+              <Button href="/solucoes" variant="secondary">{t("btn_see_solutions")}</Button>
             </div>
           </Container>
         </section>
       )}
 
-      {/* PROJETOS */}
+      {/* PORTFOLIO */}
       <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] py-20 sm:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Portfólio"
-            title="Cases e projetos realizados"
-            description="Sistemas reais criados para organizar operações e gerar resultado."
+            eyebrow={t("portfolio_eyebrow")}
+            title={t("portfolio_title")}
+            description={t("portfolio_desc")}
           />
           <div className="mt-8">
             <p className="max-w-[520px] text-[17px] leading-7 text-muted">
-              Demonstrações reais dos sistemas que desenvolvo — acesse, explore e veja funcionando.
+              {t("portfolio_sub")}
             </p>
             <div className="mt-6">
-              <Button href="/projetos" variant="secondary">Ver projetos →</Button>
+              <Button href="/projetos" variant="secondary">{t("btn_see_projects")}</Button>
             </div>
           </div>
         </Container>
@@ -375,13 +353,13 @@ export default async function HomePage() {
             <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-[rgba(37,99,235,0.04)] blur-3xl" />
             <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">Próximo passo</p>
-                <h2 className="mt-4 text-3xl font-black sm:text-5xl">Pronto para parar de perder cliente?</h2>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">{t("cta_label")}</p>
+                <h2 className="mt-4 text-3xl font-black sm:text-5xl">{t("cta_title")}</h2>
                 <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-                  Responda o diagnóstico em 3 minutos e receba uma análise do que está travando seu negócio.
+                  {t("cta_sub")}
                 </p>
               </div>
-              <Button href="/diagnostico" className="shrink-0">Solicitar diagnóstico grátis</Button>
+              <Button href="/diagnostico" className="shrink-0">{t("cta_btn")}</Button>
             </div>
           </div>
         </Container>

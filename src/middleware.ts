@@ -1,25 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth/session";
+import createIntlMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+import { routing } from '@/i18n/routing';
+import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/auth/session';
+
+const intlMiddleware = createIntlMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === "/admin") {
-    return NextResponse.redirect(new URL("/console/dashboard", request.url));
+  const { pathname } = request.nextUrl;
+
+  if (pathname === '/admin') {
+    return NextResponse.redirect(new URL('/console/dashboard', request.url));
   }
 
-  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  const isAuthenticated =
-    token && secret ? await verifySessionToken(token, secret) : false;
+  if (pathname.startsWith('/console')) {
+    const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+    const secret = process.env.ADMIN_SESSION_SECRET;
+    const isAuthenticated =
+      token && secret ? await verifySessionToken(token, secret) : false;
 
-  if (!isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+    if (!isAuthenticated) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('next', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  return intlMiddleware(request);
 }
 
 export const config = {
-  matcher: ["/console/:path*", "/admin"],
+  matcher: ['/((?!api|_next|.*\\..*).*)'],
 };

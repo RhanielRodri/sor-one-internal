@@ -3,6 +3,7 @@ import { Container } from "@/components/public/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Projetos | SOR ONE — Sistemas publicados e em produção",
@@ -18,74 +19,6 @@ export const metadata: Metadata = {
   },
 };
 
-const mainProjects = [
-  {
-    name: "CatalogPro B2B",
-    icon: "◇",
-    category: "Sistema Comercial B2B",
-    status: "Online",
-    description:
-      "Sistema comercial para catálogos digitais, solicitação de cotações e gestão administrativa.",
-    highlights: [
-      "Catálogo digital",
-      "Busca e filtros",
-      "Cotação online",
-      "Painel administrativo",
-      "Login protegido",
-      "PostgreSQL",
-    ],
-    stack: ["React", "Node.js", "PostgreSQL", "Prisma", "Vercel", "Render"],
-    demoUrl: "https://catalogpro-b2b.vercel.app/",
-    codeUrl: "https://github.com/RhanielRodri/catalogpro-b2b",
-  },
-  {
-    name: "AgendaFácil",
-    icon: "◎",
-    category: "Sistema de Agendamento",
-    status: "Online",
-    description:
-      "Sistema de agendamento online para negócios de serviço com escolha de horário, prevenção de conflitos e painel administrativo.",
-    highlights: [
-      "Agendamento online",
-      "Horários disponíveis",
-      "Prevenção de conflitos",
-      "Painel administrativo",
-      "Login protegido",
-      "PostgreSQL",
-    ],
-    stack: ["React", "Node.js", "PostgreSQL", "Prisma", "Vercel", "Render"],
-    demoUrl: "https://agendafacil-sistema.vercel.app/",
-    codeUrl: "https://github.com/RhanielRodri/agendafacil-sistema",
-  },
-];
-
-const supportingProjects = [
-  {
-    name: "MenuZap",
-    icon: "⚡",
-    category: "Cardápio Digital",
-    status: "Online",
-    description:
-      "Cardápio digital com carrinho, Pix e integração com WhatsApp para pequenos negócios.",
-    highlights: ["Cardápio digital", "Carrinho", "Pix", "WhatsApp", "QR Code", "Mobile first"],
-    stack: ["HTML", "CSS", "JavaScript", "WhatsApp", "QR Code", "Vercel"],
-    demoUrl: "https://menuzap-cardapio-digital.vercel.app/",
-    codeUrl: "https://github.com/RhanielRodri/menuzap-cardapio-digital",
-  },
-  {
-    name: "SOR ONE",
-    icon: "▦",
-    category: "Hub Profissional",
-    status: "Online",
-    description:
-      "Plataforma própria utilizada para apresentar serviços, projetos, processos e soluções digitais desenvolvidas para negócios.",
-    highlights: ["Captação de leads", "Diagnóstico digital", "Console administrativo", "Deploy em produção"],
-    stack: ["Next.js", "Supabase", "Vercel"],
-    demoUrl: null,
-    codeUrl: null,
-  },
-];
-
 function StackPill({ label }: { label: string }) {
   return (
     <span className="rounded-full border border-[var(--sor-border-main)] bg-[rgba(201,168,106,0.04)] px-3 py-1.5 text-xs font-semibold text-soft">
@@ -94,7 +27,59 @@ function StackPill({ label }: { label: string }) {
   );
 }
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const t = await getTranslations("projects");
+
+  const mainProjects = [
+    {
+      name: "CatalogPro B2B",
+      icon: "◇",
+      category: t("catalogpro_category"),
+      status: "Online",
+      description: t("catalogpro_desc"),
+      highlights: [t("catalogpro_h1"), t("catalogpro_h2"), t("catalogpro_h3"), t("catalogpro_h4"), t("catalogpro_h5"), t("catalogpro_h6")],
+      stack: ["React", "Node.js", "PostgreSQL", "Prisma", "Vercel", "Render"],
+      demoUrl: "https://catalogpro-b2b.vercel.app/",
+      codeUrl: "https://github.com/RhanielRodri/catalogpro-b2b",
+    },
+    {
+      name: "AgendaFácil",
+      icon: "◎",
+      category: t("agendafacil_category"),
+      status: "Online",
+      description: t("agendafacil_desc"),
+      highlights: [t("agendafacil_h1"), t("agendafacil_h2"), t("agendafacil_h3"), t("agendafacil_h4"), t("agendafacil_h5"), t("agendafacil_h6")],
+      stack: ["React", "Node.js", "PostgreSQL", "Prisma", "Vercel", "Render"],
+      demoUrl: "https://agendafacil-sistema.vercel.app/",
+      codeUrl: "https://github.com/RhanielRodri/agendafacil-sistema",
+    },
+  ];
+
+  const supportingProjects = [
+    {
+      name: "MenuZap",
+      icon: "⚡",
+      category: t("menuzap_category"),
+      status: "Online",
+      description: t("menuzap_desc"),
+      highlights: [t("menuzap_h1"), t("menuzap_h2"), t("menuzap_h3"), t("menuzap_h4"), t("menuzap_h5"), t("menuzap_h6")],
+      stack: ["HTML", "CSS", "JavaScript", "WhatsApp", "QR Code", "Vercel"],
+      demoUrl: "https://menuzap-cardapio-digital.vercel.app/",
+      codeUrl: "https://github.com/RhanielRodri/menuzap-cardapio-digital",
+    },
+    {
+      name: "SOR ONE",
+      icon: "▦",
+      category: t("sorone_category"),
+      status: "Online",
+      description: t("sorone_desc"),
+      highlights: [t("sorone_h1"), t("sorone_h2"), t("sorone_h3"), t("sorone_h4")],
+      stack: ["Next.js", "Supabase", "Vercel"],
+      demoUrl: null,
+      codeUrl: null,
+    },
+  ];
+
   return (
     <div className="services-surface relative overflow-hidden">
       <div className="premium-grid pointer-events-none absolute inset-0 opacity-55" />
@@ -104,21 +89,21 @@ export default function ProjectsPage() {
         <div className="services-hero-glow pointer-events-none absolute left-1/2 top-1/2 h-80 w-[44rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2" />
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <Badge>Cases e projetos realizados</Badge>
+            <Badge>{t("badge")}</Badge>
             <h1 className="text-balance mt-6 text-4xl font-black tracking-[-0.055em] sm:text-5xl lg:text-6xl">
-              Cases e projetos realizados.
+              {t("title")}
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted">
-              Soluções publicadas e desenvolvidas para resolver problemas reais de negócios.
+              {t("sub")}
             </p>
             <p className="mt-4 text-sm text-soft">
-              Todos os projetos podem ser testados online e possuem código disponível para consulta.
+              {t("sub2")}
             </p>
           </div>
         </Container>
       </section>
 
-      {/* Cases principais */}
+      {/* Main projects */}
       <section className="relative py-16 sm:py-22">
         <Container>
           <div className="grid gap-5 lg:grid-cols-2">
@@ -149,7 +134,7 @@ export default function ProjectsPage() {
                 <p className="mt-3 text-sm leading-6 text-muted">{project.description}</p>
 
                 <div className="mt-6 border-t border-[var(--sor-border-main)] pt-5">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">Destaques</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">{t("highlights_label")}</p>
                   <ul className="mt-3 grid grid-cols-2 gap-2 text-sm text-muted">
                     {project.highlights.map((item) => (
                       <li key={item} className="flex items-center gap-2">
@@ -167,10 +152,10 @@ export default function ProjectsPage() {
                 </div>
 
                 <div className="mt-auto flex flex-wrap gap-3 pt-7">
-                  <Button href={project.demoUrl}>Ver demonstração</Button>
+                  <Button href={project.demoUrl}>{t("btn_demo")}</Button>
                   {project.codeUrl && (
                     <Button href={project.codeUrl} variant="secondary">
-                      Ver código
+                      {t("btn_code")}
                     </Button>
                   )}
                 </div>
@@ -178,7 +163,7 @@ export default function ProjectsPage() {
             ))}
           </div>
 
-          {/* Cases complementares */}
+          {/* Supporting projects */}
           <div className="mt-5 grid gap-5 md:grid-cols-2">
             {supportingProjects.map((project) => (
               <Card
@@ -221,17 +206,15 @@ export default function ProjectsPage() {
                 <div className="mt-auto pt-6">
                   {project.demoUrl ? (
                     <div className="flex flex-wrap gap-3">
-                      <Button href={project.demoUrl}>
-                        Ver demonstração
-                      </Button>
+                      <Button href={project.demoUrl}>{t("btn_demo")}</Button>
                       {project.codeUrl && (
                         <Button href={project.codeUrl} variant="ghost">
-                          Ver código
+                          {t("btn_code")}
                         </Button>
                       )}
                     </div>
                   ) : (
-                    <p className="text-xs text-soft">Este site faz parte do ecossistema SOR ONE.</p>
+                    <p className="text-xs text-soft">{t("this_site")}</p>
                   )}
                 </div>
               </Card>
@@ -240,20 +223,20 @@ export default function ProjectsPage() {
         </Container>
       </section>
 
-      {/* CTA final */}
+      {/* CTA */}
       <section className="relative pb-20 sm:pb-24">
         <Container>
           <div className="relative overflow-hidden rounded-[2rem] border border-[rgba(201,168,106,0.18)] bg-[linear-gradient(135deg,var(--sor-card-elevated),var(--sor-panel))] p-8 text-center sm:p-12">
             <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-80 -translate-x-1/2 rounded-full bg-[rgba(201,168,106,0.06)] blur-3xl" />
             <div className="relative">
               <h2 className="text-3xl font-black tracking-[-0.04em] sm:text-4xl">
-                Precisa de uma solução parecida para o seu negócio?
+                {t("cta_title")}
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-muted">
-                Conte o cenário atual e receba uma direção inicial para transformar a operação em uma estrutura mais organizada.
+                {t("cta_sub")}
               </p>
               <Button href="/diagnostico" className="mt-7">
-                Solicitar diagnóstico
+                {t("cta_btn")}
               </Button>
             </div>
           </div>

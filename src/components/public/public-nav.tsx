@@ -2,19 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { NAV_ITEMS } from "@/lib/constants";
+import { LangToggle } from "@/components/public/lang-toggle";
 
 export function PublicNav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <>
       <nav aria-label="Navegação principal" className="hidden items-center gap-8 md:flex">
         {NAV_ITEMS.map((item) => {
           const isActive =
-            (item.href === "/"
+            item.href === "/"
               ? pathname === "/"
-              : pathname === item.href || pathname.startsWith(`${item.href}/`));
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
@@ -27,7 +30,7 @@ export function PublicNav() {
                   : "text-[#8A8D94] hover:text-[var(--sor-text)]"
               }`}
             >
-              {item.label}
+              {t(item.key)}
               <span
                 aria-hidden="true"
                 className={`absolute inset-x-0 -bottom-1 mx-auto h-0.5 bg-[linear-gradient(90deg,transparent,#C9A86A,transparent)] transition-all ${
@@ -39,6 +42,7 @@ export function PublicNav() {
             </Link>
           );
         })}
+        <LangToggle />
       </nav>
 
       <details className="group relative md:hidden">
@@ -62,9 +66,12 @@ export function PublicNav() {
               href={item.href}
               className="rounded-xl px-4 py-3 text-sm font-medium text-[#8A8D94] hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)]"
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
+          <div className="mt-1 flex justify-end border-t border-white/6 px-4 pt-3 pb-1">
+            <LangToggle />
+          </div>
         </nav>
       </details>
     </>

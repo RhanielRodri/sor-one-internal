@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getServiceSlug } from "@/lib/diagnostic-config";
 import { getActiveServices, type PublicService } from "@/lib/services";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Soluções | SOR ONE — Sites, sistemas e automações para pequenos negócios",
@@ -27,11 +28,8 @@ type ServiceDetails = {
   includes: string[];
 };
 
-function formatPrice(value: number | null) {
-  if (value === null) {
-    return "Sob consulta";
-  }
-
+function formatPrice(value: number | null, locale: string) {
+  if (value === null) return locale === "en" ? "Quote on request" : "Sob consulta";
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -53,51 +51,79 @@ function getServiceIcon(name: string) {
   return "▦";
 }
 
-function getServiceDetails(name: string): ServiceDetails {
+function getServiceDetails(name: string, locale: string): ServiceDetails {
   const normalized = name.toLowerCase();
+  const isEn = locale === "en";
 
   if (normalized.includes("catálogo") || normalized.includes("catalogo")) {
     return {
-      audience: "Lojas, confeitarias e distribuidores que vendem para outras empresas ou direto ao consumidor.",
-      includes: ["Catálogo responsivo e organizado", "Categorias e filtros", "Solicitação de pedido ou orçamento"],
+      audience: isEn
+        ? "Stores, bakeries and distributors selling to businesses or directly to consumers."
+        : "Lojas, confeitarias e distribuidores que vendem para outras empresas ou direto ao consumidor.",
+      includes: isEn
+        ? ["Responsive and organized catalog", "Categories and filters", "Order or quote request"]
+        : ["Catálogo responsivo e organizado", "Categorias e filtros", "Solicitação de pedido ou orçamento"],
     };
   }
 
   if (normalized.includes("agendamento") || normalized.includes("agenda")) {
     return {
-      audience: "Clínicas, salões, estúdios e prestadores que dependem de horário marcado.",
-      includes: ["Agenda online com confirmação", "Organização automática de horários", "Fluxo de atendimento sem papel"],
+      audience: isEn
+        ? "Clinics, salons, studios and service providers that rely on scheduled appointments."
+        : "Clínicas, salões, estúdios e prestadores que dependem de horário marcado.",
+      includes: isEn
+        ? ["Online booking with confirmation", "Automatic schedule management", "Paper-free service flow"]
+        : ["Agenda online com confirmação", "Organização automática de horários", "Fluxo de atendimento sem papel"],
     };
   }
 
   if (normalized.includes("manutenção") || normalized.includes("manutencao")) {
     return {
-      audience: "Negócios que já têm presença digital e precisam mantê-la funcional e atualizada.",
-      includes: ["Atualizações recorrentes de conteúdo", "Ajustes técnicos e correções", "Suporte com prioridade"],
+      audience: isEn
+        ? "Businesses that already have a digital presence and need it kept functional and up to date."
+        : "Negócios que já têm presença digital e precisam mantê-la funcional e atualizada.",
+      includes: isEn
+        ? ["Recurring content updates", "Technical fixes and corrections", "Priority support"]
+        : ["Atualizações recorrentes de conteúdo", "Ajustes técnicos e correções", "Suporte com prioridade"],
     };
   }
 
   if (normalized.includes("ajuste")) {
     return {
-      audience: "Empresas com site existente que precisa de melhorias pontuais ou correções.",
-      includes: ["Correções visuais e de layout", "Responsividade mobile", "Melhorias de velocidade"],
+      audience: isEn
+        ? "Companies with an existing site that needs targeted improvements or fixes."
+        : "Empresas com site existente que precisa de melhorias pontuais ou correções.",
+      includes: isEn
+        ? ["Visual and layout corrections", "Mobile responsiveness", "Speed improvements"]
+        : ["Correções visuais e de layout", "Responsividade mobile", "Melhorias de velocidade"],
     };
   }
 
   if (normalized.includes("institucional")) {
     return {
-      audience: "Empresas que precisam apresentar marca, serviços e formas de contato com profissionalismo.",
-      includes: ["Site completo e responsivo", "Páginas de serviços e contato", "Integração com WhatsApp"],
+      audience: isEn
+        ? "Companies that need to present their brand, services and contact professionally."
+        : "Empresas que precisam apresentar marca, serviços e formas de contato com profissionalismo.",
+      includes: isEn
+        ? ["Complete responsive website", "Service and contact pages", "WhatsApp integration"]
+        : ["Site completo e responsivo", "Páginas de serviços e contato", "Integração com WhatsApp"],
     };
   }
 
   return {
-    audience: "Pequenos negócios que querem atrair mais clientes e se apresentar melhor.",
-    includes: ["Página profissional responsiva", "Formulário de contato integrado", "Pronto para Google"],
+    audience: isEn
+      ? "Small businesses that want to attract more clients and present themselves better."
+      : "Pequenos negócios que querem atrair mais clientes e se apresentar melhor.",
+    includes: isEn
+      ? ["Responsive professional page", "Integrated contact form", "Google-ready"]
+      : ["Página profissional responsiva", "Formulário de contato integrado", "Pronto para Google"],
   };
 }
 
 export default async function SolutionsPage() {
+  const t = await getTranslations("solutions");
+  const locale = await getLocale();
+
   let services: PublicService[] = [];
   let error = "";
 
@@ -108,7 +134,7 @@ export default async function SolutionsPage() {
       "[Soluções] Falha ao carregar serviços",
       caughtError instanceof Error ? caughtError.message : "Erro desconhecido",
     );
-    error = "Não foi possível carregar as soluções agora.";
+    error = t("error");
   }
 
   return (
@@ -118,15 +144,15 @@ export default async function SolutionsPage() {
         <div className="services-hero-glow pointer-events-none absolute left-1/2 top-1/2 h-80 w-[44rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2" />
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <Badge>Soluções digitais</Badge>
+            <Badge>{t("badge")}</Badge>
             <h1 className="text-balance mt-6 text-4xl font-black tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-              Sites, sistemas e automações para o seu negócio crescer.
+              {t("title")}
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted">
-              Escolha a solução certa para o momento do seu negócio ou solicite um diagnóstico gratuito para receber uma proposta personalizada.
+              {t("sub")}
             </p>
             <div className="mt-8 flex justify-center gap-3">
-              <Button href="/diagnostico">Solicitar diagnóstico grátis</Button>
+              <Button href="/diagnostico">{t("cta_free")}</Button>
             </div>
           </div>
         </Container>
@@ -140,13 +166,13 @@ export default async function SolutionsPage() {
             </p>
           ) : services.length === 0 ? (
             <Card className="py-14 text-center">
-              <h2 className="text-xl font-bold">Nenhuma solução disponível no momento</h2>
-              <p className="mt-2 text-sm text-muted">Novas soluções serão publicadas em breve.</p>
+              <h2 className="text-xl font-bold">{t("empty")}</h2>
+              <p className="mt-2 text-sm text-muted">{t("empty_soon")}</p>
             </Card>
           ) : (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {services.map((service) => {
-                const details = getServiceDetails(service.nome);
+                const details = getServiceDetails(service.nome, locale);
 
                 return (
                   <Card
@@ -161,7 +187,7 @@ export default async function SolutionsPage() {
                       </span>
                       {service.destaque ? (
                         <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-3 py-1.5 text-[10px] font-bold text-[var(--sor-champagne)]">
-                          Mais procurado
+                          {t("most_wanted")}
                         </span>
                       ) : null}
                     </div>
@@ -170,12 +196,12 @@ export default async function SolutionsPage() {
                     <p className="mt-3 text-sm leading-6 text-muted">{service.descricao}</p>
 
                     <div className="mt-6 border-t border-[var(--sor-border-main)] pt-5">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">Para quem é</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">{t("for_whom")}</p>
                       <p className="mt-2 text-sm leading-6 text-soft">{details.audience}</p>
                     </div>
 
                     <div className="mt-5">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">O que inclui</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">{t("includes")}</p>
                       <ul className="mt-3 grid gap-2 text-sm text-muted">
                         {details.includes.map((item) => (
                           <li key={item} className="flex gap-2">
@@ -188,20 +214,20 @@ export default async function SolutionsPage() {
 
                     <div className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-[var(--sor-border-main)] bg-black/10 p-4">
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">A partir de</p>
-                        <p className="mt-1 text-lg font-black">{formatPrice(service.preco_inicio)}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">{t("from")}</p>
+                        <p className="mt-1 text-lg font-black">{formatPrice(service.preco_inicio, locale)}</p>
                       </div>
                       <div className="border-l border-[var(--sor-border-main)] pl-4">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">Prazo estimado</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">{t("deadline")}</p>
                         <p className="mt-1 text-lg font-black">
-                          {service.prazo_dias ? `${service.prazo_dias} dias` : "A definir"}
+                          {service.prazo_dias ? t("days", { days: service.prazo_dias }) : t("tbd")}
                         </p>
                       </div>
                     </div>
 
                     <div className="mt-auto pt-6">
                       <Button href={`/diagnostico?servico=${getServiceSlug(service.nome)}`} fullWidth>
-                        Solicitar diagnóstico
+                        {t("btn_request")}
                       </Button>
                     </div>
                   </Card>
@@ -219,15 +245,15 @@ export default async function SolutionsPage() {
             <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
               <div>
                 <h2 className="text-3xl font-black tracking-[-0.04em] sm:text-4xl">
-                  Projetos personalizados
+                  {t("custom_title")}
                 </h2>
                 <p className="mt-4 max-w-2xl leading-7 text-muted">
-                  Para negócios que precisam de painel administrativo, automação, integração com sistemas ou fluxo específico.
+                  {t("custom_desc")}
                 </p>
-                <p className="mt-5 text-lg font-black">A partir de R$ 2.000</p>
+                <p className="mt-5 text-lg font-black">{t("custom_from")}</p>
               </div>
               <Button href="/diagnostico?servico=projeto-personalizado" className="shrink-0">
-                Conversar sobre projeto
+                {t("custom_btn")}
               </Button>
             </div>
           </div>

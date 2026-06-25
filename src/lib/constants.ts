@@ -1,8 +1,8 @@
 export const SITE_NAME = "SOR ONE";
 
 export const NAV_ITEMS = [
-  { label: "Início", href: "/" },
-  { label: "Soluções", href: "/solucoes" },
-  { label: "Projetos", href: "/projetos" },
-  { label: "Contato", href: "/contato" },
+  { key: "home" as const, href: "/" },
+  { key: "solutions" as const, href: "/solucoes" },
+  { key: "projects" as const, href: "/projetos" },
+  { key: "contact" as const, href: "/contato" },
 ];
