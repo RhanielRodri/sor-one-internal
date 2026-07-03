@@ -1,45 +1,153 @@
+import Link from "next/link";
 import { Container } from "@/components/public/container";
-import { SectionHeading } from "@/components/public/section-heading";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { SorLogo } from "@/components/ui/SorLogo";
+import { HeroGrid3D } from "@/components/public/HeroGrid3D";
+import { ConsoleMockup } from "@/components/public/ConsoleMockup";
+import { ServicesShowcase } from "@/components/public/services-showcase";
+import { RevealManager } from "@/components/public/reveal-manager";
+import { getActiveServices, type PublicService } from "@/lib/services";
+import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
 import {
-  getActiveServices,
-  type PublicService,
-} from "@/lib/services";
-import { getLocale, getTranslations } from "next-intl/server";
+  staticServiceShowcase,
+  toShowcaseFromServices,
+  type ServiceShowcaseItem,
+} from "@/data/service-catalog";
 
 export const dynamic = "force-dynamic";
 
-function formatPrice(value: number | null, locale: string) {
-  if (value === null) return locale === "en" ? "Quote on request" : "Sob consulta";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(value);
+const stats = [
+  { value: "4", label: "Projetos online" },
+  { value: "100%", label: "Em produção" },
+  { value: "3min", label: "Diagnóstico" },
+  { value: "Vila Velha", label: "ES — Brasil" },
+];
+
+const mobileDashboardProjects = [
+  "AgendaFácil — Studio Cut",
+  "CatalogPro B2B",
+  "MenuZap",
+  "Barber Prime",
+];
+
+function MobileProjectDashboard() {
+  return (
+    <div
+      data-testid="mobile-project-dashboard"
+      className="mt-8 block w-full overflow-hidden rounded-xl border border-[var(--border-soft)] bg-[linear-gradient(160deg,var(--card-elevated),var(--card-deep))] text-xs shadow-[0_20px_50px_rgba(0,0,0,0.35)] md:hidden"
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] px-4 py-3">
+        <p className="min-w-0 font-bold text-[var(--text)]">
+          DASHBOARD <span className="text-soft">· Projetos online</span>
+        </p>
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-green-500/25 bg-green-500/8 px-2 py-1 text-[10px] font-bold text-green-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+          Sistema Ativo
+        </span>
+      </div>
+
+      <ul className="divide-y divide-[var(--border-soft)] px-4">
+        {mobileDashboardProjects.map((project) => (
+          <li key={project} className="flex items-center justify-between gap-3 py-3">
+            <span className="min-w-0 truncate font-semibold text-[#e5e5e5]">
+              {project}
+            </span>
+            <span className="inline-flex shrink-0 items-center gap-1.5 text-[10px] font-bold text-green-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+              ONLINE
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="border-t border-[var(--border-soft)] px-4 py-3 text-center text-soft">
+        <strong className="text-[var(--text)]">4 / 4 projetos online</strong> ·
+        100% em produção
+      </p>
+    </div>
+  );
 }
 
-function getServiceIcon(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("catálogo") || n.includes("catalogo")) return "◇";
-  if (n.includes("agenda")) return "◎";
-  if (n.includes("manutenção") || n.includes("manutencao")) return "↻";
-  if (n.includes("ajuste")) return "✕";
-  if (n.includes("site") || n.includes("presença")) return "↗";
-  return "▦";
-}
+const problems = [
+  {
+    icon: "↗",
+    title: "Clientes não te encontram",
+    text: "Seu negócio fica invisível enquanto o concorrente aparece no Google. Você perde venda antes de abrir a boca — e nem sabe quantas.",
+  },
+  {
+    icon: "◎",
+    title: "Você perde cliente no WhatsApp",
+    text: "Orçamentos sem resposta, atendimento desorganizado, cliente some. Falta de processo custa dinheiro todo dia — e é invisível no extrato.",
+  },
+  {
+    icon: "◇",
+    title: "Produto bom que ninguém vê",
+    text: "Catálogo em PDF ou foto no story não converte. Sem vitrine profissional, sem credibilidade — o cliente vai pro concorrente que parece maior.",
+  },
+  {
+    icon: "▦",
+    title: "Tempo gasto no que não vende",
+    text: "Agendamento manual, planilha de controle, resposta repetitiva no WhatsApp. Tarefas que um sistema resolve em segundos tomam horas do seu dia.",
+  },
+];
+
+const steps = [
+  {
+    number: "01",
+    title: "Diagnóstico gratuito",
+    text: "Responda 5 perguntas em 3 minutos. Analiso seu cenário e identifico o que está travando sua captação e vendas. Sem compromisso.",
+  },
+  {
+    number: "02",
+    title: "Proposta clara",
+    text: "Escopo definido, prazo real, preço justo. Você sabe exatamente o que vai receber, quando vai receber e o que vai custar — antes de fechar.",
+  },
+  {
+    number: "03",
+    title: "Entrega e suporte",
+    text: "Projeto no ar e funcionando. Você aprende a usar, tem suporte direto e pode evoluir conforme o negócio cresce.",
+  },
+];
+
+const flows = [
+  {
+    icon: "◎",
+    title: "Captura de Lead",
+    nodes: [
+      "Cliente preenche diagnóstico",
+      "Lead salvo no console",
+      "Notificação no WhatsApp",
+      "Resposta automática em 2 min",
+    ],
+  },
+  {
+    icon: "⟳",
+    title: "Agendamento Automático",
+    nodes: [
+      "Cliente acessa AgendaFácil",
+      "Escolhe horário disponível",
+      "Confirmação por WhatsApp",
+      "Lembrete 1h antes",
+    ],
+  },
+  {
+    icon: "◇",
+    title: "Catálogo + Pedido B2B",
+    nodes: [
+      "Cliente acessa CatalogPro",
+      "Seleciona produtos",
+      "Solicita cotação",
+      "Vendedor notificado na hora",
+    ],
+  },
+];
 
 export default async function HomePage() {
-  const t = await getTranslations("home");
-  const locale = await getLocale();
-
-  let dbServices: PublicService[] = [];
+  let showcaseItems: ServiceShowcaseItem[] = staticServiceShowcase;
 
   try {
-    dbServices = (await getActiveServices()).slice(0, 3);
+    const dbServices: PublicService[] = await getActiveServices();
+    if (dbServices.length > 0) {
+      showcaseItems = toShowcaseFromServices(dbServices);
+    }
   } catch (caughtError) {
     console.error(
       "[Home] Falha ao carregar vitrine de serviços",
@@ -47,207 +155,235 @@ export default async function HomePage() {
     );
   }
 
-  const operationalMetrics = [
-    ["32", t("console_metric_leads"), "+18%"],
-    ["11", t("console_metric_diag"), t("console_metric_diag_detail")],
-    ["06", t("console_metric_services"), "Online"],
-    ["R$ 18k", t("console_metric_revenue"), "+24%"],
-  ];
-
-  const problems = [
-    { icon: "↗", title: t("problem_1_title"), text: t("problem_1_text") },
-    { icon: "◎", title: t("problem_2_title"), text: t("problem_2_text") },
-    { icon: "◇", title: t("problem_3_title"), text: t("problem_3_text") },
-    { icon: "▦", title: t("problem_4_title"), text: t("problem_4_text") },
-  ];
-
-  const steps = [
-    { number: "01", title: t("step_1_title"), text: t("step_1_text") },
-    { number: "02", title: t("step_2_title"), text: t("step_2_text") },
-    { number: "03", title: t("step_3_title"), text: t("step_3_text") },
-  ];
-
-  const services = [
-    { icon: "↗", name: locale === "en" ? "Institutional websites" : "Sites institucionais", text: t("service_institutional") },
-    { icon: "⚡", name: "Landing pages", text: t("service_landing") },
-    { icon: "◇", name: locale === "en" ? "B2B/B2C digital catalogs" : "Catálogos digitais B2B/B2C", text: t("service_catalog") },
-    { icon: "◎", name: locale === "en" ? "Online scheduling" : "Agendamento online", text: t("service_scheduling") },
-    { icon: "▦", name: locale === "en" ? "Admin dashboards" : "Dashboards administrativos", text: t("service_dashboard") },
-    { icon: "⟳", name: locale === "en" ? "AI automations" : "Automações com IA", text: t("service_ai") },
-  ];
-
   return (
     <>
-      {/* HERO */}
-      <section className="aurora-surface cinematic-hero relative overflow-hidden border-b border-[var(--sor-border-main)] lg:min-h-[85vh]">
-        <div className="premium-grid absolute inset-0 opacity-80" />
-        <div className="hero-particles absolute inset-0 hidden lg:block" />
-        <div className="perspective-lines pointer-events-none absolute inset-x-[-12%] bottom-[-13rem] hidden h-[34rem] lg:block" />
-        <div className="vertical-light-beam pointer-events-none absolute bottom-[-10rem] left-[58%] hidden h-[34rem] w-64 -translate-x-1/2 lg:block" />
-        <div className="absolute left-[8%] top-28 h-1 w-1 rounded-full bg-[var(--sor-champagne)]/40 shadow-[0_0_16px_rgba(201,168,106,0.6)]" />
-        <div className="absolute right-[12%] top-36 h-1.5 w-1.5 rounded-full bg-[var(--sor-petrol)]/40 shadow-[0_0_18px_rgba(14,165,164,0.5)]" />
-        <div className="absolute bottom-24 left-[46%] h-1 w-1 rounded-full bg-[var(--sor-champagne)]/30" />
-        <div className="absolute -right-[18rem] top-[-14rem] hidden h-[54rem] w-[54rem] rounded-full border border-[rgba(201,168,106,0.06)] lg:block" />
-        <div className="absolute -right-[7rem] top-[-4rem] hidden h-[42rem] w-[42rem] rounded-full border border-[rgba(201,168,106,0.04)] lg:block" />
+      <RevealManager />
 
-        <div className="relative mx-auto grid w-full max-w-[92rem] gap-14 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
-          <div className="relative z-10">
-            <Badge>
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--sor-status)] shadow-[0_0_10px_rgba(34,197,94,0.7)]" />
-              {t("badge")}
-            </Badge>
-            <h1 className="mt-7 max-w-2xl tracking-[-0.04em]">
-              <span className="block text-3xl font-normal leading-[1.1] text-[var(--sor-text)] sm:text-4xl lg:text-[2.6rem]">
-                {t("hero_line1")}
-              </span>
+      <section
+        className="relative flex items-center overflow-hidden"
+        style={{ minHeight: "100vh", paddingTop: 72, background: "var(--bg)" }}
+      >
+        <HeroGrid3D />
+
+        <Container className="relative z-10 max-w-[1280px] py-16">
+          <div className="grid items-center gap-12 xl:grid-cols-[1.05fr_0.95fr] xl:gap-20">
+            <div>
               <span
-                className="block font-black leading-[1.05] text-[var(--sor-champagne)]"
-                style={{ fontSize: "clamp(40px, 5.5vw, 68px)" }}
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
+                style={{
+                  border: "1px solid var(--champagne-border)",
+                  background: "var(--champagne-dim)",
+                  color: "var(--text-muted-2)",
+                }}
               >
-                {t("hero_line2")}
+                <span
+                  className="status-pulse"
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: 9999,
+                    background: "var(--green)",
+                    animation: "pulse-dot 2s ease-in-out infinite",
+                  }}
+                />
+                Sistema operacional · Vila Velha, ES
               </span>
-            </h1>
-            <p className="mt-6 max-w-[480px] text-[17px] leading-7 text-muted">
-              {t("hero_sub")}
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button href="/diagnostico">{t("cta_diagnosis")}</Button>
-              <Button href="/solucoes" variant="secondary">{t("cta_solutions")}</Button>
-            </div>
-            <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 border-t border-white/6 pt-6 sm:grid-cols-3">
-              {[
-                [t("pillar_strategy"), t("pillar_strategy_sub")],
-                [t("pillar_tech"), t("pillar_tech_sub")],
-                [t("pillar_ops"), t("pillar_ops_sub")],
-              ].map(([title, text]) => (
-                <div key={title}>
-                  <p className="text-sm font-extrabold text-[var(--sor-champagne)]">{title}</p>
-                  <p className="mt-1 text-xs text-soft">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="relative mx-auto w-full max-w-[54rem] lg:translate-x-4 xl:translate-x-8">
-            <div aria-hidden="true" className="hero-orbit -inset-12 hidden lg:block" />
-            <div aria-hidden="true" className="hero-orbit -inset-24 hidden border-[rgba(201,168,106,0.04)] lg:block" />
-            <div aria-hidden="true" className="absolute -inset-[12%] rounded-full bg-[rgba(201,168,106,0.06)] blur-[110px]" />
-            <div aria-hidden="true" className="perspective-floor absolute left-[4%] right-[4%] top-[94%] hidden h-56 lg:block" />
-            <div aria-hidden="true" className="holographic-base absolute -bottom-20 left-[4%] right-[4%] hidden h-36 lg:block" />
-            <div aria-hidden="true" className="absolute -bottom-8 left-[15%] right-[15%] hidden h-12 rounded-[50%] bg-[rgba(201,168,106,0.08)] blur-2xl lg:block" />
-            <div className="console-shell glass-panel relative overflow-hidden rounded-[1.85rem]">
-              <div aria-hidden="true" className="pointer-events-none absolute inset-x-[10%] top-0 h-20 bg-[linear-gradient(to_bottom,rgba(201,168,106,0.04),transparent)]" />
-              <div className="flex items-center justify-between border-b border-[var(--sor-border-main)] px-4 py-4 sm:px-6">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-xl border border-[rgba(201,168,106,0.18)] bg-[rgba(201,168,106,0.06)]">
-                    <SorLogo variant="mark" className="h-7 w-7" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-extrabold" translate="no">SOR ONE Console</p>
-                    <p className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-soft">{t("console_ops")}</p>
-                  </div>
-                </div>
-                <span className="flex items-center gap-2 rounded-full border border-green-400/15 bg-green-500/8 px-3 py-1.5 text-[10px] font-bold text-green-400">
-                  <span className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-green-400" />
-                  {t("console_online")}
-                </span>
+              <h1
+                className="mt-7 font-black tracking-[-0.04em]"
+                style={{
+                  fontFamily: "var(--font-manrope), sans-serif",
+                  fontSize: "clamp(40px, 6vw, 72px)",
+                  lineHeight: 1.04,
+                  color: "var(--text)",
+                }}
+              >
+                Tecnologia que
+                <br />
+                <em style={{ fontStyle: "normal", color: "var(--champagne)" }}>
+                  gera resultado.
+                </em>
+              </h1>
+
+              <p
+                className="mt-6 max-w-[480px] text-[17px] leading-7"
+                style={{ color: "var(--text-muted-2)" }}
+              >
+                Crio sites, sistemas e automações para negócios locais venderem
+                mais e trabalharem menos.
+              </p>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/diagnostico"
+                  className="inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm transition hover:opacity-90"
+                  style={{
+                    background: "var(--champagne)",
+                    color: "#060709",
+                    fontFamily: "var(--font-manrope), sans-serif",
+                    fontWeight: 700,
+                  }}
+                >
+                  Solicitar diagnóstico
+                </Link>
+                <Link
+                  href="/projetos"
+                  className="inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold transition hover:border-[var(--champagne-border)]"
+                  style={{
+                    border: "1px solid var(--border-soft)",
+                    color: "var(--text)",
+                  }}
+                >
+                  Ver projetos →
+                </Link>
               </div>
 
-              <div className="grid gap-4 p-4 sm:p-6 lg:p-7">
-                <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-                  {operationalMetrics.map(([value, label, detail], index) => (
+              <MobileProjectDashboard />
+
+              <div
+                className="mt-10 grid max-w-xl grid-cols-2 gap-x-6 gap-y-5 border-t pt-7 sm:grid-cols-4"
+                style={{ borderColor: "var(--border-soft)" }}
+              >
+                {stats.map((stat) => (
+                  <div key={stat.label}>
                     <div
-                      key={label}
-                      className={`console-inner-card rounded-2xl border p-4 transition ${
-                        index === 0
-                          ? "border-[rgba(201,168,106,0.22)] bg-[rgba(201,168,106,0.05)]"
-                          : "border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.58)]"
-                      }`}
+                      className="font-black"
+                      style={{
+                        fontFamily: "var(--font-manrope), sans-serif",
+                        fontSize: "clamp(20px, 2.4vw, 26px)",
+                        color: "var(--text)",
+                      }}
                     >
-                      <p className="text-xl font-black sm:text-2xl">{value}</p>
-                      <p className="mt-1 text-[10px] font-semibold text-soft">{label}</p>
-                      <p className={`mt-3 text-[9px] font-bold ${index === 2 ? "text-green-400" : "text-[var(--sor-champagne)]"}`}>{detail}</p>
+                      {stat.value}
                     </div>
-                  ))}
-                </div>
-
-                <div className="console-inner-card rounded-2xl border border-[var(--sor-border-main)] bg-[rgba(10,14,18,0.68)] p-5 transition">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[11px] font-extrabold">{t("console_opportunities")}</p>
-                      <p className="mt-0.5 text-[9px] text-soft">{t("console_last30")}</p>
+                    <div
+                      className="mt-1 text-xs"
+                      style={{ color: "var(--sor-text-soft)" }}
+                    >
+                      {stat.label}
                     </div>
                   </div>
-                  <div className="relative mt-5 flex h-24 items-end gap-1.5">
-                    <svg aria-hidden="true" className="absolute inset-0 h-full w-full overflow-visible opacity-60" viewBox="0 0 320 120" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="chartLine" x1="0" x2="1">
-                          <stop offset="0%" stopColor="#C9A86A" />
-                          <stop offset="100%" stopColor="#D4B87A" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M0 96 C42 82, 58 89, 88 66 S145 76, 174 48 S224 55, 252 28 S294 33, 320 10" fill="none" stroke="url(#chartLine)" strokeWidth="2.5" />
-                    </svg>
-                    {[34, 48, 42, 61, 55, 76, 70, 88, 82, 96].map((height, index) => (
-                      <span
-                        key={height}
-                        className="animate-bar-rise flex-1 rounded-t bg-[linear-gradient(to_top,#8B6B2A,#C9A86A_70%,#D4B87A)]"
-                        style={{ height: `${height}%`, opacity: 0.34 + index * 0.04, animationDelay: `${index * 70}ms` }}
-                      />
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
+
+            <div className="hidden md:block">
+              <ConsoleMockup />
+            </div>
           </div>
+        </Container>
+
+        <div
+          className="pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 xl:flex"
+          style={{ color: "var(--sor-text-soft)" }}
+        >
+          <span className="text-[10px] uppercase tracking-[0.24em]">Scroll</span>
+          <span
+            className="scroll-hint-arrow text-sm"
+            style={{ animation: "bounce-down 1.6s ease-in-out infinite" }}
+          >
+            ↓
+          </span>
         </div>
       </section>
 
-      {/* PROBLEMS */}
-      <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-20 sm:py-24">
+      <section
+        className="reveal border-b py-20 sm:py-24"
+        style={{ background: "var(--bg)", borderColor: "var(--border-soft)" }}
+      >
         <Container>
-          <SectionHeading
-            eyebrow={t("problems_eyebrow")}
-            title={t("problems_title")}
-            description={t("problems_desc")}
-            centered
-          />
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {problems.map((p) => (
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">
+            Problemas que resolvo
+          </p>
+          <h2 className="mt-4 max-w-2xl text-3xl font-black tracking-[-0.035em] sm:text-4xl">
+            Se isso parece familiar, é hora de mudar.
+          </h2>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+            {problems.map((problem) => (
               <div
-                key={p.title}
-                className="group relative rounded-2xl border border-[var(--sor-border-main)] bg-[var(--sor-card)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]"
+                key={problem.title}
+                className="group rounded-2xl border p-7 transition duration-300 hover:-translate-y-1"
+                style={{
+                  borderColor: "var(--border-soft)",
+                  background: "var(--card-deep)",
+                }}
               >
-                <div className="service-icon-shell mb-4 grid h-10 w-10 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-base text-[var(--sor-champagne)]">
-                  {p.icon}
+                <div className="service-icon-shell grid h-11 w-11 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-lg text-[var(--sor-champagne)]">
+                  {problem.icon}
                 </div>
-                <h3 className="font-extrabold">{p.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-soft">{p.text}</p>
+                <h3 className="mt-5 text-lg font-extrabold">{problem.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-soft">{problem.text}</p>
               </div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] py-20 sm:py-24">
+      <section
+        className="reveal border-b py-20 sm:py-24"
+        style={{ background: "var(--bg-soft)", borderColor: "var(--border-soft)" }}
+      >
         <Container>
-          <SectionHeading
-            eyebrow={t("how_eyebrow")}
-            title={t("how_title")}
-            description={t("how_desc")}
-            centered
-          />
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">
+            Soluções
+          </p>
+          <h2 className="mt-4 max-w-2xl text-3xl font-black tracking-[-0.035em] sm:text-4xl">
+            O que posso desenvolver para o seu negócio
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-muted">
+            Cada solução é desenvolvida sob medida para o que o seu negócio
+            precisa hoje — sem inflar escopo, sem cobrar pelo que você não vai
+            usar.
+          </p>
+
+          <div className="mt-10">
+            <ServicesShowcase items={showcaseItems} />
+          </div>
+
+          <div className="mt-8">
+            <Link
+              href="/solucoes"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--sor-champagne)] transition hover:opacity-80"
+            >
+              Ver todas as soluções →
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      <section
+        className="reveal border-b py-20 sm:py-24"
+        style={{ background: "var(--bg)", borderColor: "var(--border-soft)" }}
+      >
+        <Container>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">
+            Como funciona
+          </p>
+          <h2 className="mt-4 max-w-2xl text-3xl font-black tracking-[-0.035em] sm:text-4xl">
+            Do diagnóstico à entrega em 3 passos.
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-muted">
+            Processo direto, sem reuniões intermináveis e sem enrolação. Você
+            sabe onde está o projeto em cada etapa.
+          </p>
+
           <div className="mt-14 grid gap-6 sm:grid-cols-3">
             {steps.map((step, index) => (
               <div key={step.number} className="relative">
-                {index < steps.length - 1 && (
+                {index < steps.length - 1 ? (
                   <div
                     aria-hidden="true"
                     className="step-connector absolute left-full top-8 z-10 hidden h-px w-6 -translate-y-1/2 sm:block"
                   />
-                )}
-                <div className="rounded-2xl border border-[var(--sor-border-main)] bg-[var(--sor-card)] p-7 transition duration-300 hover:border-[var(--sor-border-champagne)]">
+                ) : null}
+                <div
+                  className="rounded-2xl border p-7 transition duration-300 hover:border-[var(--champagne-border)]"
+                  style={{
+                    borderColor: "var(--border-soft)",
+                    background: "var(--card-deep)",
+                  }}
+                >
                   <span className="inline-block rounded-xl border border-[rgba(201,168,106,0.22)] bg-[rgba(201,168,106,0.06)] px-3 py-1.5 text-xs font-black text-[var(--sor-champagne)]">
                     {step.number}
                   </span>
@@ -260,107 +396,117 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* SOLUTIONS */}
-      {dbServices.length > 0 ? (
-        <section className="relative overflow-hidden border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-16 sm:py-20">
-          <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
-          <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[rgba(201,168,106,0.04)] blur-3xl" />
-          <Container>
-            <SectionHeading
-              eyebrow={t("solutions_eyebrow")}
-              title={t("solutions_title")}
-              description={t("solutions_desc_db")}
-            />
-            <div className="relative mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {dbServices.map((service) => (
-                <Card key={service.id} className="home-service-card group relative flex min-h-[290px] flex-col overflow-hidden rounded-[1.5rem] border-[var(--sor-border-main)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]">
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="service-icon-shell grid h-11 w-11 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-lg text-[var(--sor-champagne)]">{getServiceIcon(service.nome)}</span>
-                    {service.destaque ? <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-2.5 py-1 text-[9px] font-bold text-[var(--sor-champagne)]">{t("service_highlight")}</span> : null}
-                  </div>
-                  <h3 className="mt-5 text-xl font-black">{service.nome}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted">{service.descricao}</p>
-                  <div className="mt-auto flex items-end justify-between gap-4 pt-6">
-                    <div>
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">{t("service_from")}</p>
-                      <p className="mt-1 font-extrabold">{formatPrice(service.preco_inicio, locale)}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-soft">{t("service_deadline")}</p>
-                      <p className="mt-1 text-sm font-extrabold">
-                        {service.prazo_dias ? t("service_days", { days: service.prazo_dias }) : t("service_tbd")}
-                      </p>
-                    </div>
-                  </div>
-                  <Button href="/diagnostico" variant="secondary" fullWidth className="mt-5 min-h-10 py-2">{t("btn_request_diag")}</Button>
-                </Card>
-              ))}
-            </div>
-            <div className="mt-8 flex justify-center">
-              <Button href="/solucoes" variant="secondary">{t("btn_see_solutions")}</Button>
-            </div>
-          </Container>
-        </section>
-      ) : (
-        <section className="relative overflow-hidden border-b border-[var(--sor-border-main)] bg-[var(--sor-bg)] py-16 sm:py-20">
-          <div className="premium-grid pointer-events-none absolute inset-0 opacity-30" />
-          <Container>
-            <SectionHeading
-              eyebrow={t("solutions_eyebrow")}
-              title={t("solutions_title")}
-              description={t("solutions_desc_fallback")}
-            />
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((s) => (
-                <div key={s.name} className="home-service-card group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-[var(--sor-border-main)] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--sor-border-champagne)]">
-                  <span className="service-icon-shell grid h-10 w-10 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-base text-[var(--sor-champagne)]">{s.icon}</span>
-                  <h3 className="mt-5 font-extrabold">{s.name}</h3>
-                  <p className="mt-2 text-sm leading-6 text-soft">{s.text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex justify-center">
-              <Button href="/solucoes" variant="secondary">{t("btn_see_solutions")}</Button>
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* PORTFOLIO */}
-      <section className="border-b border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] py-20 sm:py-24">
+      <section
+        className="reveal border-b py-20 sm:py-24"
+        style={{ background: "var(--bg-soft)", borderColor: "var(--border-soft)" }}
+      >
         <Container>
-          <SectionHeading
-            eyebrow={t("portfolio_eyebrow")}
-            title={t("portfolio_title")}
-            description={t("portfolio_desc")}
-          />
-          <div className="mt-8">
-            <p className="max-w-[520px] text-[17px] leading-7 text-muted">
-              {t("portfolio_sub")}
-            </p>
-            <div className="mt-6">
-              <Button href="/projetos" variant="secondary">{t("btn_see_projects")}</Button>
-            </div>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">
+            Automações com IA
+          </p>
+          <h2 className="mt-4 max-w-2xl text-3xl font-black tracking-[-0.035em] sm:text-4xl">
+            Seu negócio respondendo enquanto você dorme.
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-muted">
+            Fluxos automáticos para captura, agendamento e vendas — o cliente é
+            atendido na hora, mesmo fora do horário comercial.
+          </p>
+
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {flows.map((flow) => (
+              <div
+                key={flow.title}
+                className="rounded-2xl border p-6"
+                style={{
+                  borderColor: "var(--border-soft)",
+                  background: "var(--card-deep)",
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="service-icon-shell grid h-10 w-10 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-base text-[var(--sor-champagne)]">
+                    {flow.icon}
+                  </span>
+                  <h3 className="text-base font-black">{flow.title}</h3>
+                </div>
+
+                <div className="mt-5 grid gap-2">
+                  {flow.nodes.map((node, index) => {
+                    const highlighted =
+                      index === 0 || index === flow.nodes.length - 1;
+                    return (
+                      <div key={node}>
+                        <div
+                          className="rounded-xl border px-4 py-3 text-xs font-semibold"
+                          style={{
+                            borderColor: highlighted
+                              ? "var(--champagne-border)"
+                              : "var(--border-soft)",
+                            background: highlighted
+                              ? "var(--champagne-dim)"
+                              : "rgba(6,7,9,0.4)",
+                            color: highlighted
+                              ? "var(--sor-champagne)"
+                              : "var(--text-muted-2)",
+                          }}
+                        >
+                          {node}
+                        </div>
+                        {index < flow.nodes.length - 1 ? (
+                          <div
+                            aria-hidden="true"
+                            className="mx-auto h-3 w-px"
+                            style={{ background: "var(--border-soft)" }}
+                          />
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </Container>
       </section>
 
-      {/* CTA FINAL */}
-      <section className="py-20 sm:py-24">
-        <Container>
-          <div className="relative overflow-hidden rounded-[2.25rem] border border-[rgba(201,168,106,0.18)] bg-[linear-gradient(135deg,var(--sor-card-elevated),var(--sor-panel))] p-8 sm:p-12">
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[rgba(201,168,106,0.06)] blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-[rgba(37,99,235,0.04)] blur-3xl" />
-            <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sor-champagne)]">{t("cta_label")}</p>
-                <h2 className="mt-4 text-3xl font-black sm:text-5xl">{t("cta_title")}</h2>
-                <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-                  {t("cta_sub")}
-                </p>
-              </div>
-              <Button href="/diagnostico" className="shrink-0">{t("cta_btn")}</Button>
-            </div>
+      <section
+        className="reveal relative overflow-hidden py-32 sm:py-40"
+        style={{ background: "var(--bg)" }}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[36rem] w-[36rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at center, rgba(201,168,106,0.16), transparent 60%)",
+            filter: "blur(40px)",
+          }}
+        />
+        <Container className="relative text-center">
+          <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-[-0.04em] sm:text-5xl">
+            Pronto para parar de perder cliente?
+          </h2>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/diagnostico"
+              className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm transition hover:opacity-90"
+              style={{
+                background: "var(--champagne)",
+                color: "#060709",
+                fontFamily: "var(--font-manrope), sans-serif",
+                fontWeight: 700,
+              }}
+            >
+              Solicitar diagnóstico grátis
+            </Link>
+            <a
+              href={SOR_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold transition hover:border-[var(--champagne-border)]"
+              style={{ border: "1px solid var(--border-soft)", color: "var(--text)" }}
+            >
+              Falar no WhatsApp →
+            </a>
           </div>
         </Container>
       </section>

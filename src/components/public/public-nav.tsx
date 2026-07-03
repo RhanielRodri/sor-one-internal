@@ -2,22 +2,32 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { NAV_ITEMS } from "@/lib/constants";
-import { LangToggle } from "@/components/public/lang-toggle";
+
+const NAV_LINKS = [
+  { label: "Início", href: "/" },
+  { label: "Soluções", href: "/solucoes" },
+  { label: "Projetos", href: "/projetos" },
+];
+
+const ctaStyle = {
+  background: "var(--champagne)",
+  color: "#060709",
+  fontFamily: "var(--font-manrope), sans-serif",
+  fontWeight: 700,
+} as const;
 
 export function PublicNav() {
   const pathname = usePathname();
-  const t = useTranslations("nav");
 
   return (
     <>
-      <nav aria-label="Navegação principal" className="hidden items-center gap-8 md:flex">
-        {NAV_ITEMS.map((item) => {
+      <nav
+        aria-label="Navegação principal"
+        className="hidden items-center gap-8 md:flex"
+      >
+        {NAV_LINKS.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
@@ -27,10 +37,10 @@ export function PublicNav() {
               className={`relative py-2 text-sm font-medium transition-colors ${
                 isActive
                   ? "text-[var(--sor-champagne)]"
-                  : "text-[#8A8D94] hover:text-[var(--sor-text)]"
+                  : "text-[#9A9DA6] hover:text-[var(--sor-text)]"
               }`}
             >
-              {t(item.key)}
+              {item.label}
               <span
                 aria-hidden="true"
                 className={`absolute inset-x-0 -bottom-1 mx-auto h-0.5 bg-[linear-gradient(90deg,transparent,#C9A86A,transparent)] transition-all ${
@@ -42,7 +52,13 @@ export function PublicNav() {
             </Link>
           );
         })}
-        <LangToggle />
+        <Link
+          href="/diagnostico"
+          style={ctaStyle}
+          className="inline-flex items-center rounded-xl px-4 py-2.5 text-sm transition hover:opacity-90"
+        >
+          Solicitar diagnóstico
+        </Link>
       </nav>
 
       <details className="group relative md:hidden">
@@ -58,20 +74,32 @@ export function PublicNav() {
         </summary>
         <nav
           aria-label="Navegação mobile"
-          className="absolute right-0 top-14 z-50 grid min-w-52 gap-1 rounded-2xl border border-blue-400/14 bg-[rgba(5,8,13,0.96)] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+          className="absolute right-0 top-14 z-50 grid min-w-56 gap-1 rounded-2xl border border-[var(--border-soft)] bg-[rgba(6,7,9,0.97)] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.5)] backdrop-blur-xl"
         >
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-[#8A8D94] hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)]"
-            >
-              {t(item.key)}
-            </Link>
-          ))}
-          <div className="mt-1 flex justify-end border-t border-white/6 px-4 pt-3 pb-1">
-            <LangToggle />
-          </div>
+          {NAV_LINKS.map((item) => {
+            const isActive =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={`rounded-xl px-4 py-3 text-sm font-medium hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)] ${
+                  isActive ? "text-[var(--sor-champagne)]" : "text-[#9A9DA6]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <Link
+            href="/diagnostico"
+            style={ctaStyle}
+            className="mt-1 rounded-xl px-4 py-3 text-center text-sm"
+          >
+            Solicitar diagnóstico
+          </Link>
         </nav>
       </details>
     </>

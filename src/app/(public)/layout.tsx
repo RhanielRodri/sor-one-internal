@@ -13,7 +13,7 @@ export default async function PublicLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <div className="flex min-h-screen flex-col">
+      <div className="public-site flex min-h-screen flex-col">
         <Header />
         <main className="public-shell flex-1">{children}</main>
         <Footer />

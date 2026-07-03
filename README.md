@@ -1,6 +1,6 @@
-# SOR ONE
+# SOR OS
 
-Site portfólio e sistema operacional da SOR ONE Soluções Digitais — agência de desenvolvimento freelancer. O site público apresenta projetos, serviços e formulário de diagnóstico. O console interno gerencia leads captados.
+Site portfólio e sistema operacional da SOR OS Soluções Digitais — agência de desenvolvimento freelancer. O site público apresenta projetos, serviços e formulário de diagnóstico. O console interno gerencia leads captados.
 
 ![Em produção](https://img.shields.io/badge/status-live-brightgreen)
 

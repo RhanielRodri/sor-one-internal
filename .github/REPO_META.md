@@ -1,9 +1,9 @@
-# SOR ONE — Metadados do repositório
+# SOR OS — Metadados do repositório
 
 ## Description sugerida
 
 ```
-Site portfólio SOR ONE — Next.js com SEO técnico completo e console operacional
+Site portfólio SOR OS — Next.js com SEO técnico completo e console operacional
 ```
 
 (80 caracteres — dentro do limite de 100)

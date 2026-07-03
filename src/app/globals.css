@@ -36,6 +36,20 @@
   --card: var(--sor-card);
   --border: var(--sor-border-main);
   --secondary: var(--sor-panel);
+
+  --champagne: #C9A86A;
+  --champagne-dim: rgba(201, 168, 106, 0.08);
+  --champagne-border: rgba(201, 168, 106, 0.18);
+  --petrol: #0ea5a4;
+  --bg: #060709;
+  --bg-soft: #0a0c10;
+  --card-deep: #0d1015;
+  --card-elevated: #111620;
+  --border-soft: #181e27;
+  --text: #F0EDEA;
+  --text-muted-2: #9A9DA6;
+  --text-soft-2: #4A4D56;
+  --green: #22c55e;
 }
 
 @theme inline {
@@ -61,8 +75,8 @@
   --color-sor-champagne: var(--sor-champagne);
   --color-sor-champagne-light: var(--sor-champagne-light);
   --color-sor-status: var(--sor-status);
-  --font-sans: var(--font-geist-sans);
-  --font-heading: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-manrope);
 }
 
 * {
@@ -82,12 +96,12 @@ body {
     radial-gradient(circle at 60% 80%, rgba(14, 165, 164, 0.04), transparent 30%),
     linear-gradient(180deg, var(--sor-bg) 0%, var(--sor-bg-soft) 45%, var(--sor-bg) 100%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3 {
-  font-family: var(--font-space-grotesk), var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-manrope), var(--font-inter), Arial, sans-serif;
 }
 
 button,
@@ -126,6 +140,11 @@ select {
 .public-shell a:active,
 .public-shell button:active {
   transform: translateY(1px) scale(0.99);
+}
+
+.public-site :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--sor-champagne);
+  outline-offset: 3px;
 }
 
 ::selection {
@@ -540,4 +559,70 @@ select {
 
 .animate-fade-up {
   animation: fade-up 0.5s ease-out both;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes float-up-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes flow-down {
+  0% { opacity: 0; top: 72%; }
+  6% { opacity: 1; }
+  90% { opacity: 0.4; }
+  100% { opacity: 0; top: 28%; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px 1px rgba(201, 168, 106, 0.5); }
+  50% { box-shadow: 0 0 12px 3px rgba(201, 168, 106, 0.9), 0 0 24px 6px rgba(201, 168, 106, 0.25); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.7); }
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+@keyframes fade-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-slide-in {
+  animation: fade-slide-in 0.32s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .console-wrap,
+  .status-pulse,
+  .scroll-hint-arrow,
+  .animate-fade-slide-in {
+    animation: none !important;
+  }
+
+  .public-site :is(a, button, summary) {
+    transition-duration: 0.01ms !important;
+  }
 }

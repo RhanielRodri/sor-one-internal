@@ -1,21 +1,31 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/public/container";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { getServiceSlug } from "@/lib/diagnostic-config";
+import { ServicesShowcase } from "@/components/public/services-showcase";
 import { getActiveServices, type PublicService } from "@/lib/services";
-import { getLocale, getTranslations } from "next-intl/server";
+import {
+  staticServiceShowcase,
+  toShowcaseFromServices,
+  type ServiceShowcaseItem,
+} from "@/data/service-catalog";
 
 export const metadata: Metadata = {
-  title: "Soluções | SOR ONE — Sites, sistemas e automações para pequenos negócios",
-  description: "Sites profissionais, catálogos digitais, sistemas de agendamento e automações para pequenos negócios em Vila Velha, ES e em todo o Brasil. Preços a partir de R$497.",
-  keywords: ["site para barbearia", "catálogo digital", "sistema de agendamento", "site para pequenos negócios", "freelancer Vila Velha ES"],
+  title: "Soluções — Sites, sistemas e automações para pequenos negócios",
+  description:
+    "Sites profissionais, landing pages, catálogos digitais, sistemas de agendamento, dashboards e automações com IA para pequenos negócios em Vila Velha, ES e em todo o Brasil.",
+  keywords: [
+    "site para barbearia",
+    "catálogo digital",
+    "sistema de agendamento",
+    "site para pequenos negócios",
+    "freelancer Vila Velha ES",
+  ],
   openGraph: {
-    title: "Soluções digitais para pequenos negócios | SOR ONE",
-    description: "Sites, catálogos e sistemas de agendamento a partir de R$497. Diagnóstico gratuito.",
+    title: "Soluções digitais para pequenos negócios | SOR OS",
+    description:
+      "Sites, catálogos, agendamento e automações sob medida. Diagnóstico gratuito.",
     url: "https://sor-one-internal.vercel.app/solucoes",
-    siteName: "SOR ONE",
+    siteName: "SOR OS",
     locale: "pt_BR",
     type: "website",
   },
@@ -23,238 +33,108 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-type ServiceDetails = {
-  audience: string;
-  includes: string[];
-};
-
-function formatPrice(value: number | null, locale: string) {
-  if (value === null) return locale === "en" ? "Quote on request" : "Sob consulta";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
-function getServiceIcon(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("catálogo") || n.includes("catalogo")) return "◇";
-  if (n.includes("agenda") || n.includes("agendamento")) return "◎";
-  if (n.includes("manutenção") || n.includes("manutencao")) return "↻";
-  if (n.includes("ajuste")) return "⌁";
-  if (n.includes("institucional")) return "↗";
-  if (n.includes("landing")) return "⚡";
-  if (n.includes("dashboard") || n.includes("painel")) return "▦";
-  if (n.includes("automaç") || n.includes("ia ")) return "⟳";
-  return "▦";
-}
-
-function getServiceDetails(name: string, locale: string): ServiceDetails {
-  const normalized = name.toLowerCase();
-  const isEn = locale === "en";
-
-  if (normalized.includes("catálogo") || normalized.includes("catalogo")) {
-    return {
-      audience: isEn
-        ? "Stores, bakeries and distributors selling to businesses or directly to consumers."
-        : "Lojas, confeitarias e distribuidores que vendem para outras empresas ou direto ao consumidor.",
-      includes: isEn
-        ? ["Responsive and organized catalog", "Categories and filters", "Order or quote request"]
-        : ["Catálogo responsivo e organizado", "Categorias e filtros", "Solicitação de pedido ou orçamento"],
-    };
-  }
-
-  if (normalized.includes("agendamento") || normalized.includes("agenda")) {
-    return {
-      audience: isEn
-        ? "Clinics, salons, studios and service providers that rely on scheduled appointments."
-        : "Clínicas, salões, estúdios e prestadores que dependem de horário marcado.",
-      includes: isEn
-        ? ["Online booking with confirmation", "Automatic schedule management", "Paper-free service flow"]
-        : ["Agenda online com confirmação", "Organização automática de horários", "Fluxo de atendimento sem papel"],
-    };
-  }
-
-  if (normalized.includes("manutenção") || normalized.includes("manutencao")) {
-    return {
-      audience: isEn
-        ? "Businesses that already have a digital presence and need it kept functional and up to date."
-        : "Negócios que já têm presença digital e precisam mantê-la funcional e atualizada.",
-      includes: isEn
-        ? ["Recurring content updates", "Technical fixes and corrections", "Priority support"]
-        : ["Atualizações recorrentes de conteúdo", "Ajustes técnicos e correções", "Suporte com prioridade"],
-    };
-  }
-
-  if (normalized.includes("ajuste")) {
-    return {
-      audience: isEn
-        ? "Companies with an existing site that needs targeted improvements or fixes."
-        : "Empresas com site existente que precisa de melhorias pontuais ou correções.",
-      includes: isEn
-        ? ["Visual and layout corrections", "Mobile responsiveness", "Speed improvements"]
-        : ["Correções visuais e de layout", "Responsividade mobile", "Melhorias de velocidade"],
-    };
-  }
-
-  if (normalized.includes("institucional")) {
-    return {
-      audience: isEn
-        ? "Companies that need to present their brand, services and contact professionally."
-        : "Empresas que precisam apresentar marca, serviços e formas de contato com profissionalismo.",
-      includes: isEn
-        ? ["Complete responsive website", "Service and contact pages", "WhatsApp integration"]
-        : ["Site completo e responsivo", "Páginas de serviços e contato", "Integração com WhatsApp"],
-    };
-  }
-
-  return {
-    audience: isEn
-      ? "Small businesses that want to attract more clients and present themselves better."
-      : "Pequenos negócios que querem atrair mais clientes e se apresentar melhor.",
-    includes: isEn
-      ? ["Responsive professional page", "Integrated contact form", "Google-ready"]
-      : ["Página profissional responsiva", "Formulário de contato integrado", "Pronto para Google"],
-  };
-}
-
 export default async function SolutionsPage() {
-  const t = await getTranslations("solutions");
-  const locale = await getLocale();
-
-  let services: PublicService[] = [];
-  let error = "";
+  let items: ServiceShowcaseItem[] = staticServiceShowcase;
 
   try {
-    services = (await getActiveServices()).slice(0, 6);
+    const services: PublicService[] = await getActiveServices();
+    if (services.length > 0) {
+      items = toShowcaseFromServices(services);
+    }
   } catch (caughtError) {
     console.error(
       "[Soluções] Falha ao carregar serviços",
       caughtError instanceof Error ? caughtError.message : "Erro desconhecido",
     );
-    error = t("error");
   }
 
   return (
-    <div className="services-surface relative overflow-hidden">
-      <div className="premium-grid pointer-events-none absolute inset-0 opacity-60" />
-      <section className="relative border-b border-[var(--sor-border-main)] py-20 sm:py-28">
-        <div className="services-hero-glow pointer-events-none absolute left-1/2 top-1/2 h-80 w-[44rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2" />
+    <div className="relative overflow-hidden" style={{ background: "var(--bg)" }}>
+      <section
+        className="relative border-b py-20 sm:py-28"
+        style={{ borderColor: "var(--border-soft)" }}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-[44rem] max-w-[94vw] -translate-x-1/2 -translate-y-1/2"
+          style={{
+            background:
+              "radial-gradient(circle at center, rgba(201,168,106,0.12), transparent 60%)",
+            filter: "blur(34px)",
+          }}
+        />
         <Container>
-          <div className="relative mx-auto max-w-4xl text-center">
-            <Badge>{t("badge")}</Badge>
-            <h1 className="text-balance mt-6 text-4xl font-black tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-              {t("title")}
+          <div className="relative mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--champagne-border)] bg-[var(--champagne-dim)] px-3 py-1.5 text-xs font-bold text-[var(--sor-champagne)]">
+              Soluções
+            </span>
+            <h1
+              className="mt-6 text-4xl font-black tracking-[-0.04em] sm:text-5xl lg:text-6xl"
+              style={{ fontFamily: "var(--font-manrope), sans-serif" }}
+            >
+              O que posso desenvolver para o seu negócio
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted">
-              {t("sub")}
+              Cada solução é desenvolvida sob medida para o que o seu negócio
+              precisa hoje. Compare o escopo, prazo e o que está incluso em cada
+              opção.
             </p>
-            <div className="mt-8 flex justify-center gap-3">
-              <Button href="/diagnostico">{t("cta_free")}</Button>
+            <div className="mt-8 flex justify-center">
+              <Link
+                href="/diagnostico"
+                className="inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm transition hover:opacity-90"
+                style={{
+                  background: "var(--champagne)",
+                  color: "#060709",
+                  fontFamily: "var(--font-manrope), sans-serif",
+                  fontWeight: 700,
+                }}
+              >
+                Solicitar diagnóstico gratuito
+              </Link>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="relative py-16 sm:py-22">
+      <section className="py-16 sm:py-22">
         <Container>
-          {error ? (
-            <p className="rounded-2xl border border-red-400/20 bg-red-500/8 p-5 text-center text-sm text-red-300">
-              {error}
-            </p>
-          ) : services.length === 0 ? (
-            <Card className="py-14 text-center">
-              <h2 className="text-xl font-bold">{t("empty")}</h2>
-              <p className="mt-2 text-sm text-muted">{t("empty_soon")}</p>
-            </Card>
-          ) : (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {services.map((service) => {
-                const details = getServiceDetails(service.nome, locale);
-
-                return (
-                  <Card
-                    key={service.id}
-                    className={`service-card-shell group relative flex min-h-[540px] flex-col overflow-hidden rounded-[1.75rem] border-[var(--sor-border-main)] p-7 transition duration-300 hover:-translate-y-1.5 hover:border-[var(--sor-border-champagne)] ${
-                      service.destaque ? "service-card-featured border-[rgba(201,168,106,0.2)]" : ""
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="service-icon-shell grid h-11 w-11 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-base text-[var(--sor-champagne)]">
-                        {getServiceIcon(service.nome)}
-                      </span>
-                      {service.destaque ? (
-                        <span className="rounded-full border border-[var(--sor-border-champagne)] bg-[rgba(201,168,106,0.06)] px-3 py-1.5 text-[10px] font-bold text-[var(--sor-champagne)]">
-                          {t("most_wanted")}
-                        </span>
-                      ) : null}
-                    </div>
-
-                    <h2 className="mt-6 text-2xl font-black tracking-[-0.025em]">{service.nome}</h2>
-                    <p className="mt-3 text-sm leading-6 text-muted">{service.descricao}</p>
-
-                    <div className="mt-6 border-t border-[var(--sor-border-main)] pt-5">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">{t("for_whom")}</p>
-                      <p className="mt-2 text-sm leading-6 text-soft">{details.audience}</p>
-                    </div>
-
-                    <div className="mt-5">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sor-champagne)]">{t("includes")}</p>
-                      <ul className="mt-3 grid gap-2 text-sm text-muted">
-                        {details.includes.map((item) => (
-                          <li key={item} className="flex gap-2">
-                            <span className="text-[var(--sor-champagne)]">·</span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-[var(--sor-border-main)] bg-black/10 p-4">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">{t("from")}</p>
-                        <p className="mt-1 text-lg font-black">{formatPrice(service.preco_inicio, locale)}</p>
-                      </div>
-                      <div className="border-l border-[var(--sor-border-main)] pl-4">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">{t("deadline")}</p>
-                        <p className="mt-1 text-lg font-black">
-                          {service.prazo_dias ? t("days", { days: service.prazo_dias }) : t("tbd")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-6">
-                      <Button href={`/diagnostico?servico=${getServiceSlug(service.nome)}`} fullWidth>
-                        {t("btn_request")}
-                      </Button>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+          <ServicesShowcase items={items} headingLevel="h2" />
         </Container>
       </section>
 
-      <section className="relative pb-20 sm:pb-24">
+      <section className="pb-20 sm:pb-24">
         <Container>
-          <div className="relative overflow-hidden rounded-[2rem] border border-[rgba(201,168,106,0.18)] bg-[linear-gradient(135deg,var(--sor-card-elevated),var(--sor-panel))] p-8 shadow-[0_32px_90px_rgba(0,0,0,0.42)] sm:p-11">
-            <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[rgba(201,168,106,0.06)] blur-3xl" />
-            <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+          <div
+            className="relative overflow-hidden rounded-[2rem] border p-8 sm:p-11"
+            style={{
+              borderColor: "var(--champagne-border)",
+              background:
+                "linear-gradient(135deg, var(--card-elevated), var(--card-deep))",
+            }}
+          >
+            <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
               <div>
                 <h2 className="text-3xl font-black tracking-[-0.04em] sm:text-4xl">
-                  {t("custom_title")}
+                  Não encontrou o que precisa?
                 </h2>
                 <p className="mt-4 max-w-2xl leading-7 text-muted">
-                  {t("custom_desc")}
+                  Todo projeto começa por um diagnóstico. Conte o problema e eu
+                  digo a forma mais simples de resolver — sem inflar escopo.
                 </p>
-                <p className="mt-5 text-lg font-black">{t("custom_from")}</p>
               </div>
-              <Button href="/diagnostico?servico=projeto-personalizado" className="shrink-0">
-                {t("custom_btn")}
-              </Button>
+              <Link
+                href="/diagnostico"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl px-6 py-3.5 text-sm transition hover:opacity-90"
+                style={{
+                  background: "var(--champagne)",
+                  color: "#060709",
+                  fontFamily: "var(--font-manrope), sans-serif",
+                  fontWeight: 700,
+                }}
+              >
+                Começar diagnóstico
+              </Link>
             </div>
           </div>
         </Container>
