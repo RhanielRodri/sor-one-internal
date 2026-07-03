@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/public/container";
 import { DiagnosticForm } from "@/components/public/diagnostic-form";
+import { siteUrl } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Diagnóstico gratuito — Encontre a solução certa para seu negócio",
   description: "Identifique as dores do seu negócio e receba uma recomendação de solução digital. Gratuito e sem compromisso.",
   keywords: ["diagnóstico digital gratuito", "análise presença digital", "consultoria grátis pequenos negócios"],
   openGraph: {
-    title: "Diagnóstico gratuito de presença digital | SOR OS",
+    title: "Diagnóstico gratuito de presença digital | SOR ONE",
     description: "Responda quatro etapas e receba uma recomendação gratuita. Sem compromisso.",
-    url: "https://sor-one-internal.vercel.app/diagnostico",
-    siteName: "SOR OS",
+    url: `${siteUrl}/diagnostico`,
+    siteName: "SOR ONE",
     locale: "pt_BR",
     type: "website",
   },

@@ -114,7 +114,7 @@ export function SorLogo({
   }
 
   return (
-    <div className={className} aria-label="SOR OS">
+    <div className={className} aria-label="SOR ONE">
       <div className="flex items-center leading-none">
         <span
           style={{ fontFamily: serifFamily }}
@@ -157,7 +157,7 @@ export function SorLogo({
           R
         </span>
         <span className="ml-2 font-mono text-[12px] font-bold tracking-[0.22em] text-slate-50">
-          OS
+          ONE
         </span>
       </div>
       <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.3em] text-[#C9A84C]">

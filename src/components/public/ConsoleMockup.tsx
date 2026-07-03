@@ -182,7 +182,7 @@ export function ConsoleMockup() {
                 letterSpacing: "-0.02em",
               }}
             >
-              SOR OS
+              SOR ONE
             </p>
             <p
               style={{
@@ -483,37 +483,6 @@ export function ConsoleMockup() {
               </p>
             </div>
 
-            <div
-              style={{
-                border: "1px solid var(--border-soft)",
-                borderRadius: 11,
-                background: "rgba(6,7,9,0.45)",
-                padding: "10px 12px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "9px",
-                  fontWeight: 700,
-                  letterSpacing: "0.12em",
-                  color: "var(--text-soft-2)",
-                  textTransform: "uppercase",
-                }}
-              >
-                Próximas entregas
-              </p>
-              <p
-                style={{
-                  fontSize: "10px",
-                  color: "var(--text-muted-2)",
-                  marginTop: 5,
-                  lineHeight: 1.5,
-                }}
-              >
-                AgendaFácil Lumière em integração. SOR OS redesign em andamento.
-              </p>
-            </div>
-
             <div style={{ display: "grid", gap: 7 }}>
               <span
                 style={{
@@ -554,37 +523,6 @@ export function ConsoleMockup() {
                   }}
                 />
                 CatalogPro B2B live
-              </span>
-            </div>
-
-            <div
-              style={{
-                border: "1px solid rgba(245,158,11,0.28)",
-                borderRadius: 11,
-                background: "rgba(245,158,11,0.06)",
-                padding: "10px 12px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "10px",
-                  color: "#f5b34a",
-                  lineHeight: 1.5,
-                  fontWeight: 500,
-                }}
-              >
-                SOR OS redesign aprovado. Implementação em andamento.
-              </p>
-              <span
-                style={{
-                  display: "inline-block",
-                  marginTop: 8,
-                  fontSize: "9px",
-                  fontWeight: 700,
-                  color: "var(--champagne)",
-                }}
-              >
-                Ver projetos →
               </span>
             </div>
           </aside>

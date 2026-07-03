@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/public/container";
 import { ProjectCard, type Project } from "@/components/public/project-card";
+import { siteUrl } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Projetos — Sistemas publicados e em produção",
@@ -15,11 +16,11 @@ export const metadata: Metadata = {
     "projetos Next.js React",
   ],
   openGraph: {
-    title: "Projetos em produção | SOR OS",
+    title: "Projetos em produção | SOR ONE",
     description:
       "Sistemas reais desenvolvidos para resolver problemas de negócios. Acesse e teste online.",
-    url: "https://sor-one-internal.vercel.app/projetos",
-    siteName: "SOR OS",
+    url: `${siteUrl}/projetos`,
+    siteName: "SOR ONE",
     locale: "pt_BR",
     type: "website",
   },

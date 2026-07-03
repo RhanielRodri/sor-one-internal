@@ -27,7 +27,7 @@ export function Header() {
       }}
     >
       <Container className="grid min-h-18 max-w-[92rem] grid-cols-[1fr_auto] items-center md:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" aria-label="SOR OS — Início" className="shrink-0">
+        <Link href="/" aria-label="SOR ONE — Início" className="shrink-0">
           <SorLogo variant="horizontal" />
         </Link>
         <PublicNav />

@@ -13,9 +13,10 @@ export function RevealManager() {
     ).matches;
 
     if (reduceMotion || !("IntersectionObserver" in window)) {
-      elements.forEach((el) => el.classList.add("visible"));
       return;
     }
+
+    elements.forEach((el) => el.classList.add("armed"));
 
     const observer = new IntersectionObserver(
       (entries) => {

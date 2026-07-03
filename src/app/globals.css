@@ -13,9 +13,9 @@
 
   --sor-petrol: #0ea5a4;
   --sor-petrol-deep: #0f3d56;
-  --sor-blue: #2563eb;
-  --sor-blue-hover: #1d4ed8;
-  --sor-blue-glow: rgba(37, 99, 235, 0.18);
+  --sor-blue: var(--sor-champagne);
+  --sor-blue-hover: var(--sor-champagne-hover);
+  --sor-blue-glow: rgba(201, 168, 106, 0.12);
   --sor-champagne: #C9A86A;
   --sor-champagne-light: #e8d9b8;
   --sor-champagne-hover: #D4B87A;
@@ -562,12 +562,17 @@ select {
 }
 
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal.armed {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.reveal.visible {
+.reveal.armed.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -609,12 +614,6 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
   .console-wrap,
   .status-pulse,
   .scroll-hint-arrow,

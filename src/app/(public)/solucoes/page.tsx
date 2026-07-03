@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/public/container";
 import { ServicesShowcase } from "@/components/public/services-showcase";
+import { siteUrl } from "@/lib/constants";
 import { getActiveServices, type PublicService } from "@/lib/services";
 import {
   staticServiceShowcase,
@@ -21,11 +22,11 @@ export const metadata: Metadata = {
     "freelancer Vila Velha ES",
   ],
   openGraph: {
-    title: "Soluções digitais para pequenos negócios | SOR OS",
+    title: "Soluções digitais para pequenos negócios | SOR ONE",
     description:
       "Sites, catálogos, agendamento e automações sob medida. Diagnóstico gratuito.",
-    url: "https://sor-one-internal.vercel.app/solucoes",
-    siteName: "SOR OS",
+    url: `${siteUrl}/solucoes`,
+    siteName: "SOR ONE",
     locale: "pt_BR",
     type: "website",
   },

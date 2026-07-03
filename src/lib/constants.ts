@@ -1,4 +1,7 @@
-export const SITE_NAME = "SOR OS";
+export const SITE_NAME = "SOR ONE";
+
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://sor-one.vercel.app";
 
 export const NAV_ITEMS = [
   { key: "home" as const, href: "/" },

@@ -126,7 +126,7 @@ export function Footer() {
           style={{ borderColor: "var(--border-soft)" }}
         >
           <p className="text-xs text-[var(--sor-text-soft)]">
-            © 2026 SOR OS Soluções Digitais. Todos os direitos reservados.
+            © 2026 SOR ONE Soluções Digitais. Todos os direitos reservados.
           </p>
           <div className="flex gap-5 text-xs text-[var(--sor-text-soft)]">
             <a
