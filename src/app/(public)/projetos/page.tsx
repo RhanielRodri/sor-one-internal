@@ -7,7 +7,7 @@ import { siteUrl } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Projetos — Sistemas publicados e em produção",
   description:
-    "AgendaFácil, CatalogPro B2B, MenuZap e Barber Prime: sistemas e sites publicados e acessíveis online. Desenvolvidos por freelancer em Vila Velha, ES para resolver problemas reais de negócios.",
+    "AgendaFácil, CatalogPro B2B, MesaFlow e Barber Prime: sistemas e sites publicados e acessíveis online. Desenvolvidos por freelancer em Vila Velha, ES para resolver problemas reais de negócios.",
   keywords: [
     "portfólio desenvolvedor",
     "sistema de agendamento",
@@ -48,7 +48,7 @@ const mainProjects: Project[] = [
   },
   {
     icon: "◇",
-    category: "Catálogo B2B",
+    category: "Catálogo de Vendas",
     name: "CatalogPro B2B",
     description:
       "Catálogo online onde o cliente pesquisa, monta o pedido e manda a cotação direto pelo WhatsApp.",
@@ -68,24 +68,24 @@ const mainProjects: Project[] = [
 const supportingProjects: Project[] = [
   {
     icon: "⚡",
-    category: "Cardápio Digital",
-    name: "MenuZap",
+    category: "Pedidos para Restaurante",
+    name: "MesaFlow",
     description:
-      "O cliente escolhe os itens, monta o pedido e envia tudo pronto pelo WhatsApp.",
-    demoUrl: "https://menuzap-cardapio-digital.vercel.app",
-    demoHost: "menuzap-cardapio-digital.vercel.app",
-    screenshot: "/screenshots/menuzap.png",
-    screenshotAlt: "Página inicial do MenuZap em funcionamento",
+      "Cliente monta o pedido e paga direto com você — sem passar pelo iFood, sem pagar comissão de aplicativo.",
+    demoUrl: "https://mesaflow-menu.vercel.app",
+    demoHost: "mesaflow-menu.vercel.app",
+    screenshot: "/screenshots/mesaflow.png",
+    screenshotAlt: "Página inicial do MesaFlow em funcionamento",
     highlights: [
-      "Carrinho de pedido",
-      "Pix e dinheiro",
-      "Pedido pelo WhatsApp",
-      "QR Code",
+      "Sem comissão de app",
+      "Pix, cartão ou dinheiro",
+      "Painel de pedidos",
+      "Aviso pelo WhatsApp",
     ],
   },
   {
     icon: "↗",
-    category: "Landing Page",
+    category: "Site para Barbearia",
     name: "Barber Prime",
     description:
       "Site profissional para apresentar serviços, preços, localização e facilitar o contato com a barbearia.",

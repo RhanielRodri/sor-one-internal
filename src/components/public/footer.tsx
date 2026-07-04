@@ -32,8 +32,8 @@ const columns: { title: string; links: FooterLink[] }[] = [
         external: true,
       },
       {
-        label: "MenuZap",
-        href: "https://menuzap-cardapio-digital.vercel.app",
+        label: "MesaFlow",
+        href: "https://mesaflow-menu.vercel.app",
         external: true,
       },
       { label: "Console", href: "/console" },

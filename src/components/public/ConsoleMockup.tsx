@@ -14,7 +14,7 @@ const navItems = [
 const projectCards = [
   { name: "AgendaFácil — Studio Cut", tag: "ONLINE" },
   { name: "CatalogPro B2B", tag: "ONLINE" },
-  { name: "MenuZap", tag: "ONLINE" },
+  { name: "MesaFlow", tag: "ONLINE" },
   { name: "Barber Prime", tag: "ONLINE" },
 ];
 

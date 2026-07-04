@@ -24,7 +24,7 @@ const stats = [
 const mobileDashboardProjects = [
   "AgendaFácil — Studio Cut",
   "CatalogPro B2B",
-  "MenuZap",
+  "MesaFlow",
   "Barber Prime",
 ];
 
