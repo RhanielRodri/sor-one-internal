@@ -7,7 +7,7 @@ import { siteUrl } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Projetos — Sistemas publicados e em produção",
   description:
-    "AgendaFácil, CatalogPro B2B, MesaFlow e Barber Prime: sistemas e sites publicados e acessíveis online. Desenvolvidos por freelancer em Vila Velha, ES para resolver problemas reais de negócios.",
+    "AgendaFácil (demos Studio Cut e Lumière), CatalogPro B2B, MesaFlow e Barber Prime: sistemas e sites publicados e acessíveis online. Desenvolvidos por freelancer em Vila Velha, ES para resolver problemas reais de negócios.",
   keywords: [
     "portfólio desenvolvedor",
     "sistema de agendamento",
@@ -26,23 +26,39 @@ export const metadata: Metadata = {
   },
 };
 
-const mainProjects: Project[] = [
+const projects: Project[] = [
   {
     icon: "◎",
-    category: "Sistema de Agendamento",
-    name: "AgendaFácil",
-    usedBy: "Studio Cut · Lumière",
+    category: "Agendamento · Barbearia",
+    name: "Studio Cut",
     description:
-      "Clientes agendam pelo celular em menos de 1 minuto. Sem ligação, sem grupo de WhatsApp.",
-    demoUrl: "https://agendafacil-sistema.vercel.app",
-    demoHost: "agendafacil-sistema.vercel.app",
-    screenshot: "/screenshots/agendafacil.png",
-    screenshotAlt: "Página inicial do AgendaFácil em funcionamento",
+      "O sistema AgendaFácil aplicado a uma barbearia: clientes agendam pelo celular em menos de 1 minuto, sem ligação nem grupo de WhatsApp.",
+    demoUrl: "https://agendafacil-sistema.vercel.app/demo/studio-cut",
+    demoHost: "agendafacil-sistema.vercel.app/demo/studio-cut",
+    screenshot: "/screenshots/studio-cut.png",
+    screenshotAlt: "Demo Studio Cut do AgendaFácil em funcionamento",
     eager: true,
     highlights: [
       "Agendamento online",
       "Escolha de profissional",
       "Horários disponíveis",
+      "Painel administrativo",
+    ],
+  },
+  {
+    icon: "◎",
+    category: "Agendamento · Clínica Estética",
+    name: "Lumière",
+    description:
+      "O mesmo sistema AgendaFácil para uma clínica estética: procedimentos agendados online, com escolha de horário e painel administrativo.",
+    demoUrl: "https://agendafacil-sistema.vercel.app/demo/lumiere",
+    demoHost: "agendafacil-sistema.vercel.app/demo/lumiere",
+    screenshot: "/screenshots/lumiere.png",
+    screenshotAlt: "Demo Lumière do AgendaFácil em funcionamento",
+    highlights: [
+      "Agendamento de procedimentos",
+      "Escolha de horário",
+      "Confirmação online",
       "Painel administrativo",
     ],
   },
@@ -63,9 +79,6 @@ const mainProjects: Project[] = [
       "Painel administrativo",
     ],
   },
-];
-
-const supportingProjects: Project[] = [
   {
     icon: "⚡",
     category: "Pedidos para Restaurante",
@@ -130,18 +143,8 @@ export default function ProjectsPage() {
 
       <section className="py-16 sm:py-22">
         <Container>
-          <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-2">
-            {mainProjects.map((project, index) => (
-              <ProjectCard
-                key={project.name}
-                project={project}
-                className={index % 2 === 0 ? "reveal reveal-left" : "reveal reveal-right"}
-              />
-            ))}
-          </div>
-
-          <div className="mt-5 grid grid-cols-1 items-stretch gap-5 md:grid-cols-2">
-            {supportingProjects.map((project, index) => (
+          <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project, index) => (
               <ProjectCard
                 key={project.name}
                 project={project}
