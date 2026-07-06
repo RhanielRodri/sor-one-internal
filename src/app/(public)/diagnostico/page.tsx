@@ -25,7 +25,7 @@ export default function DiagnosticPage() {
       <Container className="relative py-10 sm:py-14 lg:py-18">
         <div className="mx-auto max-w-4xl">
           <DiagnosticForm />
-          <p className="mt-5 text-center text-xs text-soft">
+          <p className="reveal mt-5 text-center text-xs text-soft">
             Gratuito, sem compromisso e com recomendação baseada no seu cenário.
           </p>
         </div>

@@ -62,10 +62,16 @@ function BrowserMockup({
   );
 }
 
-export function ProjectCard({ project }: { project: Project }) {
+export function ProjectCard({
+  project,
+  className = "",
+}: {
+  project: Project;
+  className?: string;
+}) {
   return (
     <article
-      className="group flex flex-col overflow-hidden rounded-[1.75rem] border p-6 transition duration-300 hover:-translate-y-1.5"
+      className={`group flex flex-col overflow-hidden rounded-[1.75rem] border p-6 transition duration-300 hover:-translate-y-1.5 ${className}`}
       style={{
         borderColor: "var(--border-soft)",
         background: "var(--card-deep)",

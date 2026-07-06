@@ -570,11 +570,33 @@ select {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-left.armed {
+  transform: translateX(-32px);
+}
+
+.reveal-right.armed {
+  transform: translateX(32px);
+}
+
+.reveal-scale.armed {
+  transform: scale(0.94) translateY(16px);
 }
 
 .reveal.armed.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.reveal-left.armed.visible,
+.reveal-right.armed.visible {
+  transform: translateX(0);
+}
+
+.reveal-scale.armed.visible {
+  transform: scale(1) translateY(0);
 }
 
 @keyframes float-up-down {

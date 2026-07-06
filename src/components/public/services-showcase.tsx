@@ -11,11 +11,14 @@ export function ServicesShowcase({
   const Heading = headingLevel;
 
   return (
-    <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
+    <div
+      className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+      data-reveal-group
+    >
       {items.map((item) => (
         <article
           key={item.name}
-          className="home-service-card group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-[var(--sor-border-main)] p-6 transition duration-300 hover:border-[var(--sor-border-champagne)]"
+          className="reveal home-service-card group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-[var(--sor-border-main)] p-6 transition duration-300 hover:border-[var(--sor-border-champagne)]"
         >
             <div className="flex items-center gap-3">
               <span className="service-icon-shell grid h-11 w-11 place-items-center rounded-xl border border-[rgba(201,168,106,0.14)] text-lg text-[var(--sor-champagne)]">

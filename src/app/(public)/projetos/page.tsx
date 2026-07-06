@@ -131,14 +131,22 @@ export default function ProjectsPage() {
       <section className="py-16 sm:py-22">
         <Container>
           <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-2">
-            {mainProjects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
+            {mainProjects.map((project, index) => (
+              <ProjectCard
+                key={project.name}
+                project={project}
+                className={index % 2 === 0 ? "reveal reveal-left" : "reveal reveal-right"}
+              />
             ))}
           </div>
 
           <div className="mt-5 grid grid-cols-1 items-stretch gap-5 md:grid-cols-2">
-            {supportingProjects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
+            {supportingProjects.map((project, index) => (
+              <ProjectCard
+                key={project.name}
+                project={project}
+                className={index % 2 === 0 ? "reveal reveal-left" : "reveal reveal-right"}
+              />
             ))}
           </div>
         </Container>
@@ -146,7 +154,7 @@ export default function ProjectsPage() {
 
       <section className="pb-20 sm:pb-24">
         <Container>
-          <div className="relative overflow-hidden rounded-[2rem] border border-[var(--champagne-border)] bg-[linear-gradient(135deg,var(--card-elevated),var(--card-deep))] p-8 text-center sm:p-12">
+          <div className="reveal relative overflow-hidden rounded-[2rem] border border-[var(--champagne-border)] bg-[linear-gradient(135deg,var(--card-elevated),var(--card-deep))] p-8 text-center sm:p-12">
             <h2 className="text-3xl font-black tracking-[-0.04em] sm:text-4xl">
               Quer um sistema assim para o seu negócio?
             </h2>

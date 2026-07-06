@@ -119,6 +119,24 @@ const catalog: CatalogEntry[] = [
     ],
   },
   {
+    match: ["tráfego", "trafego", "ads"],
+    icon: "▲",
+    category: "Marketing",
+    description:
+      "Campanhas de Meta e Google Ads gerenciadas para trazer cliente todo mês, com relatório mensal e regras claras de quando pausar ou escalar.",
+    price: "Sob consulta",
+    prazo: "Recorrente mensal",
+    revisoes: "Otimização contínua",
+    suporte: "Incluso",
+    includes: [
+      "Configuração de campanhas Meta e Google Ads",
+      "Segmentação local e por intenção de busca",
+      "Relatório mensal com resultado em linguagem simples",
+      "Regras definidas de pausar e escalar anúncios",
+      "Acompanhamento de custo por lead",
+    ],
+  },
+  {
     match: ["automaç", "automacao", "ia"],
     icon: "⟳",
     category: "Automação com IA",
@@ -199,6 +217,7 @@ export const staticServiceShowcase: ServiceShowcaseItem[] = [
   "Catálogo Digital B2B/B2C",
   "Agendamento Online",
   "Dashboard Administrativo",
+  "Gestão de Tráfego Pago",
   "Automações com IA",
 ].map((name) => {
   const entry = findEntry(name);
