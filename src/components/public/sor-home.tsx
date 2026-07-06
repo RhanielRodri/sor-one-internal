@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
+import { SorLogo } from "@/components/ui/SorLogo";
 import type { ServiceShowcaseItem } from "@/data/service-catalog";
 
 const stats = [
@@ -251,22 +252,18 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
 
       <header data-header className="sor-header">
         <div className="sor-header-inner">
-          <a href="#top" className="sor-brand">
-            <span className="sor-logo">
-              <span className="sor-logo-dot" />
-            </span>
-            <span className="sor-brand-text">
-              <span className="sor-brand-name">SOR ONE</span>
-              <span className="sor-brand-sub">SOLUÇÕES DIGITAIS</span>
-            </span>
+          <a href="/" aria-label="SOR ONE — Início" className="sor-brand-link">
+            <SorLogo variant="horizontal" />
           </a>
           <nav className="sor-nav">
             <a className="sor-navlink" href="#problemas">Problemas</a>
             <a className="sor-navlink" href="#solucoes">Soluções</a>
             <a className="sor-navlink" href="#processo">Processo</a>
             <a className="sor-navlink" href="/projetos">Projetos</a>
-            <a data-magnetic className="sor-btn sor-btn-primary sor-btn-sm" href="/diagnostico">Diagnóstico</a>
           </nav>
+          <div className="sor-header-actions">
+            <a data-magnetic className="sor-btn sor-btn-primary sor-btn-sm" href="/diagnostico">Diagnóstico</a>
+          </div>
         </div>
       </header>
 
@@ -548,22 +545,22 @@ const sorStyles = `
 @media (prefers-reduced-motion: reduce){.sor-anim{animation:none !important;}}
 
 .sor-header{position:sticky;top:0;z-index:50;border-bottom:1px solid #181e27;background:rgba(6,7,9,0.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);transition:background .3s ease,border-color .3s ease;}
-.sor-header-inner{max-width:1280px;margin:0 auto;padding:0 24px;min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.sor-header-inner{max-width:1280px;margin:0 auto;padding:0 24px;min-height:70px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;}
+.sor-brand-link{justify-self:start;display:inline-flex;align-items:center;text-decoration:none;}
 .sor-brand{display:flex;align-items:center;gap:11px;text-decoration:none;}
 .sor-logo{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(150deg,#C9A86A,#8B6B2A);box-shadow:0 4px 16px rgba(201,168,106,.28);}
 .sor-logo.sm{width:26px;height:26px;border-radius:8px;box-shadow:none;}
 .sor-logo-dot{width:11px;height:11px;background:#060709;transform:rotate(45deg);border-radius:2px;}
 .sor-logo.sm .sor-logo-dot{width:9px;height:9px;}
-.sor-brand-text{display:flex;flex-direction:column;line-height:1;}
 .sor-brand-name{font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:15px;letter-spacing:-0.02em;color:#F0EDEA;}
-.sor-brand-sub{font-family:ui-monospace,monospace;font-size:8px;letter-spacing:0.28em;color:#4A4D56;margin-top:3px;}
-.sor-nav{display:flex;align-items:center;gap:8px;}
+.sor-nav{display:flex;align-items:center;justify-content:center;gap:8px;}
+.sor-header-actions{display:flex;align-items:center;justify-self:end;}
 .sor-navlink{padding:8px 12px;font-size:13px;font-weight:600;color:#9A9DA6;text-decoration:none;border-radius:8px;transition:color .2s,background .2s;}
 .sor-navlink:hover{color:#F0EDEA;background:rgba(201,168,106,0.06);}
 @media (max-width:640px){.sor-navlink{display:none;}}
 
 .sor-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:14px 24px;font-size:14px;font-family:var(--font-manrope),sans-serif;font-weight:700;text-decoration:none;transition:box-shadow .3s,transform .2s,border-color .3s;}
-.sor-btn-sm{padding:9px 18px;border-radius:10px;font-size:13px;margin-left:8px;}
+.sor-btn-sm{padding:9px 18px;border-radius:10px;font-size:13px;}
 .sor-btn-lg{padding:15px 28px;}
 .sor-btn-block{width:100%;padding:11px 16px;}
 .sor-btn-primary{background:#C9A86A;color:#060709;}

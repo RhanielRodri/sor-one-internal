@@ -24,7 +24,7 @@ export function PublicNav() {
     <>
       <nav
         aria-label="Navegação principal"
-        className="hidden items-center gap-8 md:flex"
+        className="col-start-2 hidden items-center justify-center gap-8 md:flex"
       >
         {NAV_LINKS.map((item) => {
           const isActive =
@@ -53,56 +53,59 @@ export function PublicNav() {
             </Link>
           );
         })}
+      </nav>
+
+      <div className="col-start-3 flex items-center justify-self-end">
         <Link
           href="/diagnostico"
           style={ctaStyle}
-          className="inline-flex items-center rounded-xl px-4 py-2.5 text-sm transition hover:opacity-90"
+          className="hidden items-center rounded-xl px-4 py-2.5 text-sm transition hover:opacity-90 md:inline-flex"
         >
           Solicitar diagnóstico
         </Link>
-      </nav>
 
-      <details className="group relative md:hidden">
-        <summary
-          aria-label="Abrir menu"
-          className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-white/10 bg-white/[0.025] text-[var(--sor-text)] marker:hidden"
-        >
-          <span className="grid gap-1.5">
-            <span className="h-px w-5 bg-current transition group-open:translate-y-[7px] group-open:rotate-45" />
-            <span className="h-px w-5 bg-current transition group-open:opacity-0" />
-            <span className="h-px w-5 bg-current transition group-open:-translate-y-[7px] group-open:-rotate-45" />
-          </span>
-        </summary>
-        <nav
-          aria-label="Navegação mobile"
-          className="absolute right-0 top-14 z-50 grid min-w-56 gap-1 rounded-2xl border border-[var(--border-soft)] bg-[rgba(6,7,9,0.97)] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-        >
-          {NAV_LINKS.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActive ? "page" : undefined}
-                className={`rounded-xl px-4 py-3 text-sm font-medium hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)] ${
-                  isActive ? "text-[var(--sor-champagne)]" : "text-[#9A9DA6]"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <Link
-            href="/diagnostico"
-            style={ctaStyle}
-            className="mt-1 rounded-xl px-4 py-3 text-center text-sm"
+        <details className="group relative md:hidden">
+          <summary
+            aria-label="Abrir menu"
+            className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-white/10 bg-white/[0.025] text-[var(--sor-text)] marker:hidden"
           >
-            Solicitar diagnóstico
-          </Link>
-        </nav>
-      </details>
+            <span className="grid gap-1.5">
+              <span className="h-px w-5 bg-current transition group-open:translate-y-[7px] group-open:rotate-45" />
+              <span className="h-px w-5 bg-current transition group-open:opacity-0" />
+              <span className="h-px w-5 bg-current transition group-open:-translate-y-[7px] group-open:-rotate-45" />
+            </span>
+          </summary>
+          <nav
+            aria-label="Navegação mobile"
+            className="absolute right-0 top-14 z-50 grid min-w-56 gap-1 rounded-2xl border border-[var(--border-soft)] bg-[rgba(6,7,9,0.97)] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+          >
+            {NAV_LINKS.map((item) => {
+              const isActive =
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`rounded-xl px-4 py-3 text-sm font-medium hover:bg-[rgba(201,168,106,0.05)] hover:text-[var(--sor-champagne)] ${
+                    isActive ? "text-[var(--sor-champagne)]" : "text-[#9A9DA6]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/diagnostico"
+              style={ctaStyle}
+              className="mt-1 rounded-xl px-4 py-3 text-center text-sm"
+            >
+              Solicitar diagnóstico
+            </Link>
+          </nav>
+        </details>
+      </div>
     </>
   );
 }

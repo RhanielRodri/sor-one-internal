@@ -26,12 +26,15 @@ export function Header() {
         borderColor: "var(--border-soft)",
       }}
     >
-      <Container className="grid min-h-18 max-w-[92rem] grid-cols-[1fr_auto] items-center md:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" aria-label="SOR ONE — Início" className="shrink-0">
+      <Container className="grid min-h-18 max-w-[92rem] grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <Link
+          href="/"
+          aria-label="SOR ONE — Início"
+          className="col-start-1 shrink-0 justify-self-start"
+        >
           <SorLogo variant="horizontal" />
         </Link>
         <PublicNav />
-        <span aria-hidden="true" className="hidden md:block" />
       </Container>
     </header>
   );
