@@ -13,7 +13,7 @@ const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Produto",
     links: [
-      { label: "Soluções", href: "/solucoes" },
+      { label: "Soluções", href: "/#solucoes" },
       { label: "Projetos", href: "/projetos" },
       { label: "Diagnóstico", href: "/diagnostico" },
     ],
@@ -42,11 +42,16 @@ const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Empresa",
     links: [
-      { label: "Sobre", href: "/contato" },
-      { label: "Contato", href: "/contato" },
+      { label: "Sobre", href: "/#problemas" },
+      { label: "Contato", href: "/#cta" },
       {
         label: "GitHub",
         href: "https://github.com/RhanielRodri",
+        external: true,
+      },
+      {
+        label: "Instagram",
+        href: "https://instagram.com/soroneoficial",
         external: true,
       },
       { label: "WhatsApp", href: SOR_WHATSAPP_URL, external: true },
@@ -55,7 +60,7 @@ const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Suporte",
     links: [
-      { label: "Central de ajuda", href: "/contato" },
+      { label: "Central de ajuda", href: "/#cta" },
       { label: "WhatsApp", href: SOR_WHATSAPP_URL, external: true },
       { label: "Status", href: "/projetos" },
     ],
@@ -138,6 +143,14 @@ export function Footer() {
               GitHub
             </a>
             <a
+              href="https://instagram.com/soroneoficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[var(--sor-champagne)]"
+            >
+              Instagram
+            </a>
+            <a
               href={SOR_WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
@@ -145,7 +158,7 @@ export function Footer() {
             >
               WhatsApp
             </a>
-            <Link href="/contato" className="hover:text-[var(--sor-champagne)]">
+            <Link href="/#cta" className="hover:text-[var(--sor-champagne)]">
               Contato
             </Link>
           </div>
