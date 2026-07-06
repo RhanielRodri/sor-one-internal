@@ -117,10 +117,6 @@ export const DIAGNOSTIC_SERVICES: DiagnosticService[] = [
   },
 ];
 
-export function getDiagnosticService(slug?: string | null) {
-  return DIAGNOSTIC_SERVICES.find((service) => service.slug === slug) ?? DIAGNOSTIC_SERVICES[0];
-}
-
 export function getServiceSlug(name: string) {
   const normalized = name
     .normalize("NFD")

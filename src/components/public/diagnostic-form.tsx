@@ -147,16 +147,12 @@ const recommendations: Record<RecommendationKey, Recommendation> = {
 
 type ContactData = {
   nome: string;
-  empresa: string;
   whatsapp: string;
-  email: string;
 };
 
 const initialContact: ContactData = {
   nome: "",
-  empresa: "",
   whatsapp: "",
-  email: "",
 };
 
 function getRecommendation(
@@ -184,6 +180,35 @@ function getRecommendation(
   return investment === "Até R$700"
     ? recommendations.presence
     : recommendations.site;
+}
+
+function buildProblemText(params: {
+  pains: string[];
+  businessType?: string;
+  currentSituation?: string;
+  priority?: string;
+  investment?: string;
+  recommendationName?: string;
+}) {
+  const sections = [`DORES IDENTIFICADAS:\n${params.pains.join("\n")}`];
+
+  if (params.businessType) {
+    sections.push(`TIPO DE NEGÓCIO:\n${params.businessType}`);
+  }
+  if (params.currentSituation) {
+    sections.push(`SITUAÇÃO ATUAL:\n${params.currentSituation}`);
+  }
+  if (params.priority) {
+    sections.push(`PRIORIDADE:\n${params.priority}`);
+  }
+  if (params.investment) {
+    sections.push(`INVESTIMENTO:\n${params.investment}`);
+  }
+  if (params.recommendationName) {
+    sections.push(`RECOMENDAÇÃO:\n${params.recommendationName}`);
+  }
+
+  return sections.join("\n\n");
 }
 
 function ChoiceGrid({
@@ -241,20 +266,28 @@ function ChoiceGrid({
 export function DiagnosticForm() {
   const [step, setStep] = useState(0);
   const [selectedPains, setSelectedPains] = useState<string[]>([]);
+  const [contact, setContact] = useState<ContactData>(initialContact);
+  const [leadId, setLeadId] = useState<string | number | null>(null);
   const [businessType, setBusinessType] = useState("");
   const [currentSituation, setCurrentSituation] = useState("");
   const [priority, setPriority] = useState("");
   const [investment, setInvestment] = useState("");
-  const [showContact, setShowContact] = useState(false);
-  const [contact, setContact] = useState<ContactData>(initialContact);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const recommendation = getRecommendation(priority, investment);
-  const stepSelections = [businessType, currentSituation, priority, investment];
+  const qualificationValues = [businessType, currentSituation, priority, investment];
+  const hasQualificationAnswers = qualificationValues.some(Boolean);
+
   const canContinue =
-    step === 0 ? selectedPains.length > 0 : Boolean(stepSelections[step - 1]);
+    step === 0
+      ? selectedPains.length > 0
+      : step === 1
+        ? Boolean(contact.nome.trim() && contact.whatsapp.trim())
+        : step >= 2 && step <= 5
+          ? Boolean(qualificationValues[step - 2])
+          : true;
 
   function togglePain(pain: string) {
     setSelectedPains((current) =>
@@ -268,67 +301,125 @@ export function DiagnosticForm() {
     setContact((current) => ({ ...current, [field]: value }));
   }
 
-  function goNext() {
-    if (!canContinue) return;
-    setError("");
-    setStep((current) => Math.min(current + 1, 5));
-  }
-
-  function goBack() {
-    setError("");
-    setShowContact(false);
-    setStep((current) => Math.max(current - 1, 0));
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!contact.nome.trim() || !contact.whatsapp.trim()) {
-      setError("Informe seu nome e WhatsApp para solicitar o diagnóstico.");
-      return;
-    }
-
+  async function captureLead() {
     setIsSubmitting(true);
     setError("");
 
-    const problem = [
-      `DORES IDENTIFICADAS:\n${selectedPains.join("\n")}`,
-      `TIPO DE NEGÓCIO:\n${businessType}`,
-      `SITUAÇÃO ATUAL:\n${currentSituation}`,
-      `PRIORIDADE:\n${priority}`,
-      `INVESTIMENTO:\n${investment}`,
-      `RECOMENDAÇÃO:\n${recommendation.name}`,
-    ].join("\n\n");
-
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...contact,
-          segmento: recommendation.name,
-          problema: problem,
-          urgencia: priority,
-          orcamento: investment,
-          origem: "site",
-        }),
-      });
-      const result = (await response.json()) as { error?: string };
+      if (leadId) {
+        const response = await fetch(`/api/leads/${leadId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: contact.nome,
+            whatsapp: contact.whatsapp,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(result.error || "Não foi possível enviar o diagnóstico.");
+        if (!response.ok) {
+          const result = (await response.json()) as { error?: string };
+          throw new Error(result.error || "Não foi possível atualizar seus dados.");
+        }
+      } else {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: contact.nome,
+            whatsapp: contact.whatsapp,
+            problema: buildProblemText({ pains: selectedPains }),
+            origem: "site",
+          }),
+        });
+        const result = (await response.json()) as { id?: string; error?: string };
+
+        if (!response.ok || !result.id) {
+          throw new Error(result.error || "Não foi possível salvar seus dados.");
+        }
+
+        setLeadId(result.id);
       }
 
-      setSuccess(true);
+      setStep(2);
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : "Não foi possível enviar o diagnóstico.",
+          : "Não foi possível salvar seus dados.",
       );
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  async function finishDiagnostic() {
+    setError("");
+
+    if (!hasQualificationAnswers || !leadId) {
+      setSuccess(true);
+      return;
+    }
+
+    setIsFinishing(true);
+
+    const recommendationName =
+      priority && investment ? getRecommendation(priority, investment).name : undefined;
+
+    try {
+      const response = await fetch(`/api/leads/${leadId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          segmento: recommendationName,
+          problema: buildProblemText({
+            pains: selectedPains,
+            businessType,
+            currentSituation,
+            priority,
+            investment,
+            recommendationName,
+          }),
+          urgencia: priority,
+          orcamento: investment,
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json()) as { error?: string };
+        console.error(result.error || "Não foi possível atualizar o diagnóstico.");
+      }
+    } catch (caughtError) {
+      console.error(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Falha ao atualizar diagnóstico",
+      );
+    } finally {
+      setIsFinishing(false);
+      setSuccess(true);
+    }
+  }
+
+  function goNext() {
+    if (!canContinue) return;
+
+    if (step === 1) {
+      captureLead();
+      return;
+    }
+
+    setError("");
+    setStep((current) => Math.min(current + 1, 6));
+  }
+
+  function goBack() {
+    setError("");
+    setStep((current) => Math.max(current - 1, 0));
+  }
+
+  async function handleFinishSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await finishDiagnostic();
   }
 
   if (success) {
@@ -361,7 +452,7 @@ export function DiagnosticForm() {
 
   return (
     <Card className="glass-panel min-w-0 overflow-hidden rounded-[2rem] p-0">
-      {step >= 1 && step <= 4 ? (
+      {step >= 1 && step <= 5 ? (
         <div className="border-b border-[var(--sor-border-main)] px-5 py-5 sm:px-8">
           <div className="flex items-center justify-between gap-4">
             <button
@@ -372,13 +463,13 @@ export function DiagnosticForm() {
               ← Voltar
             </button>
             <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--sor-champagne)]">
-              Etapa {step}/4
+              Etapa {step}/5
             </span>
           </div>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/6">
             <div
               className="h-full rounded-full bg-[linear-gradient(90deg,var(--sor-blue),var(--sor-champagne))] transition-[width] duration-300"
-              style={{ width: `${step * 25}%` }}
+              style={{ width: `${step * 20}%` }}
             />
           </div>
         </div>
@@ -439,15 +530,71 @@ export function DiagnosticForm() {
         ) : null}
 
         {step === 1 ? (
-          <ChoiceGrid
-            label="Qual é o seu tipo de negócio?"
-            options={businessTypes}
-            value={businessType}
-            onChange={setBusinessType}
-          />
+          <div>
+            <h2 className="text-2xl font-black tracking-[-0.03em]">
+              Como posso falar com você?
+            </h2>
+            <p className="mt-2 text-sm text-muted">
+              Só preciso do seu nome e WhatsApp pra te enviar a análise.
+            </p>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <Input
+                id="nome"
+                label="Nome"
+                placeholder="Seu nome"
+                required
+                value={contact.nome}
+                onChange={(event) => updateContact("nome", event.target.value)}
+              />
+              <Input
+                id="whatsapp"
+                label="WhatsApp"
+                placeholder="(27) 99999-9999"
+                inputMode="tel"
+                required
+                value={contact.whatsapp}
+                onChange={(event) =>
+                  updateContact("whatsapp", event.target.value)
+                }
+              />
+            </div>
+            {error ? (
+              <p
+                role="alert"
+                className="mt-5 rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300"
+              >
+                {error}
+              </p>
+            ) : null}
+            <Button
+              type="button"
+              disabled={!canContinue || isSubmitting}
+              onClick={goNext}
+              className="mt-8 w-full sm:w-auto"
+            >
+              {isSubmitting ? "Enviando..." : "Continuar"}
+            </Button>
+          </div>
         ) : null}
 
         {step === 2 ? (
+          <div>
+            <p className="text-sm font-semibold text-[var(--sor-champagne)]">
+              Quer que eu já chegue com uma ideia? Responda mais 4 perguntas
+              rápidas (30s).
+            </p>
+            <div className="mt-5">
+              <ChoiceGrid
+                label="Qual é o seu tipo de negócio?"
+                options={businessTypes}
+                value={businessType}
+                onChange={setBusinessType}
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {step === 3 ? (
           <ChoiceGrid
             label="Qual é a sua situação atual?"
             options={currentSituations}
@@ -457,7 +604,7 @@ export function DiagnosticForm() {
           />
         ) : null}
 
-        {step === 3 ? (
+        {step === 4 ? (
           <ChoiceGrid
             label="Qual é a sua prioridade agora?"
             options={priorities}
@@ -466,7 +613,7 @@ export function DiagnosticForm() {
           />
         ) : null}
 
-        {step === 4 ? (
+        {step === 5 ? (
           <ChoiceGrid
             label="Quanto pretende investir neste momento?"
             options={investments}
@@ -476,16 +623,24 @@ export function DiagnosticForm() {
           />
         ) : null}
 
-        {step >= 1 && step <= 4 ? (
-          <div className="mt-8 flex justify-end border-t border-[var(--sor-border-main)] pt-5">
+        {step >= 2 && step <= 5 ? (
+          <div className="mt-8 flex flex-col gap-4 border-t border-[var(--sor-border-main)] pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <button
+              type="button"
+              onClick={finishDiagnostic}
+              disabled={isFinishing}
+              className="text-left text-sm font-bold text-muted underline-offset-4 transition hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sor-champagne)]"
+            >
+              {isFinishing ? "Finalizando..." : "Pular perguntas e finalizar agora"}
+            </button>
             <Button type="button" disabled={!canContinue} onClick={goNext}>
-              {step === 4 ? "Ver recomendação" : "Continuar"}
+              {step === 5 ? "Ver recomendação" : "Continuar"}
             </Button>
           </div>
         ) : null}
 
-        {step === 5 ? (
-          <div aria-live="polite">
+        {step === 6 ? (
+          <form onSubmit={handleFinishSubmit} aria-live="polite">
             <button
               type="button"
               onClick={goBack}
@@ -497,23 +652,23 @@ export function DiagnosticForm() {
               Solução recomendada
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] sm:text-4xl">
-              {recommendation.name}
+              {getRecommendation(priority, investment).name}
             </h2>
             <p className="mt-3 max-w-2xl leading-7 text-muted">
-              {recommendation.description}
+              {getRecommendation(priority, investment).description}
             </p>
 
             <div className="mt-7 rounded-[1.5rem] border border-[var(--sor-border-champagne)] bg-[var(--sor-bg-soft)] p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span className="rounded-full border border-[var(--sor-border-main)] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-soft">
-                  {recommendation.category}
+                  {getRecommendation(priority, investment).category}
                 </span>
                 <strong className="text-[var(--sor-champagne)]">
-                  {recommendation.price}
+                  {getRecommendation(priority, investment).price}
                 </strong>
               </div>
               <ul className="mt-6 grid gap-3 text-sm text-muted">
-                {recommendation.features.map((feature) => (
+                {getRecommendation(priority, investment).features.map((feature) => (
                   <li key={feature} className="flex gap-2">
                     <span className="text-[var(--sor-champagne)]">✓</span>
                     {feature}
@@ -522,9 +677,9 @@ export function DiagnosticForm() {
               </ul>
               <div className="mt-6 grid grid-cols-3 gap-2 rounded-2xl border border-[var(--sor-border-main)] bg-black/10 p-3 text-center">
                 {[
-                  ["Prazo", recommendation.prazo],
-                  ["Revisões", recommendation.revisoes],
-                  ["Suporte", recommendation.suporte],
+                  ["Prazo", getRecommendation(priority, investment).prazo],
+                  ["Revisões", getRecommendation(priority, investment).revisoes],
+                  ["Suporte", getRecommendation(priority, investment).suporte],
                 ].map(([label, value]) => (
                   <div key={label}>
                     <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-soft">
@@ -536,81 +691,27 @@ export function DiagnosticForm() {
               </div>
             </div>
 
-            {!showContact ? (
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Button type="button" onClick={() => setShowContact(true)}>
-                  Solicitar diagnóstico gratuito
-                </Button>
-                <Link
-                  href="/solucoes"
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[var(--sor-border-main)] px-5 py-3 text-sm font-bold text-muted transition hover:border-[var(--sor-border-champagne)] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sor-champagne)]"
-                >
-                  Ver todas as soluções →
-                </Link>
-              </div>
-            ) : (
-              <form
-                className="mt-8 grid gap-5 border-t border-[var(--sor-border-main)] pt-7"
-                onSubmit={handleSubmit}
+            {error ? (
+              <p
+                role="alert"
+                className="mt-5 rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300"
               >
-                <div>
-                  <h3 className="text-xl font-black">Como posso falar com você?</h3>
-                  <p className="mt-2 text-sm text-muted">
-                    Envie seus dados para receber uma análise sem compromisso.
-                  </p>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Input
-                    id="nome"
-                    label="Nome"
-                    placeholder="Seu nome"
-                    required
-                    value={contact.nome}
-                    onChange={(event) => updateContact("nome", event.target.value)}
-                  />
-                  <Input
-                    id="whatsapp"
-                    label="WhatsApp"
-                    placeholder="(27) 99999-9999"
-                    inputMode="tel"
-                    required
-                    value={contact.whatsapp}
-                    onChange={(event) =>
-                      updateContact("whatsapp", event.target.value)
-                    }
-                  />
-                  <Input
-                    id="empresa"
-                    label="Empresa"
-                    placeholder="Nome do negócio"
-                    value={contact.empresa}
-                    onChange={(event) =>
-                      updateContact("empresa", event.target.value)
-                    }
-                  />
-                  <Input
-                    id="email"
-                    type="email"
-                    label="E-mail"
-                    placeholder="voce@email.com"
-                    value={contact.email}
-                    onChange={(event) => updateContact("email", event.target.value)}
-                  />
-                </div>
-                {error ? (
-                  <p
-                    role="alert"
-                    className="rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300"
-                  >
-                    {error}
-                  </p>
-                ) : null}
-                <Button type="submit" disabled={isSubmitting} className="w-full sm:w-fit">
-                  {isSubmitting ? "Enviando..." : "Enviar diagnóstico gratuito"}
-                </Button>
-              </form>
-            )}
-          </div>
+                {error}
+              </p>
+            ) : null}
+
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Button type="submit" disabled={isFinishing}>
+                {isFinishing ? "Finalizando..." : "Concluir diagnóstico"}
+              </Button>
+              <Link
+                href="/#solucoes"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[var(--sor-border-main)] px-5 py-3 text-sm font-bold text-muted transition hover:border-[var(--sor-border-champagne)] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sor-champagne)]"
+              >
+                Ver todas as soluções →
+              </Link>
+            </div>
+          </form>
         ) : null}
       </div>
     </Card>

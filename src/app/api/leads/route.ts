@@ -3,9 +3,7 @@ import { getSupabaseClient } from "@/lib/supabase/client";
 
 type LeadRequest = {
   nome?: unknown;
-  empresa?: unknown;
   whatsapp?: unknown;
-  email?: unknown;
   segmento?: unknown;
   problema?: unknown;
   urgencia?: unknown;
@@ -42,9 +40,7 @@ export async function POST(request: Request) {
 
   const lead = {
     nome,
-    empresa: getText(body.empresa) || null,
     whatsapp,
-    email: getText(body.email) || null,
     segmento: getText(body.segmento) || null,
     problema,
     urgencia: getText(body.urgencia) || null,
@@ -55,10 +51,14 @@ export async function POST(request: Request) {
 
   try {
     const supabase = getSupabaseClient();
-    const { error } = await supabase.from("leads").insert(lead);
+    const { data, error } = await supabase
+      .from("leads")
+      .insert(lead)
+      .select("id")
+      .single();
 
-    if (error) {
-      console.error("Falha ao inserir lead no Supabase:", error.message);
+    if (error || !data) {
+      console.error("Falha ao inserir lead no Supabase:", error?.message);
       return NextResponse.json(
         { error: "Não foi possível salvar o diagnóstico. Tente novamente." },
         { status: 500 },
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { message: "Diagnóstico enviado com sucesso." },
+      { id: data.id, message: "Diagnóstico enviado com sucesso." },
       { status: 201 },
     );
   } catch (error) {
