@@ -35,29 +35,44 @@ export async function PATCH(
     );
   }
 
-  const update: Record<string, string | null> = {};
+  const nome = getText(body.nome);
+  const whatsapp = getText(body.whatsapp);
+  const problema = getText(body.problema);
 
-  if (body.nome !== undefined) update.nome = getText(body.nome);
-  if (body.whatsapp !== undefined) update.whatsapp = getText(body.whatsapp);
-  if (body.problema !== undefined) update.problema = getText(body.problema);
-  if (body.segmento !== undefined) update.segmento = getText(body.segmento) || null;
-  if (body.urgencia !== undefined) update.urgencia = getText(body.urgencia) || null;
-  if (body.orcamento !== undefined) update.orcamento = getText(body.orcamento) || null;
+  const hasAnyField =
+    body.nome !== undefined ||
+    body.whatsapp !== undefined ||
+    body.problema !== undefined ||
+    body.segmento !== undefined ||
+    body.urgencia !== undefined ||
+    body.orcamento !== undefined;
 
-  if (update.nome === "" || update.whatsapp === "" || update.problema === "") {
+  if (!hasAnyField) {
+    return NextResponse.json({ error: "Nenhum dado para atualizar." }, { status: 400 });
+  }
+
+  if (
+    (body.nome !== undefined && !nome) ||
+    (body.whatsapp !== undefined && !whatsapp) ||
+    (body.problema !== undefined && !problema)
+  ) {
     return NextResponse.json(
       { error: "Nome, WhatsApp e problema não podem ficar vazios." },
       { status: 400 },
     );
   }
 
-  if (Object.keys(update).length === 0) {
-    return NextResponse.json({ error: "Nenhum dado para atualizar." }, { status: 400 });
-  }
-
   try {
     const supabase = getSupabaseClient();
-    const { error } = await supabase.from("leads").update(update).eq("id", id);
+    const { error } = await supabase.rpc("update_lead_qualification", {
+      p_id: id,
+      p_nome: nome || null,
+      p_whatsapp: whatsapp || null,
+      p_segmento: getText(body.segmento) || null,
+      p_problema: problema || null,
+      p_urgencia: getText(body.urgencia) || null,
+      p_orcamento: getText(body.orcamento) || null,
+    });
 
     if (error) {
       console.error("Falha ao atualizar lead no Supabase:", error.message);

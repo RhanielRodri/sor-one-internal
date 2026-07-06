@@ -4,10 +4,7 @@ import { getSupabaseClient } from "@/lib/supabase/client";
 type LeadRequest = {
   nome?: unknown;
   whatsapp?: unknown;
-  segmento?: unknown;
   problema?: unknown;
-  urgencia?: unknown;
-  orcamento?: unknown;
   origem?: unknown;
 };
 
@@ -38,24 +35,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const lead = {
-    nome,
-    whatsapp,
-    segmento: getText(body.segmento) || null,
-    problema,
-    urgencia: getText(body.urgencia) || null,
-    orcamento: getText(body.orcamento) || null,
-    origem: getText(body.origem) || "site",
-    status: "diagnostico_solicitado",
-  };
-
   try {
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from("leads")
-      .insert(lead)
-      .select("id")
-      .single();
+    const { data, error } = await supabase.rpc("create_lead", {
+      p_nome: nome,
+      p_whatsapp: whatsapp,
+      p_problema: problema,
+      p_origem: getText(body.origem) || "site",
+    });
 
     if (error || !data) {
       console.error("Falha ao inserir lead no Supabase:", error?.message);
@@ -66,7 +53,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { id: data.id, message: "Diagnóstico enviado com sucesso." },
+      { id: data, message: "Diagnóstico enviado com sucesso." },
       { status: 201 },
     );
   } catch (error) {
