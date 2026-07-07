@@ -28,6 +28,16 @@ export type Lead = {
   observacoes: string | null;
   criado_em: string;
   atualizado_em: string | null;
+  cidade_uf: string | null;
+  objetivo_principal: string | null;
+  tipo_negocio: string | null;
+  canais_atuais: string[] | null;
+  gargalo: string | null;
+  volume_contatos: string | null;
+  resultado_desejado: string | null;
+  solucao_recomendada: string | null;
+  modulos_recomendados: string[] | null;
+  maturidade: string | null;
 };
 
 export type LeadHistory = {

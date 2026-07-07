@@ -5,11 +5,11 @@ import { siteUrl } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Diagnóstico gratuito — Encontre a solução certa para seu negócio",
-  description: "Identifique as dores do seu negócio e receba uma recomendação de solução digital. Gratuito e sem compromisso.",
-  keywords: ["diagnóstico digital gratuito", "análise presença digital", "consultoria grátis pequenos negócios"],
+  description: "Responda o diagnóstico comercial da SOR ONE e receba a recomendação certa para transformar contatos em agendamentos, pedidos e orçamentos. Gratuito e sem compromisso.",
+  keywords: ["diagnóstico comercial gratuito", "análise presença digital", "atendimento e conversão pequenos negócios"],
   openGraph: {
-    title: "Diagnóstico gratuito de presença digital | SOR ONE",
-    description: "Responda quatro etapas e receba uma recomendação gratuita. Sem compromisso.",
+    title: "Diagnóstico comercial gratuito | SOR ONE Atendimento & Conversão",
+    description: "Responda seis etapas rápidas e receba a solução recomendada para o seu cenário. Sem compromisso.",
     url: `${siteUrl}/diagnostico`,
     siteName: "SOR ONE",
     locale: "pt_BR",

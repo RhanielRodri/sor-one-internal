@@ -17,6 +17,7 @@ import {
   parseLeadDiagnostic,
   type LeadTemperature,
 } from "@/lib/lead-diagnostic";
+import { MATURITY_LABELS, type MaturityLevel } from "@/lib/diagnostic/types";
 
 type LeadsExplorerProps = {
   leads: Lead[];
@@ -24,6 +25,17 @@ type LeadsExplorerProps = {
 };
 
 type PeriodFilter = "all" | "7d" | "30d";
+
+function hasCommercialDiagnostic(lead: Lead) {
+  return Boolean(lead.solucao_recomendada || lead.tipo_negocio);
+}
+
+function maturityLabel(value: string | null) {
+  if (value && value in MATURITY_LABELS) {
+    return MATURITY_LABELS[value as MaturityLevel];
+  }
+  return value || "Não informado";
+}
 type ObsFeedback = "" | "ok" | "error";
 
 function formatDate(value: string) {
@@ -91,6 +103,15 @@ export function LeadsExplorer({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
+  const [solutionFilter, setSolutionFilter] = useState("all");
+
+  const solutionOptions = useMemo(() => {
+    const set = new Set<string>();
+    crmLeads.forEach((lead) => {
+      if (lead.solucao_recomendada) set.add(lead.solucao_recomendada);
+    });
+    return Array.from(set).sort();
+  }, [crmLeads]);
 
   const [observacaoLocal, setObservacaoLocal] = useState("");
   const [isSavingObs, setIsSavingObs] = useState(false);
@@ -105,6 +126,9 @@ export function LeadsExplorer({
       cutoff.setDate(cutoff.getDate() - days);
       result = result.filter((l) => new Date(l.criado_em) >= cutoff);
     }
+    if (solutionFilter !== "all") {
+      result = result.filter((l) => l.solucao_recomendada === solutionFilter);
+    }
     const q = searchQuery.trim().toLowerCase();
     if (q) {
       result = result.filter(
@@ -116,7 +140,7 @@ export function LeadsExplorer({
       );
     }
     return result;
-  }, [crmLeads, searchQuery, periodFilter]);
+  }, [crmLeads, searchQuery, periodFilter, solutionFilter]);
 
   const selectedStatus = selectedLead
     ? (statusOverrides[String(selectedLead.id)] ?? getKnownStatus(selectedLead.status))
@@ -335,7 +359,14 @@ export function LeadsExplorer({
     return <p className="text-sm font-semibold text-soft">Nenhuma ação pendente.</p>;
   }
 
-  const hasActiveFilters = searchQuery || periodFilter !== "all";
+  const hasActiveFilters =
+    searchQuery || periodFilter !== "all" || solutionFilter !== "all";
+
+  function clearFilters() {
+    setSearchQuery("");
+    setPeriodFilter("all");
+    setSolutionFilter("all");
+  }
 
   return (
     <>
@@ -385,13 +416,31 @@ export function LeadsExplorer({
             ))}
             {hasActiveFilters ? (
               <button
-                onClick={() => { setSearchQuery(""); setPeriodFilter("all"); }}
+                onClick={clearFilters}
                 className="ml-auto text-xs font-semibold text-soft hover:text-foreground"
               >
                 Limpar filtros
               </button>
             ) : null}
           </div>
+          {solutionOptions.length > 0 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-soft">Solução:</span>
+              {["all", ...solutionOptions].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setSolutionFilter(option)}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                    solutionFilter === option
+                      ? "border-[rgba(201,168,106,0.4)] bg-[rgba(201,168,106,0.08)] text-[var(--sor-champagne)]"
+                      : "border-[var(--sor-border-main)] text-soft hover:text-foreground"
+                  }`}
+                >
+                  {option === "all" ? "Todas" : option}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {/* Empty state */}
@@ -404,7 +453,7 @@ export function LeadsExplorer({
             </p>
             {hasActiveFilters ? (
               <button
-                onClick={() => { setSearchQuery(""); setPeriodFilter("all"); }}
+                onClick={clearFilters}
                 className="mt-3 text-xs font-semibold text-[var(--sor-champagne)] hover:underline"
               >
                 Limpar filtros
@@ -557,16 +606,32 @@ export function LeadsExplorer({
 
             <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[1.15fr_0.85fr]">
               <div className="grid min-w-0 gap-4 sm:grid-cols-2">
-                <DetailItem label="Serviço escolhido" value={selectedDiagnostic?.service || selectedLead.segmento} />
-                <DetailItem label="Objetivo" value={selectedDiagnostic?.objective} />
-                <DetailItem label="Urgência" value={selectedDiagnostic?.timeline || selectedLead.urgencia} />
-                <DetailItem label="Faixa de investimento" value={selectedDiagnostic?.budget || selectedLead.orcamento} />
+                {hasCommercialDiagnostic(selectedLead) ? (
+                  <>
+                    <DetailItem label="Solução recomendada" value={selectedLead.solucao_recomendada} />
+                    <DetailItem label="Prioridade" value={selectedLead.objetivo_principal} />
+                    <DetailItem label="Tipo de negócio" value={selectedLead.tipo_negocio} />
+                    <DetailItem label="Maturidade" value={maturityLabel(selectedLead.maturidade)} />
+                    <DetailItem label="Principal gargalo" value={selectedLead.gargalo} />
+                    <DetailItem label="Volume de contatos" value={selectedLead.volume_contatos} />
+                    <DetailItem label="Resultado desejado" value={selectedLead.resultado_desejado} />
+                    <DetailItem label="Canais atuais" value={selectedLead.canais_atuais?.join(", ") ?? null} />
+                  </>
+                ) : (
+                  <>
+                    <DetailItem label="Serviço escolhido" value={selectedDiagnostic?.service || selectedLead.segmento} />
+                    <DetailItem label="Objetivo" value={selectedDiagnostic?.objective} />
+                    <DetailItem label="Urgência" value={selectedDiagnostic?.timeline || selectedLead.urgencia} />
+                    <DetailItem label="Faixa de investimento" value={selectedDiagnostic?.budget || selectedLead.orcamento} />
+                  </>
+                )}
 
                 <div className="min-w-0 rounded-xl border border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] p-4 sm:col-span-2">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">Contato</p>
                   <dl className="mt-4 grid gap-4 sm:grid-cols-2">
                     {[
                       ["Empresa", selectedLead.empresa],
+                      ["Cidade/UF", selectedLead.cidade_uf],
                       ["WhatsApp", selectedLead.whatsapp],
                       ["E-mail", selectedLead.email],
                       ["Origem", selectedLead.origem || "site"],
@@ -580,8 +645,23 @@ export function LeadsExplorer({
                 </div>
 
                 <div className="min-w-0 rounded-xl border border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] p-4 sm:col-span-2">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">Respostas específicas</p>
-                  {selectedDiagnostic?.answers.length ? (
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-soft">
+                    {hasCommercialDiagnostic(selectedLead) ? "Módulos recomendados" : "Respostas específicas"}
+                  </p>
+                  {hasCommercialDiagnostic(selectedLead) ? (
+                    selectedLead.modulos_recomendados?.length ? (
+                      <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+                        {selectedLead.modulos_recomendados.map((module) => (
+                          <li key={module} className="flex gap-2">
+                            <span className="text-[var(--sor-champagne)]">✓</span>
+                            <span className="break-words">{module}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-2 text-sm text-soft">Sem módulos registrados.</p>
+                    )
+                  ) : selectedDiagnostic?.answers.length ? (
                     <dl className="mt-4 grid gap-4 sm:grid-cols-2">
                       {selectedDiagnostic.answers.map((answer) => (
                         <div key={answer.label}>

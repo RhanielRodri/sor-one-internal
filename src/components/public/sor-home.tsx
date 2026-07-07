@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
 import { SorLogo } from "@/components/ui/SorLogo";
 import type { ServiceShowcaseItem } from "@/data/service-catalog";
+
+const DIAGNOSTIC_HREF = "/diagnostico";
 
 const stats = [
   { value: "4", label: "Projetos online" },
@@ -48,6 +51,24 @@ const flows = [
   { icon: "◎", title: "Captura de Lead", nodes: buildFlow(["Cliente preenche diagnóstico", "Lead salvo no console", "Notificação no WhatsApp", "Resposta automática em 2 min"]) },
   { icon: "⟳", title: "Agendamento Automático", nodes: buildFlow(["Cliente acessa AgendaFácil", "Escolhe horário disponível", "Confirmação por WhatsApp", "Lembrete 1h antes"]) },
   { icon: "◇", title: "Catálogo + Pedido B2B", nodes: buildFlow(["Cliente acessa CatalogPro", "Seleciona produtos", "Solicita cotação", "Vendedor notificado na hora"]) },
+];
+
+const conversionPillars = [
+  {
+    icon: "↗",
+    title: "Seja encontrado",
+    items: ["Site e landing page", "Catálogo e cardápio", "Páginas de serviços", "Presença local", "Canais de contato claros"],
+  },
+  {
+    icon: "◎",
+    title: "Organize o atendimento",
+    items: ["WhatsApp e formulários", "Captação de leads", "Status e acompanhamento", "Confirmações", "Histórico comercial"],
+  },
+  {
+    icon: "◇",
+    title: "Converta oportunidades",
+    items: ["Agendamento e pedidos", "Orçamento e carrinho", "Confirmação e próximo passo", "Painel administrativo", "Funil organizado"],
+  },
 ];
 
 export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
@@ -252,17 +273,18 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
 
       <header data-header className="sor-header">
         <div className="sor-header-inner">
-          <a href="/" aria-label="SOR ONE — Início" className="sor-brand-link">
+          <Link href="/" aria-label="SOR ONE — Início" className="sor-brand-link">
             <SorLogo variant="horizontal" />
-          </a>
+          </Link>
           <nav className="sor-nav">
             <a className="sor-navlink" href="#problemas">Problemas</a>
             <a className="sor-navlink" href="#solucoes">Soluções</a>
+            <a className="sor-navlink" href="#atendimento-conversao">Atendimento</a>
             <a className="sor-navlink" href="#processo">Processo</a>
-            <a className="sor-navlink" href="/projetos">Projetos</a>
+            <Link className="sor-navlink" href="/projetos">Projetos</Link>
           </nav>
           <div className="sor-header-actions">
-            <a data-magnetic className="sor-btn sor-btn-primary sor-btn-sm" href="/diagnostico">Diagnóstico</a>
+            <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-sm" href={DIAGNOSTIC_HREF}>Diagnóstico</Link>
           </div>
         </div>
       </header>
@@ -298,7 +320,7 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
                 Crio sites, sistemas e automações para negócios locais venderem mais e trabalharem menos.
               </p>
               <div data-reveal className="sor-hero-ctas">
-                <a data-magnetic className="sor-btn sor-btn-primary" href="#cta">Solicitar diagnóstico</a>
+                <Link data-magnetic className="sor-btn sor-btn-primary" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico</Link>
                 <a data-magnetic className="sor-btn sor-btn-ghost" href="#solucoes">Ver soluções →</a>
               </div>
               <div data-reveal-group className="sor-stats">
@@ -372,11 +394,6 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
             </div>
           </div>
         </div>
-
-        <div className="sor-anim sor-scroll-hint">
-          <span className="sor-scroll-label">Scroll</span>
-          <span className="sor-scroll-arrow">↓</span>
-        </div>
       </section>
 
       <section id="problemas" className="sor-section sor-section-a">
@@ -432,12 +449,44 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
                       <div><p className="sor-meta-label">Suporte</p><p className="sor-meta-value">{s.suporte}</p></div>
                     </div>
                     <div className="sor-service-cta">
-                      <a data-magnetic className="sor-btn sor-btn-primary sor-btn-block" href="#cta">Solicitar diagnóstico gratuito</a>
+                      <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-block" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico gratuito</Link>
                     </div>
                   </div>
                 </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="atendimento-conversao" className="sor-section sor-section-a">
+        <div className="sor-container">
+          <p data-reveal className="sor-eyebrow">SOR ONE · Atendimento &amp; Conversão</p>
+          <h2 data-reveal className="sor-h2">Mais contatos não resolvem nada se eles se perdem no caminho.</h2>
+          <p data-reveal className="sor-section-lead">
+            Conectamos presença digital, atendimento e processo comercial para ajudar seu negócio a transformar mensagens em agendamentos, pedidos e orçamentos. Não basta estar online: seu negócio precisa ser encontrado, responder rápido e não perder oportunidades no caminho.
+          </p>
+          <div data-reveal-group className="sor-grid-3">
+            {conversionPillars.map((pillar) => (
+              <div data-reveal data-spotlight className="sor-card sor-card-lift" key={pillar.title}>
+                <div data-spot className="sor-spot" />
+                <div className="sor-card-inner">
+                  <div className="sor-icon">{pillar.icon}</div>
+                  <h3 className="sor-card-title">{pillar.title}</h3>
+                  <ul className="sor-includes" style={{ marginTop: 16 }}>
+                    {pillar.items.map((item) => (
+                      <li key={item}><span className="sor-check">✓</span>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div data-reveal className="sor-conversion-cta">
+            <p className="sor-conversion-note">
+              Essa é a camada de estratégia que conecta <strong>AgendaFácil</strong>, <strong>MesaFlow</strong> e <strong>CatalogPro</strong> — e ajuda a decidir qual solução deve entrar primeiro no seu negócio.
+            </p>
+            <Link data-magnetic className="sor-btn sor-btn-primary" href={DIAGNOSTIC_HREF}>Fazer diagnóstico do meu negócio</Link>
           </div>
         </div>
       </section>
@@ -497,7 +546,7 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
         <div className="sor-container sor-cta-inner">
           <h2 data-reveal className="sor-h2 sor-cta-title">Pronto para parar de perder cliente?</h2>
           <div data-reveal className="sor-cta-btns">
-            <a data-magnetic className="sor-btn sor-btn-primary sor-btn-lg" href="#top">Solicitar diagnóstico grátis</a>
+            <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-lg" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico grátis</Link>
             <a data-magnetic className="sor-btn sor-btn-ghost sor-btn-lg" href={SOR_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Falar no WhatsApp →</a>
           </div>
         </div>
@@ -505,26 +554,52 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
 
       <footer className="sor-footer">
         <div className="sor-container sor-footer-inner">
-          <div className="sor-brand">
-            <span className="sor-logo sm"><span className="sor-logo-dot" /></span>
-            <span className="sor-brand-name">SOR ONE</span>
+          <div className="sor-footer-brand-col">
+            <Link href="/" aria-label="SOR ONE — Início" className="sor-brand-link">
+              <SorLogo variant="horizontal" />
+            </Link>
+            <nav aria-label="Navegação do rodapé" className="sor-footer-nav">
+              <a className="sor-footer-link" href="#problemas">Problemas</a>
+              <a className="sor-footer-link" href="#solucoes">Soluções</a>
+              <a className="sor-footer-link" href="#processo">Processo</a>
+              <Link className="sor-footer-link" href="/projetos">Projetos</Link>
+              <Link className="sor-footer-link" href={DIAGNOSTIC_HREF}>Diagnóstico</Link>
+            </nav>
           </div>
-          <nav aria-label="Navegação do rodapé" className="sor-footer-nav">
-            <a className="sor-footer-link" href="#problemas">Problemas</a>
-            <a className="sor-footer-link" href="#solucoes">Soluções</a>
-            <a className="sor-footer-link" href="#processo">Processo</a>
-            <a className="sor-footer-link" href="/projetos">Projetos</a>
-            <a className="sor-footer-link" href="/diagnostico">Diagnóstico</a>
-            <a
-              className="sor-footer-link"
-              href={SOR_WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp
-            </a>
-          </nav>
-          <p className="sor-footer-copy">© 2026 SOR ONE · Rhaniel Rodrigues · Vila Velha, ES</p>
+
+          <div className="sor-footer-contact">
+            <span className="sor-footer-contact-label">Fale comigo</span>
+            <div className="sor-footer-contact-actions">
+              <a
+                className="sor-contact-btn sor-contact-whatsapp"
+                href={SOR_WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M17.47 14.38c-.29-.15-1.7-.84-1.96-.93-.26-.1-.45-.15-.64.14-.19.29-.74.93-.9 1.12-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.33-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.38s1.02 2.76 1.17 2.95c.14.19 2.01 3.06 4.86 4.29.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12.05 21.5h-.01a9.42 9.42 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.24-9.44 9.45-9.44 2.52 0 4.89.99 6.67 2.77a9.38 9.38 0 0 1 2.76 6.68c0 5.2-4.24 9.44-9.45 9.44zm8.04-17.49A11.36 11.36 0 0 0 12.05.68C5.84.68.79 5.73.78 11.94c0 2.1.55 4.15 1.6 5.96L.68 24l6.25-1.64a11.3 11.3 0 0 0 5.41 1.38h.01c6.21 0 11.26-5.05 11.27-11.26a11.2 11.2 0 0 0-3.53-8.47z" />
+                </svg>
+                Falar no WhatsApp
+              </a>
+              <a
+                className="sor-contact-btn sor-contact-instagram"
+                href="https://instagram.com/soroneoficial"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
+                @soroneoficial
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="sor-container">
+          <p className="sor-footer-copy">© 2026 SOR ONE · Vila Velha, ES</p>
         </div>
       </footer>
     </div>
@@ -539,7 +614,6 @@ const sorStyles = `
 #sor-home *::-webkit-scrollbar-thumb{background:#1f2733;border-radius:8px;}
 .sor-container{max-width:1200px;margin:0 auto;padding:0 24px;}
 @keyframes sor-pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.65);}}
-@keyframes sor-bounce-down{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
 @keyframes sor-flow-down{0%{opacity:0;transform:translateY(0);}8%{opacity:1;}92%{opacity:.35;}100%{opacity:0;transform:translateY(-120px);}}
 @keyframes sor-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
 @media (prefers-reduced-motion: reduce){.sor-anim{animation:none !important;}}
@@ -618,10 +692,6 @@ const sorStyles = `
 .sor-console-card-name{font-size:10px;font-weight:600;color:#F0EDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sor-tag-online{flex-shrink:0;font-size:8px;font-weight:700;letter-spacing:0.1em;color:#0ea5a4;border:1px solid rgba(14,165,164,0.3);background:rgba(14,165,164,0.08);border-radius:9999px;padding:2px 7px;}
 
-.sor-scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;color:#8A8D94;pointer-events:none;}
-.sor-scroll-label{font-size:10px;text-transform:uppercase;letter-spacing:0.24em;}
-.sor-scroll-arrow{font-size:14px;animation:sor-bounce-down 1.6s ease-in-out infinite;}
-
 .sor-section{padding:88px 0;border-bottom:1px solid #181e27;}
 .sor-section-a{background:#060709;border-top:1px solid #181e27;}
 .sor-section-b{background:#0a0c10;}
@@ -676,10 +746,25 @@ const sorStyles = `
 .sor-cta-title{margin:0 auto;font-size:clamp(30px,4.4vw,52px);letter-spacing:-0.04em;line-height:1.08;}
 .sor-cta-btns{margin-top:36px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
 
-.sor-footer{border-top:1px solid #181e27;padding:44px 0;background:#060709;}
-.sor-footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;}
+.sor-footer{border-top:1px solid #181e27;padding:48px 0 34px;background:#060709;}
+.sor-footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px;}
+.sor-footer-brand-col{display:grid;gap:18px;}
 .sor-footer-nav{display:flex;flex-wrap:wrap;align-items:center;gap:20px;}
 .sor-footer-link{font-size:13px;font-weight:600;color:#9A9DA6;text-decoration:none;transition:color .2s;}
 .sor-footer-link:hover{color:#C9A86A;}
-.sor-footer-copy{margin:0;font-size:12px;color:#4A4D56;}
+.sor-footer-contact{display:grid;gap:12px;border:1px solid rgba(201,168,106,0.16);border-radius:18px;background:linear-gradient(150deg,rgba(201,168,106,0.09),rgba(14,165,164,0.04));padding:18px;box-shadow:0 18px 48px rgba(0,0,0,.22);}
+.sor-footer-contact-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.16em;color:#C9A86A;}
+.sor-footer-contact-actions{display:flex;flex-wrap:wrap;gap:10px;}
+.sor-contact-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:42px;border-radius:12px;padding:11px 15px;font-family:var(--font-manrope),sans-serif;font-size:13px;font-weight:800;text-decoration:none;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;}
+.sor-contact-btn:hover{transform:translateY(-1px);}
+.sor-contact-btn:focus-visible{outline:2px solid #C9A86A;outline-offset:3px;}
+.sor-contact-whatsapp{background:#C9A86A;color:#060709;box-shadow:0 12px 32px rgba(201,168,106,.22);}
+.sor-contact-instagram{border:1px solid rgba(201,168,106,0.2);background:rgba(255,255,255,0.03);color:#F0EDEA;}
+.sor-contact-instagram:hover{border-color:rgba(201,168,106,0.42);background:rgba(201,168,106,0.06);}
+.sor-conversion-cta{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;border:1px solid rgba(201,168,106,0.16);border-radius:20px;background:linear-gradient(150deg,rgba(201,168,106,0.08),rgba(14,165,164,0.04));padding:24px 26px;}
+.sor-conversion-note{margin:0;max-width:620px;font-size:15px;line-height:1.6;color:#c4c0b8;}
+.sor-conversion-note strong{color:#F0EDEA;font-weight:800;}
+@media (max-width:720px){.sor-conversion-cta{flex-direction:column;align-items:stretch;}.sor-conversion-cta .sor-btn{width:100%;}}
+.sor-footer-copy{margin:28px 0 0;font-size:12px;color:#4A4D56;}
+@media (max-width:720px){.sor-footer-inner{align-items:stretch;}.sor-footer-brand-col,.sor-footer-contact{width:100%;}.sor-footer-contact-actions{display:grid;grid-template-columns:1fr;}.sor-contact-btn{width:100%;}.sor-footer-copy{text-align:left;}}
 `;

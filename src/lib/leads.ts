@@ -20,7 +20,7 @@ export async function getLeads(status?: string) {
   let query = supabase
     .from("leads")
     .select(
-      "id,nome,empresa,whatsapp,email,segmento,problema,urgencia,orcamento,origem,status,observacoes,criado_em,atualizado_em",
+      "id,nome,empresa,whatsapp,email,segmento,problema,urgencia,orcamento,origem,status,observacoes,criado_em,atualizado_em,cidade_uf,objetivo_principal,tipo_negocio,canais_atuais,gargalo,volume_contatos,resultado_desejado,solucao_recomendada,modulos_recomendados,maturidade",
     )
     .order("criado_em", { ascending: false });
 

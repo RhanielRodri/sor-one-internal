@@ -21,17 +21,20 @@ function extractSection(message: string, label: string, nextLabel?: string) {
   return message.slice(valueStart, end === -1 ? undefined : end).trim();
 }
 
-export function parseLeadDiagnostic(message: string): ParsedDiagnostic {
-  const service = extractSection(message, "SOLUÇÃO", "OBJETIVO");
-  const objective = extractSection(message, "OBJETIVO", "PRAZO");
-  const timeline = extractSection(message, "PRAZO", "INVESTIMENTO");
-  const budget = extractSection(message, "INVESTIMENTO", "RESPOSTAS DO DIAGNÓSTICO");
+export function parseLeadDiagnostic(
+  message: string | null | undefined,
+): ParsedDiagnostic {
+  const source = typeof message === "string" ? message : "";
+  const service = extractSection(source, "SOLUÇÃO", "OBJETIVO");
+  const objective = extractSection(source, "OBJETIVO", "PRAZO");
+  const timeline = extractSection(source, "PRAZO", "INVESTIMENTO");
+  const budget = extractSection(source, "INVESTIMENTO", "RESPOSTAS DO DIAGNÓSTICO");
   const answersBlock = extractSection(
-    message,
+    source,
     "RESPOSTAS DO DIAGNÓSTICO",
     "CONTEXTO ADICIONAL",
   );
-  const additionalContext = extractSection(message, "CONTEXTO ADICIONAL");
+  const additionalContext = extractSection(source, "CONTEXTO ADICIONAL");
 
   const answers = answersBlock
     .split("\n")
