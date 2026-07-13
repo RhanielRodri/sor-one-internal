@@ -17,7 +17,8 @@ import {
 } from "@/lib/diagnostic/options";
 import { MATURITY_LABELS, type Recommendation } from "@/lib/diagnostic/types";
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
+const SESSION_STORAGE_KEY = "sor_diagnostic_session_id";
 
 type Answers = {
   primaryGoal: string;
@@ -53,8 +54,13 @@ const initialContact: Contact = {
   email: "",
 };
 
-type ApiResult = {
+type CaptureResponse = {
   id?: string;
+  diagnosticStatus?: string;
+  error?: string;
+};
+
+type CompleteResponse = {
   recommendation?: Recommendation;
   whatsappUrl?: string;
   error?: string;
@@ -63,6 +69,18 @@ type ApiResult = {
 function isValidEmail(email: string) {
   if (!email) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function readOrCreateSessionId() {
+  try {
+    const existing = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (existing) return existing;
+    const id = crypto.randomUUID();
+    window.sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
 }
 
 function ChoiceGrid({
@@ -172,6 +190,10 @@ export function DiagnosticForm() {
   const [contact, setContact] = useState<Contact>(initialContact);
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
+  const [sessionId] = useState(() =>
+    typeof window === "undefined" ? "" : readOrCreateSessionId(),
+  );
+  const [leadId, setLeadId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<{
@@ -203,48 +225,103 @@ export function DiagnosticForm() {
   }
 
   function updateContact(field: keyof Contact, value: string) {
+    markStarted();
     setContact((current) => ({ ...current, [field]: value }));
   }
 
   const canContinue =
     step === 0
-      ? Boolean(answers.primaryGoal)
+      ? Boolean(contact.name.trim() && contact.phone.trim() && consent)
       : step === 1
-        ? Boolean(answers.businessType)
+        ? Boolean(answers.primaryGoal)
         : step === 2
-          ? answers.currentChannels.length > 0
+          ? Boolean(answers.businessType)
           : step === 3
-            ? Boolean(answers.bottleneck && answers.leadVolume)
+            ? answers.currentChannels.length > 0
             : step === 4
-              ? Boolean(answers.desiredOutcome)
-              : Boolean(
-                  contact.name.trim() &&
+              ? Boolean(answers.bottleneck && answers.leadVolume)
+              : step === 5
+                ? Boolean(answers.desiredOutcome)
+                : Boolean(
                     contact.businessName.trim() &&
-                    contact.phone.trim() &&
-                    contact.cityState.trim() &&
-                    consent &&
-                    isValidEmail(contact.email.trim()),
-                );
+                      contact.cityState.trim() &&
+                      isValidEmail(contact.email.trim()),
+                  );
 
-  async function submitDiagnostic() {
+  async function captureContact() {
+    if (leadId) {
+      setError("");
+      setStep(1);
+      return;
+    }
+    if (!sessionId) {
+      setError("Não foi possível iniciar a sessão. Recarregue a página.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError("");
 
     try {
-      const response = await fetch("/api/diagnostico", {
+      const response = await fetch("/api/diagnostico/capture", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...contact,
-          ...answers,
+          sessionId,
+          name: contact.name,
+          phone: contact.phone,
           consent,
           website,
         }),
       });
-      const data = (await response.json()) as ApiResult;
+      const data = (await response.json()) as CaptureResponse;
+
+      if (!response.ok || !data.id) {
+        throw new Error(data.error || "Não foi possível iniciar o diagnóstico.");
+      }
+
+      setLeadId(data.id);
+      trackDiagnostic("diagnostic_captured");
+      setStep(1);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Não foi possível iniciar o diagnóstico.",
+      );
+      trackDiagnostic("diagnostic_capture_failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function submitDiagnostic() {
+    if (!sessionId) {
+      setError("Sessão de diagnóstico inválida. Recarregue a página.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/diagnostico/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          name: contact.name,
+          businessName: contact.businessName,
+          cityState: contact.cityState,
+          email: contact.email,
+          ...answers,
+          website,
+        }),
+      });
+      const data = (await response.json()) as CompleteResponse;
 
       if (!response.ok || !data.recommendation || !data.whatsappUrl) {
-        throw new Error(data.error || "Não foi possível enviar o diagnóstico.");
+        throw new Error(data.error || "Não foi possível concluir o diagnóstico.");
       }
 
       setResult({
@@ -261,7 +338,7 @@ export function DiagnosticForm() {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : "Não foi possível enviar o diagnóstico.",
+          : "Não foi possível concluir o diagnóstico.",
       );
       trackDiagnostic("diagnostic_submission_failed");
     } finally {
@@ -271,13 +348,17 @@ export function DiagnosticForm() {
 
   function goNext() {
     if (!canContinue || isSubmitting) return;
-    if (step === 5) {
+    if (step === 0) {
+      void captureContact();
+      return;
+    }
+    if (step === 6) {
       void submitDiagnostic();
       return;
     }
     trackDiagnostic("diagnostic_step_completed", { step: step + 1 });
     setError("");
-    setStep((current) => Math.min(current + 1, 5));
+    setStep((current) => Math.min(current + 1, 6));
   }
 
   function goBack() {
@@ -291,7 +372,7 @@ export function DiagnosticForm() {
     setStep(0);
   }
 
-  function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleStepSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     goNext();
   }
@@ -400,67 +481,12 @@ export function DiagnosticForm() {
 
       <div className="p-5 sm:p-8 lg:p-10">
         {step === 0 ? (
-          <ChoiceGrid
-            legend="O que você mais quer melhorar primeiro?"
-            options={PRIMARY_GOALS}
-            value={answers.primaryGoal}
-            onChange={(value) => setAnswer("primaryGoal", value)}
-          />
-        ) : null}
-
-        {step === 1 ? (
-          <ChoiceGrid
-            legend="Qual descreve melhor seu negócio?"
-            options={BUSINESS_TYPES}
-            value={answers.businessType}
-            onChange={(value) => setAnswer("businessType", value)}
-          />
-        ) : null}
-
-        {step === 2 ? (
-          <MultiChoiceGrid
-            legend="Como vocês atendem hoje?"
-            hint="Selecione todas que se aplicam."
-            options={CURRENT_CHANNELS}
-            values={answers.currentChannels}
-            onToggle={toggleChannel}
-          />
-        ) : null}
-
-        {step === 3 ? (
-          <div className="grid gap-8">
-            <ChoiceGrid
-              legend="Onde os contatos mais se perdem hoje?"
-              options={BOTTLENECKS}
-              value={answers.bottleneck}
-              onChange={(value) => setAnswer("bottleneck", value)}
-            />
-            <ChoiceGrid
-              legend="Quantos novos contatos por semana, em média?"
-              options={LEAD_VOLUMES}
-              value={answers.leadVolume}
-              onChange={(value) => setAnswer("leadVolume", value)}
-              columns="grid-cols-1 sm:grid-cols-3"
-            />
-          </div>
-        ) : null}
-
-        {step === 4 ? (
-          <ChoiceGrid
-            legend="Qual resultado seria mais valioso para o seu negócio?"
-            options={DESIRED_OUTCOMES}
-            value={answers.desiredOutcome}
-            onChange={(value) => setAnswer("desiredOutcome", value)}
-          />
-        ) : null}
-
-        {step === 5 ? (
-          <form onSubmit={handleContactSubmit} noValidate>
+          <form onSubmit={handleStepSubmit} noValidate>
             <h2 className="text-2xl font-black tracking-[-0.03em]">
-              Para onde envio o seu diagnóstico?
+              Vamos começar pelo seu contato.
             </h2>
             <p className="mt-2 text-sm text-muted">
-              Uso esses dados só para te enviar a análise e falar sobre o próximo passo.
+              Preciso do seu nome e WhatsApp para guardar o diagnóstico e falar sobre o próximo passo. As perguntas vêm logo depois.
             </p>
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               <Input
@@ -472,14 +498,6 @@ export function DiagnosticForm() {
                 onChange={(event) => updateContact("name", event.target.value)}
               />
               <Input
-                id="businessName"
-                label="Nome do negócio"
-                placeholder="Nome da sua empresa"
-                required
-                value={contact.businessName}
-                onChange={(event) => updateContact("businessName", event.target.value)}
-              />
-              <Input
                 id="phone"
                 label="WhatsApp"
                 placeholder="(27) 99999-9999"
@@ -488,24 +506,6 @@ export function DiagnosticForm() {
                 value={contact.phone}
                 onChange={(event) => updateContact("phone", event.target.value)}
               />
-              <Input
-                id="cityState"
-                label="Cidade/UF"
-                placeholder="Vila Velha/ES"
-                required
-                value={contact.cityState}
-                onChange={(event) => updateContact("cityState", event.target.value)}
-              />
-              <div className="sm:col-span-2">
-                <Input
-                  id="email"
-                  label="E-mail (opcional)"
-                  type="email"
-                  placeholder="voce@email.com"
-                  value={contact.email}
-                  onChange={(event) => updateContact("email", event.target.value)}
-                />
-              </div>
             </div>
 
             <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
@@ -554,12 +554,123 @@ export function DiagnosticForm() {
               disabled={!canContinue || isSubmitting}
               className="mt-8 w-full sm:w-auto"
             >
+              {isSubmitting ? "Iniciando..." : "Começar diagnóstico"}
+            </Button>
+          </form>
+        ) : null}
+
+        {step === 1 ? (
+          <ChoiceGrid
+            legend="O que você mais quer melhorar primeiro?"
+            options={PRIMARY_GOALS}
+            value={answers.primaryGoal}
+            onChange={(value) => setAnswer("primaryGoal", value)}
+          />
+        ) : null}
+
+        {step === 2 ? (
+          <ChoiceGrid
+            legend="Qual descreve melhor seu negócio?"
+            options={BUSINESS_TYPES}
+            value={answers.businessType}
+            onChange={(value) => setAnswer("businessType", value)}
+          />
+        ) : null}
+
+        {step === 3 ? (
+          <MultiChoiceGrid
+            legend="Como vocês atendem hoje?"
+            hint="Selecione todas que se aplicam."
+            options={CURRENT_CHANNELS}
+            values={answers.currentChannels}
+            onToggle={toggleChannel}
+          />
+        ) : null}
+
+        {step === 4 ? (
+          <div className="grid gap-8">
+            <ChoiceGrid
+              legend="Onde os contatos mais se perdem hoje?"
+              options={BOTTLENECKS}
+              value={answers.bottleneck}
+              onChange={(value) => setAnswer("bottleneck", value)}
+            />
+            <ChoiceGrid
+              legend="Quantos novos contatos por semana, em média?"
+              options={LEAD_VOLUMES}
+              value={answers.leadVolume}
+              onChange={(value) => setAnswer("leadVolume", value)}
+              columns="grid-cols-1 sm:grid-cols-3"
+            />
+          </div>
+        ) : null}
+
+        {step === 5 ? (
+          <ChoiceGrid
+            legend="Qual resultado seria mais valioso para o seu negócio?"
+            options={DESIRED_OUTCOMES}
+            value={answers.desiredOutcome}
+            onChange={(value) => setAnswer("desiredOutcome", value)}
+          />
+        ) : null}
+
+        {step === 6 ? (
+          <form onSubmit={handleStepSubmit} noValidate>
+            <h2 className="text-2xl font-black tracking-[-0.03em]">
+              Só mais alguns dados do negócio.
+            </h2>
+            <p className="mt-2 text-sm text-muted">
+              Uso essas informações para preparar a análise e o próximo passo certo para você.
+            </p>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <Input
+                id="businessName"
+                label="Nome do negócio"
+                placeholder="Nome da sua empresa"
+                required
+                value={contact.businessName}
+                onChange={(event) => updateContact("businessName", event.target.value)}
+              />
+              <Input
+                id="cityState"
+                label="Cidade/UF"
+                placeholder="Vila Velha/ES"
+                required
+                value={contact.cityState}
+                onChange={(event) => updateContact("cityState", event.target.value)}
+              />
+              <div className="sm:col-span-2">
+                <Input
+                  id="email"
+                  label="E-mail (opcional)"
+                  type="email"
+                  placeholder="voce@email.com"
+                  value={contact.email}
+                  onChange={(event) => updateContact("email", event.target.value)}
+                />
+              </div>
+            </div>
+
+            {error ? (
+              <p
+                role="alert"
+                className="mt-5 rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300"
+              >
+                {error}
+              </p>
+            ) : null}
+
+            <Button
+              type="submit"
+              disabled={!canContinue || isSubmitting}
+              className="mt-8 w-full sm:w-auto"
+            >
               {isSubmitting ? "Enviando..." : "Ver minha recomendação"}
             </Button>
           </form>
         ) : null}
 
-        {step < 5 ? (
+        {step > 0 && step < 6 ? (
           <div className="mt-8 flex justify-end border-t border-[var(--sor-border-main)] pt-6">
             <Button type="button" disabled={!canContinue} onClick={goNext} className="w-full sm:w-auto">
               Continuar

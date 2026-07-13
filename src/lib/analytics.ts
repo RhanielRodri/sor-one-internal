@@ -1,5 +1,7 @@
 export type DiagnosticEvent =
   | "diagnostic_started"
+  | "diagnostic_captured"
+  | "diagnostic_capture_failed"
   | "diagnostic_step_completed"
   | "diagnostic_completed"
   | "diagnostic_submission_success"
