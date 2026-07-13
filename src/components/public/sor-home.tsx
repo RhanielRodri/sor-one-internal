@@ -4,13 +4,12 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { SOR_WHATSAPP_URL } from "@/lib/whatsapp";
 import { SorLogo } from "@/components/ui/SorLogo";
-import type { ServiceShowcaseItem } from "@/data/service-catalog";
 
 const DIAGNOSTIC_HREF = "/diagnostico";
 
 const stats = [
-  { value: "4", label: "Projetos online" },
-  { value: "100%", label: "Em produção" },
+  { value: "3", label: "Demonstrações online" },
+  { value: "100%", label: "Configurado à operação" },
   { value: "3min", label: "Diagnóstico" },
   { value: "Vila Velha", label: "ES — Brasil" },
 ];
@@ -20,58 +19,113 @@ const consoleNav = [
   { icon: "◎", label: "Leads", active: false },
   { icon: "◇", label: "Soluções", active: false },
   { icon: "⟳", label: "Automações", active: false },
-  { icon: "↗", label: "Projetos", active: false },
+  { icon: "↗", label: "Implantações", active: false },
   { icon: "⌁", label: "Config", active: false },
 ];
 
-const projectCards = [
-  "AgendaFácil — Studio Cut",
-  "CatalogPro B2B",
-  "MesaFlow",
-  "Barber Prime",
+const consoleCards = [
+  "NovaTech Assistência",
+  "Studio Cut",
+  "Lumière Estética",
 ];
 
 const problems = [
-  { icon: "↗", title: "Clientes não te encontram", text: "Seu negócio fica invisível enquanto o concorrente aparece no Google. Você perde venda antes de abrir a boca — e nem sabe quantas." },
-  { icon: "◎", title: "Você perde cliente no WhatsApp", text: "Orçamentos sem resposta, atendimento desorganizado, cliente some. Falta de processo custa dinheiro todo dia — e é invisível no extrato." },
-  { icon: "◇", title: "Produto bom que ninguém vê", text: "Catálogo em PDF ou foto no story não converte. Sem vitrine profissional, sem credibilidade — o cliente vai pro concorrente que parece maior." },
-  { icon: "▦", title: "Tempo gasto no que não vende", text: "Agendamento manual, planilha de controle, resposta repetitiva no WhatsApp. Tarefas que um sistema resolve em segundos tomam horas do seu dia." },
+  { icon: "◎", title: "Contato espalhado no WhatsApp", text: "Mensagens, orçamentos e pedidos se misturam na conversa. Sem processo, o cliente fica sem resposta e a oportunidade se perde — todo dia, sem aparecer no caixa." },
+  { icon: "▦", title: "Controle no papel e em planilhas", text: "Agenda no caderno, clientes numa planilha, pedidos na cabeça. Dá erro, dá retrabalho e ninguém enxerga o todo para decidir o próximo passo." },
+  { icon: "◇", title: "Ferramentas isoladas que não conversam", text: "Site de um lado, agenda de outro, catálogo em PDF. Nada integrado, tudo manual — e cada emenda entre uma ferramenta e outra vira trabalho seu." },
+  { icon: "↗", title: "Sem acompanhamento nem visão de resultado", text: "Demora para responder, contato sem retorno e nenhum número para saber o que está funcionando. Você trabalha muito e não sabe onde está perdendo." },
 ];
 
-const steps = [
-  { number: "01", title: "Diagnóstico gratuito", text: "Responda 5 perguntas em 3 minutos. Analiso seu cenário e identifico o que está travando sua captação e vendas. Sem compromisso." },
-  { number: "02", title: "Proposta clara", text: "Escopo definido, prazo real, preço justo. Você sabe exatamente o que vai receber, quando vai receber e o que vai custar — antes de fechar." },
-  { number: "03", title: "Entrega e suporte", text: "Projeto no ar e funcionando. Você aprende a usar, tem suporte direto e pode evoluir conforme o negócio cresce." },
-];
-
-const buildFlow = (arr: string[]) =>
-  arr.map((text, i) => ({ text, hl: i === 0 || i === arr.length - 1, connector: i < arr.length - 1 }));
-
-const flows = [
-  { icon: "◎", title: "Captura de Lead", nodes: buildFlow(["Cliente preenche diagnóstico", "Lead salvo no console", "Notificação no WhatsApp", "Resposta automática em 2 min"]) },
-  { icon: "⟳", title: "Agendamento Automático", nodes: buildFlow(["Cliente acessa AgendaFácil", "Escolhe horário disponível", "Confirmação por WhatsApp", "Lembrete 1h antes"]) },
-  { icon: "◇", title: "Catálogo + Pedido B2B", nodes: buildFlow(["Cliente acessa CatalogPro", "Seleciona produtos", "Solicita cotação", "Vendedor notificado na hora"]) },
-];
-
-const conversionPillars = [
+const solutionCategories = [
   {
     icon: "↗",
-    title: "Seja encontrado",
-    items: ["Site e landing page", "Catálogo e cardápio", "Páginas de serviços", "Presença local", "Canais de contato claros"],
+    title: "Presença e conversão",
+    items: ["Landing pages", "Sites institucionais", "Páginas comerciais", "SEO local", "Captação de contatos"],
   },
   {
     icon: "◎",
-    title: "Organize o atendimento",
-    items: ["WhatsApp e formulários", "Captação de leads", "Status e acompanhamento", "Confirmações", "Histórico comercial"],
+    title: "Agendamento e relacionamento",
+    items: ["Agenda online", "Serviços e profissionais", "Horários e clientes", "Lembretes automáticos", "Painel administrativo"],
   },
   {
     icon: "◇",
-    title: "Converta oportunidades",
-    items: ["Agendamento e pedidos", "Orçamento e carrinho", "Confirmação e próximo passo", "Painel administrativo", "Funil organizado"],
+    title: "Catálogos, pedidos e orçamentos",
+    items: ["Catálogos e cardápios", "Pedidos e carrinhos", "Orçamentos", "Solicitações do cliente", "Acompanhamento de oportunidades"],
+  },
+  {
+    icon: "▦",
+    title: "Operação e gestão",
+    items: ["Ordens de serviço", "Estoque e clientes", "Processos e tarefas", "Painéis", "Relatórios"],
+  },
+  {
+    icon: "⟳",
+    title: "Atendimento e automação",
+    items: ["WhatsApp estruturado", "Inteligência artificial", "CRM e handoff humano", "Follow-ups e integrações", "Dashboards"],
   },
 ];
 
-export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
+const tiers = [
+  {
+    tag: "Essencial",
+    title: "Organize uma jornada específica",
+    text: "Uma frente resolvida com qualidade: site, agendamento, catálogo, cardápio, orçamento ou WhatsApp estruturado.",
+    items: ["Uma jornada principal completa", "Publicação e configuração inicial", "Pensado para pequenos negócios"],
+    note: "Solução acessível para começar com o pé direito.",
+  },
+  {
+    tag: "Operacional",
+    title: "Conecte mais de uma etapa",
+    text: "Quando o negócio precisa ligar atendimento, gestão e acompanhamento numa operação só.",
+    items: ["Atendimento e gestão integrados", "Ordens, clientes e processos", "Automações e painéis"],
+    note: "Para operações que já cresceram além de uma única frente.",
+  },
+  {
+    tag: "Inteligente",
+    title: "Operação completa e automatizada",
+    text: "Para quem quer a operação rodando com inteligência artificial e integrações trabalhando junto.",
+    items: ["IA no atendimento e WhatsApp", "CRM, handoff humano e automações", "Integrações, dashboards e relatórios"],
+    note: "Projetos mais completos, sem limitar a SOR ONE a soluções baratas.",
+  },
+];
+
+const demos = [
+  {
+    icon: "⟳",
+    category: "Atendimento, triagem e operação",
+    name: "NovaTech Assistência",
+    text: "Uma assistência técnica demonstrativa que recebe o cliente, conduz a triagem, registra a solicitação e organiza o acompanhamento do serviço.",
+    href: "https://demo-assistencia-tecnica.sor-os-demos.workers.dev",
+    cta: "Explorar ambiente",
+  },
+  {
+    icon: "◎",
+    category: "Agendamento e gestão para barbearia",
+    name: "Studio Cut",
+    text: "Uma jornada de agendamento com serviços, profissionais, horários e painel administrativo.",
+    href: "https://agendafacil-sistema.vercel.app/demo/studio-cut",
+    cta: "Ver demonstração",
+  },
+  {
+    icon: "◇",
+    category: "Agendamento e relacionamento para estética",
+    name: "Lumière Estética",
+    text: "Uma experiência de agendamento com serviços, profissionais e identidade configurada para uma operação de estética.",
+    href: "https://agendafacil-sistema.vercel.app/demo/lumiere",
+    cta: "Ver implantação",
+  },
+];
+
+const steps = [
+  { number: "01", title: "Diagnóstico", text: "Você responde poucas perguntas e eu entendo o porte, os processos e o objetivo do seu negócio. Gratuito e sem compromisso." },
+  { number: "02", title: "Definição do escopo", text: "Definimos juntos os módulos, integrações e jornadas que fazem sentido agora — o que entra e o que fica para depois." },
+  { number: "03", title: "Configuração", text: "Preparo a solução para a sua operação, com os dados, textos e regras do seu negócio." },
+  { number: "04", title: "Implementação", text: "Coloco o sistema no ar, integrado aos canais que você já usa, funcionando de ponta a ponta." },
+  { number: "05", title: "Homologação", text: "Testamos o fluxo principal com você antes de abrir para os seus clientes." },
+  { number: "06", title: "Treinamento", text: "Você e sua equipe aprendem a usar o sistema no dia a dia, sem depender de mim para operar." },
+  { number: "07", title: "Operação e evolução", text: "Com a base rodando, novas frentes e integrações entram de forma planejada, quando o negócio pedir." },
+];
+
+export function SorHome() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -277,11 +331,10 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
             <SorLogo variant="horizontal" />
           </Link>
           <nav className="sor-nav">
-            <a className="sor-navlink" href="#problemas">Problemas</a>
             <a className="sor-navlink" href="#solucoes">Soluções</a>
-            <a className="sor-navlink" href="#atendimento-conversao">Atendimento</a>
-            <a className="sor-navlink" href="#processo">Processo</a>
-            <Link className="sor-navlink" href="/projetos">Projetos</Link>
+            <a className="sor-navlink" href="#portes">Portes</a>
+            <a className="sor-navlink" href="#demonstracoes">Demonstrações</a>
+            <a className="sor-navlink" href="#processo">Como trabalhamos</a>
           </nav>
           <div className="sor-header-actions">
             <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-sm" href={DIAGNOSTIC_HREF}>Diagnóstico</Link>
@@ -310,18 +363,18 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
             <div>
               <span data-reveal className="sor-badge">
                 <span className="sor-anim sor-pulse" />
-                Sistema operacional · Vila Velha, ES
+                SOR ONE · Vila Velha, ES
               </span>
               <h1 data-reveal className="sor-h1">
-                Tecnologia que<br />
-                <span className="sor-accent">gera resultado.</span>
+                Sistemas que organizam<br />
+                <span className="sor-accent">atendimento, vendas e operação.</span>
               </h1>
               <p data-reveal className="sor-lead">
-                Crio sites, sistemas e automações para negócios locais venderem mais e trabalharem menos.
+                A SOR ONE implanta sites, sistemas e automações configurados para a realidade de cada negócio — de operações essenciais para pequenos negócios a soluções completas com inteligência artificial e integrações.
               </p>
               <div data-reveal className="sor-hero-ctas">
                 <Link data-magnetic className="sor-btn sor-btn-primary" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico</Link>
-                <a data-magnetic className="sor-btn sor-btn-ghost" href="#solucoes">Ver soluções →</a>
+                <a data-magnetic className="sor-btn sor-btn-ghost" href="#demonstracoes">Ver demonstrações →</a>
               </div>
               <div data-reveal-group className="sor-stats">
                 {stats.map((s) => (
@@ -336,7 +389,7 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
             <div data-console-wrap className="sor-anim sor-console-wrap">
               <div data-tilt className="sor-console">
                 <div className="sor-console-top">
-                  <span className="sor-console-top-label">DASHBOARD · Projetos online</span>
+                  <span className="sor-console-top-label">CONSOLE · Implantações</span>
                   <span className="sor-live">
                     <span className="sor-anim sor-pulse sm" />Sistema Ativo
                   </span>
@@ -357,11 +410,11 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
                   <main className="sor-console-main">
                     <div className="sor-console-head">
                       <div>
-                        <p className="sor-console-title">Projetos publicados</p>
+                        <p className="sor-console-title">Ambientes demonstrativos</p>
                         <p className="sor-console-caption">Status atual</p>
                       </div>
                       <div className="sor-console-count">
-                        <p data-count className="sor-console-count-value">4</p>
+                        <p data-count className="sor-console-count-value">3</p>
                         <p className="sor-console-count-label">online</p>
                       </div>
                     </div>
@@ -381,7 +434,7 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
                       </svg>
                     </div>
                     <div className="sor-console-cards">
-                      {projectCards.map((name) => (
+                      {consoleCards.map((name) => (
                         <div key={name} className="sor-console-card">
                           <span className="sor-console-card-name">{name}</span>
                           <span className="sor-tag-online">ONLINE</span>
@@ -396,10 +449,13 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
         </div>
       </section>
 
-      <section id="problemas" className="sor-section sor-section-a">
+      <section id="problema" className="sor-section sor-section-a">
         <div className="sor-container">
-          <p data-reveal className="sor-eyebrow">Problemas que resolvo</p>
-          <h2 data-reveal className="sor-h2">Se isso parece familiar, é hora de mudar.</h2>
+          <p data-reveal className="sor-eyebrow">O problema</p>
+          <h2 data-reveal className="sor-h2">Não falta esforço. Falta operação organizada.</h2>
+          <p data-reveal className="sor-section-lead">
+            A maioria dos negócios perde tempo e cliente porque a operação vive espalhada entre WhatsApp, planilha, papel e ferramentas que não conversam.
+          </p>
           <div data-reveal-group className="sor-grid-2">
             {problems.map((p) => (
               <div data-reveal data-spotlight className="sor-card sor-card-lift" key={p.title}>
@@ -418,63 +474,19 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
       <section id="solucoes" className="sor-section sor-section-b">
         <div className="sor-container">
           <p data-reveal className="sor-eyebrow">Soluções</p>
-          <h2 data-reveal className="sor-h2">O que posso desenvolver para o seu negócio</h2>
+          <h2 data-reveal className="sor-h2">O que a SOR ONE implanta, organizado por necessidade.</h2>
           <p data-reveal className="sor-section-lead">
-            Cada solução é desenvolvida sob medida para o que o seu negócio precisa hoje — sem inflar escopo, sem cobrar pelo que você não vai usar.
+            Não é um catálogo de produtos avulsos. É um conjunto de módulos e integrações que se combinam conforme a jornada do seu negócio — o escopo certo sai do diagnóstico.
           </p>
-          <div data-reveal-group className="sor-grid-2 sor-grid-stretch">
-            {showcase.map((s) => (
-              <article data-reveal data-spotlight className="sor-service sor-card-lift" key={s.name}>
-                <div data-spot className="sor-spot" />
-                <div className="sor-service-inner">
-                  <div className="sor-service-head">
-                    <span className="sor-icon">{s.icon}</span>
-                    <span className="sor-chip">{s.category}</span>
-                  </div>
-                  <h3 className="sor-service-name">{s.name}</h3>
-                  <p className="sor-card-text">{s.description}</p>
-                  <div className="sor-price">
-                    <span className="sor-price-label">A partir de</span>
-                    <span className="sor-price-value">{s.price}</span>
-                  </div>
-                  <div className="sor-service-foot">
-                    <ul className="sor-includes">
-                      {s.includes.map((line) => (
-                        <li key={line}><span className="sor-check">✓</span>{line}</li>
-                      ))}
-                    </ul>
-                    <div className="sor-meta">
-                      <div><p className="sor-meta-label">Prazo</p><p className="sor-meta-value">{s.prazo}</p></div>
-                      <div className="sor-meta-mid"><p className="sor-meta-label">Revisões</p><p className="sor-meta-value">{s.revisoes}</p></div>
-                      <div><p className="sor-meta-label">Suporte</p><p className="sor-meta-value">{s.suporte}</p></div>
-                    </div>
-                    <div className="sor-service-cta">
-                      <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-block" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico gratuito</Link>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="atendimento-conversao" className="sor-section sor-section-a">
-        <div className="sor-container">
-          <p data-reveal className="sor-eyebrow">SOR ONE · Atendimento &amp; Conversão</p>
-          <h2 data-reveal className="sor-h2">Mais contatos não resolvem nada se eles se perdem no caminho.</h2>
-          <p data-reveal className="sor-section-lead">
-            Conectamos presença digital, atendimento e processo comercial para ajudar seu negócio a transformar mensagens em agendamentos, pedidos e orçamentos. Não basta estar online: seu negócio precisa ser encontrado, responder rápido e não perder oportunidades no caminho.
-          </p>
-          <div data-reveal-group className="sor-grid-3">
-            {conversionPillars.map((pillar) => (
-              <div data-reveal data-spotlight className="sor-card sor-card-lift" key={pillar.title}>
+          <div data-reveal-group className="sor-grid-3 sor-cat-grid">
+            {solutionCategories.map((cat) => (
+              <div data-reveal data-spotlight className="sor-card sor-card-lift" key={cat.title}>
                 <div data-spot className="sor-spot" />
                 <div className="sor-card-inner">
-                  <div className="sor-icon">{pillar.icon}</div>
-                  <h3 className="sor-card-title">{pillar.title}</h3>
+                  <div className="sor-icon">{cat.icon}</div>
+                  <h3 className="sor-card-title">{cat.title}</h3>
                   <ul className="sor-includes" style={{ marginTop: 16 }}>
-                    {pillar.items.map((item) => (
+                    {cat.items.map((item) => (
                       <li key={item}><span className="sor-check">✓</span>{item}</li>
                     ))}
                   </ul>
@@ -482,21 +494,70 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
               </div>
             ))}
           </div>
-          <div data-reveal className="sor-conversion-cta">
-            <p className="sor-conversion-note">
-              Essa é a camada de estratégia que conecta <strong>AgendaFácil</strong>, <strong>MesaFlow</strong> e <strong>CatalogPro</strong> — e ajuda a decidir qual solução deve entrar primeiro no seu negócio.
-            </p>
-            <Link data-magnetic className="sor-btn sor-btn-primary" href={DIAGNOSTIC_HREF}>Fazer diagnóstico do meu negócio</Link>
+        </div>
+      </section>
+
+      <section id="portes" className="sor-section sor-section-a">
+        <div className="sor-container">
+          <p data-reveal className="sor-eyebrow">Portes de implantação</p>
+          <h2 data-reveal className="sor-h2">Do essencial ao completo — no tamanho da sua operação.</h2>
+          <p data-reveal className="sor-section-lead">
+            Existe solução acessível para pequenos negócios e projeto completo para operações maiores. Nem todo projeto começa grande, e a SOR ONE não se limita a soluções baratas: o porte certo sai do diagnóstico.
+          </p>
+          <div data-reveal-group className="sor-grid-3">
+            {tiers.map((tier) => (
+              <div data-reveal data-spotlight className="sor-card sor-card-lift" key={tier.tag}>
+                <div data-spot className="sor-spot" />
+                <div className="sor-card-inner">
+                  <span className="sor-chip">{tier.tag}</span>
+                  <h3 className="sor-card-title" style={{ marginTop: 16 }}>{tier.title}</h3>
+                  <p className="sor-card-text">{tier.text}</p>
+                  <ul className="sor-includes" style={{ marginTop: 16 }}>
+                    {tier.items.map((item) => (
+                      <li key={item}><span className="sor-check">✓</span>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="sor-tier-note">{tier.note}</p>
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <section id="demonstracoes" className="sor-section sor-section-b">
+        <div className="sor-container">
+          <p data-reveal className="sor-eyebrow">Demonstrações</p>
+          <h2 data-reveal className="sor-h2">Veja sistemas implantados pela SOR ONE, funcionando.</h2>
+          <p data-reveal className="sor-section-lead">
+            Ambientes demonstrativos de negócios fictícios, cada um usando um sistema configurado para a sua operação. Explore e veja como fica na prática.
+          </p>
+          <div data-reveal-group className="sor-grid-3">
+            {demos.map((demo) => (
+              <article data-reveal data-spotlight className="sor-card sor-card-lift sor-demo" key={demo.name}>
+                <div data-spot className="sor-spot" />
+                <div className="sor-card-inner">
+                  <div className="sor-icon">{demo.icon}</div>
+                  <p className="sor-demo-cat">{demo.category}</p>
+                  <h3 className="sor-card-title" style={{ marginTop: 6 }}>{demo.name}</h3>
+                  <p className="sor-card-text">{demo.text}</p>
+                  <div className="sor-demo-foot">
+                    <a data-magnetic className="sor-btn sor-btn-ghost sor-btn-block" href={demo.href} target="_blank" rel="noopener noreferrer">{demo.cta} →</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p data-reveal className="sor-demo-note">Ambiente demonstrativo desenvolvido pela SOR ONE.</p>
         </div>
       </section>
 
       <section id="processo" className="sor-section sor-section-a">
         <div className="sor-container">
-          <p data-reveal className="sor-eyebrow">Como funciona</p>
-          <h2 data-reveal className="sor-h2">Do diagnóstico à entrega em 3 passos.</h2>
+          <p data-reveal className="sor-eyebrow">Como trabalhamos</p>
+          <h2 data-reveal className="sor-h2">Do diagnóstico à operação, com escopo claro em cada etapa.</h2>
           <p data-reveal className="sor-section-lead">
-            Processo direto, sem reuniões intermináveis e sem enrolação. Você sabe onde está o projeto em cada etapa.
+            Você sabe onde o projeto está o tempo todo. Sem reuniões intermináveis e sem surpresa de escopo.
           </p>
           <div data-reveal-group className="sor-grid-3">
             {steps.map((step) => (
@@ -513,30 +574,26 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
         </div>
       </section>
 
-      <section className="sor-section sor-section-b">
+      <section id="sobre" className="sor-section sor-section-b">
         <div className="sor-container">
-          <p data-reveal className="sor-eyebrow">Automações com IA</p>
-          <h2 data-reveal className="sor-h2">Seu negócio respondendo enquanto você dorme.</h2>
-          <p data-reveal className="sor-section-lead">
-            Fluxos automáticos para captura, agendamento e vendas — o cliente é atendido na hora, mesmo fora do horário comercial.
-          </p>
-          <div data-reveal-group className="sor-grid-3">
-            {flows.map((flow) => (
-              <div data-reveal className="sor-card" key={flow.title}>
-                <div className="sor-flow-head">
-                  <span className="sor-icon sm">{flow.icon}</span>
-                  <h3 className="sor-flow-title">{flow.title}</h3>
-                </div>
-                <div className="sor-flow-nodes">
-                  {flow.nodes.map((node, i) => (
-                    <div key={i}>
-                      <div className={"sor-flow-node" + (node.hl ? " hl" : "")}>{node.text}</div>
-                      {node.connector && <div className="sor-flow-connector" />}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="sor-about">
+            <div>
+              <p data-reveal className="sor-eyebrow">Sobre a SOR ONE</p>
+              <h2 data-reveal className="sor-h2">Uma empresa de implantação, não de software de prateleira.</h2>
+            </div>
+            <p data-reveal className="sor-section-lead">
+              A SOR ONE implanta soluções digitais configuradas para o porte, os processos e os objetivos de cada empresa. Você não compra uma licença nem um plano genérico: recebe um sistema montado para a forma como o seu negócio realmente atende, vende e opera — instalado, integrado aos seus canais e pronto para a sua equipe usar.
+            </p>
+          </div>
+
+          <div data-reveal className="sor-escopo">
+            <p className="sor-escopo-label">Proteção de escopo</p>
+            <p className="sor-escopo-text">
+              Cada implantação é configurada dentro dos módulos, integrações e jornadas definidos no diagnóstico e formalizados na proposta.
+            </p>
+            <p className="sor-escopo-text">
+              Funcionalidades, integrações e evoluções fora do escopo contratado são dimensionadas separadamente.
+            </p>
           </div>
         </div>
       </section>
@@ -544,9 +601,9 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
       <section id="cta" className="sor-cta">
         <div data-par data-depth="0.5" aria-hidden="true" className="sor-cta-glow" />
         <div className="sor-container sor-cta-inner">
-          <h2 data-reveal className="sor-h2 sor-cta-title">Pronto para parar de perder cliente?</h2>
+          <h2 data-reveal className="sor-h2 sor-cta-title">Sua empresa não precisa acumular mais ferramentas. Precisa de uma operação organizada.</h2>
           <div data-reveal className="sor-cta-btns">
-            <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-lg" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico grátis</Link>
+            <Link data-magnetic className="sor-btn sor-btn-primary sor-btn-lg" href={DIAGNOSTIC_HREF}>Solicitar diagnóstico</Link>
             <a data-magnetic className="sor-btn sor-btn-ghost sor-btn-lg" href={SOR_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Falar no WhatsApp →</a>
           </div>
         </div>
@@ -559,10 +616,10 @@ export function SorHome({ showcase }: { showcase: ServiceShowcaseItem[] }) {
               <SorLogo variant="horizontal" />
             </Link>
             <nav aria-label="Navegação do rodapé" className="sor-footer-nav">
-              <a className="sor-footer-link" href="#problemas">Problemas</a>
               <a className="sor-footer-link" href="#solucoes">Soluções</a>
-              <a className="sor-footer-link" href="#processo">Processo</a>
-              <Link className="sor-footer-link" href="/projetos">Projetos</Link>
+              <a className="sor-footer-link" href="#portes">Portes</a>
+              <a className="sor-footer-link" href="#demonstracoes">Demonstrações</a>
+              <a className="sor-footer-link" href="#processo">Como trabalhamos</a>
               <Link className="sor-footer-link" href={DIAGNOSTIC_HREF}>Diagnóstico</Link>
             </nav>
           </div>
@@ -631,7 +688,7 @@ const sorStyles = `
 .sor-header-actions{display:flex;align-items:center;justify-self:end;}
 .sor-navlink{padding:8px 12px;font-size:13px;font-weight:600;color:#9A9DA6;text-decoration:none;border-radius:8px;transition:color .2s,background .2s;}
 .sor-navlink:hover{color:#F0EDEA;background:rgba(201,168,106,0.06);}
-@media (max-width:640px){.sor-navlink{display:none;}}
+@media (max-width:860px){.sor-nav{display:none;}}
 
 .sor-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:14px 24px;font-size:14px;font-family:var(--font-manrope),sans-serif;font-weight:700;text-decoration:none;transition:box-shadow .3s,transform .2s,border-color .3s;}
 .sor-btn-sm{padding:9px 18px;border-radius:10px;font-size:13px;}
@@ -656,12 +713,12 @@ const sorStyles = `
 .sor-badge{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;padding:6px 13px;font-size:12px;font-weight:600;border:1px solid rgba(201,168,106,0.18);background:rgba(201,168,106,0.08);color:#c4c0b8;}
 .sor-pulse{width:7px;height:7px;border-radius:9999px;background:#22c55e;animation:sor-pulse-dot 2s ease-in-out infinite;}
 .sor-pulse.sm{width:6px;height:6px;}
-.sor-h1{margin:26px 0 0;font-family:var(--font-manrope),sans-serif;font-weight:800;letter-spacing:-0.04em;font-size:clamp(40px,6vw,72px);line-height:1.04;color:#F0EDEA;}
+.sor-h1{margin:26px 0 0;font-family:var(--font-manrope),sans-serif;font-weight:800;letter-spacing:-0.04em;font-size:clamp(38px,5.4vw,64px);line-height:1.05;color:#F0EDEA;}
 .sor-accent{color:#C9A86A;}
-.sor-lead{margin:22px 0 0;max-width:480px;font-size:17px;line-height:1.65;color:#9A9DA6;}
+.sor-lead{margin:22px 0 0;max-width:520px;font-size:17px;line-height:1.65;color:#9A9DA6;}
 .sor-hero-ctas{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;}
 .sor-stats{margin-top:40px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px 24px;max-width:560px;border-top:1px solid #181e27;padding-top:28px;}
-.sor-stat-value{font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:clamp(22px,2.4vw,28px);color:#F0EDEA;}
+.sor-stat-value{font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:clamp(20px,2.2vw,26px);color:#F0EDEA;}
 .sor-stat-label{margin-top:5px;font-size:12px;color:#8A8D94;}
 
 .sor-console-wrap{animation:sor-float 6s ease-in-out infinite;}
@@ -680,7 +737,7 @@ const sorStyles = `
 .sor-navitem-icon{width:13px;text-align:center;opacity:.85;}
 .sor-console-main{padding:18px 20px;min-width:0;}
 .sor-console-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;}
-.sor-console-title{margin:0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:24px;color:#F0EDEA;letter-spacing:-0.03em;line-height:1.05;}
+.sor-console-title{margin:0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:22px;color:#F0EDEA;letter-spacing:-0.03em;line-height:1.05;}
 .sor-console-caption{margin:4px 0 0;font-size:11px;color:#4A4D56;}
 .sor-console-count{text-align:right;}
 .sor-console-count-value{margin:0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:20px;color:#C9A86A;}
@@ -696,12 +753,12 @@ const sorStyles = `
 .sor-section-a{background:#060709;border-top:1px solid #181e27;}
 .sor-section-b{background:#0a0c10;}
 .sor-eyebrow{margin:0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;color:#C9A86A;}
-.sor-h2{margin:16px 0 0;max-width:640px;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:clamp(28px,3.6vw,40px);letter-spacing:-0.035em;line-height:1.1;color:#F0EDEA;}
-.sor-section-lead{margin:20px 0 0;max-width:640px;font-size:16px;line-height:1.65;color:#c4c0b8;}
+.sor-h2{margin:16px 0 0;max-width:680px;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:clamp(28px,3.6vw,40px);letter-spacing:-0.035em;line-height:1.1;color:#F0EDEA;}
+.sor-section-lead{margin:20px 0 0;max-width:680px;font-size:16px;line-height:1.65;color:#c4c0b8;}
 
 .sor-grid-2{margin-top:48px;display:grid;gap:16px;grid-template-columns:repeat(2,1fr);}
 .sor-grid-3{margin-top:48px;display:grid;gap:24px;grid-template-columns:repeat(3,1fr);}
-.sor-grid-stretch{align-items:stretch;}
+.sor-cat-grid{gap:16px;}
 @media (max-width:760px){.sor-grid-2,.sor-grid-3{grid-template-columns:1fr;}}
 
 .sor-card{position:relative;border-radius:18px;border:1px solid #181e27;background:#0d1015;padding:28px;overflow:hidden;transition:transform .3s ease,border-color .3s ease;}
@@ -714,36 +771,28 @@ const sorStyles = `
 .sor-card-title{margin:20px 0 0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:18px;color:#F0EDEA;}
 .sor-card-text{margin:8px 0 0;font-size:14px;line-height:1.6;color:#8A8D94;}
 .sor-step-num{display:inline-block;border-radius:12px;border:1px solid rgba(201,168,106,0.22);background:rgba(201,168,106,0.06);padding:6px 12px;font-family:var(--font-manrope),sans-serif;font-size:12px;font-weight:800;color:#C9A86A;}
+.sor-chip{display:inline-block;border-radius:9999px;border:1px solid rgba(201,168,106,0.22);background:rgba(201,168,106,0.06);padding:5px 12px;font-family:var(--font-manrope),sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#C9A86A;}
+.sor-tier-note{margin:16px 0 0;font-size:12px;line-height:1.55;color:#8A8D94;border-top:1px solid #181e27;padding-top:14px;}
 
-.sor-service{position:relative;display:flex;flex-direction:column;overflow:hidden;border-radius:24px;border:1px solid #1C2530;padding:24px;background:radial-gradient(circle at 18% 0%, rgba(201,168,106,0.04), transparent 36%), linear-gradient(155deg, rgba(20,25,32,0.98), rgba(10,14,18,0.98));box-shadow:0 22px 55px rgba(0,0,0,.32),0 1px 0 rgba(201,168,106,.05) inset;transition:transform .3s ease,border-color .3s ease;}
-.sor-service-inner{position:relative;display:flex;flex-direction:column;flex:1;}
-.sor-service-head{display:flex;align-items:center;gap:12px;}
-.sor-chip{border-radius:9999px;border:1px solid #1C2530;background:rgba(201,168,106,0.04);padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#8A8D94;}
-.sor-service-name{margin:20px 0 0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.02em;color:#F0EDEA;}
-.sor-price{margin-top:16px;display:flex;align-items:baseline;gap:8px;}
-.sor-price-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:#8A8D94;}
-.sor-price-value{font-size:16px;font-family:var(--font-manrope),sans-serif;font-weight:800;color:#C9A86A;}
-.sor-service-foot{margin-top:20px;display:flex;flex-direction:column;flex:1;border-top:1px solid #1C2530;padding-top:20px;}
 .sor-includes{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:14px;color:#c4c0b8;}
 .sor-includes li{display:flex;gap:8px;}
 .sor-check{color:#C9A86A;}
-.sor-meta{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border:1px solid #1C2530;border-radius:16px;background:rgba(0,0,0,0.1);padding:12px;text-align:center;}
-.sor-meta-mid{border-left:1px solid #1C2530;border-right:1px solid #1C2530;}
-.sor-meta-label{margin:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8A8D94;}
-.sor-meta-value{margin:4px 0 0;font-size:12px;font-family:var(--font-manrope),sans-serif;font-weight:800;color:#F0EDEA;}
-.sor-service-cta{margin-top:auto;padding-top:20px;}
 
-.sor-flow-head{display:flex;align-items:center;gap:12px;}
-.sor-flow-title{margin:0;font-family:var(--font-manrope),sans-serif;font-weight:800;font-size:16px;color:#F0EDEA;}
-.sor-flow-nodes{margin-top:20px;display:grid;gap:2px;}
-.sor-flow-node{border-radius:12px;border:1px solid #181e27;background:rgba(6,7,9,0.4);padding:11px 14px;font-size:12px;font-weight:600;color:#9A9DA6;transition:border-color .3s,background .3s,color .3s;}
-.sor-flow-node.hl{border-color:rgba(201,168,106,0.18);background:rgba(201,168,106,0.08);color:#C9A86A;}
-.sor-flow-connector{margin:0 auto;width:1px;height:12px;background:#181e27;}
+.sor-demo-cat{margin:18px 0 0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:#C9A86A;}
+.sor-demo-foot{margin-top:22px;}
+.sor-demo-note{margin:28px 0 0;font-size:12px;color:#4A4D56;}
+
+.sor-about{display:grid;gap:24px;grid-template-columns:1fr;}
+@media (min-width:900px){.sor-about{grid-template-columns:1fr 1fr;align-items:center;gap:40px;}}
+.sor-about .sor-section-lead{margin-top:0;}
+.sor-escopo{margin-top:40px;border:1px solid rgba(201,168,106,0.16);border-radius:20px;background:linear-gradient(150deg,rgba(201,168,106,0.08),rgba(14,165,164,0.04));padding:26px 28px;}
+.sor-escopo-label{margin:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.16em;color:#C9A86A;}
+.sor-escopo-text{margin:14px 0 0;max-width:820px;font-size:15px;line-height:1.65;color:#c4c0b8;}
 
 .sor-cta{position:relative;overflow:hidden;padding:128px 0;background:#060709;}
 .sor-cta-glow{position:absolute;left:50%;top:50%;width:36rem;height:36rem;max-width:94vw;transform:translate(-50%,-50%);border-radius:9999px;background:radial-gradient(circle at center, rgba(201,168,106,0.16), transparent 60%);filter:blur(40px);pointer-events:none;}
 .sor-cta-inner{position:relative;text-align:center;}
-.sor-cta-title{margin:0 auto;font-size:clamp(30px,4.4vw,52px);letter-spacing:-0.04em;line-height:1.08;}
+.sor-cta-title{margin:0 auto;max-width:820px;font-size:clamp(28px,4vw,46px);letter-spacing:-0.04em;line-height:1.1;}
 .sor-cta-btns{margin-top:36px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
 
 .sor-footer{border-top:1px solid #181e27;padding:48px 0 34px;background:#060709;}
@@ -761,10 +810,6 @@ const sorStyles = `
 .sor-contact-whatsapp{background:#C9A86A;color:#060709;box-shadow:0 12px 32px rgba(201,168,106,.22);}
 .sor-contact-instagram{border:1px solid rgba(201,168,106,0.2);background:rgba(255,255,255,0.03);color:#F0EDEA;}
 .sor-contact-instagram:hover{border-color:rgba(201,168,106,0.42);background:rgba(201,168,106,0.06);}
-.sor-conversion-cta{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;border:1px solid rgba(201,168,106,0.16);border-radius:20px;background:linear-gradient(150deg,rgba(201,168,106,0.08),rgba(14,165,164,0.04));padding:24px 26px;}
-.sor-conversion-note{margin:0;max-width:620px;font-size:15px;line-height:1.6;color:#c4c0b8;}
-.sor-conversion-note strong{color:#F0EDEA;font-weight:800;}
-@media (max-width:720px){.sor-conversion-cta{flex-direction:column;align-items:stretch;}.sor-conversion-cta .sor-btn{width:100%;}}
 .sor-footer-copy{margin:28px 0 0;font-size:12px;color:#4A4D56;}
 @media (max-width:720px){.sor-footer-inner{align-items:stretch;}.sor-footer-brand-col,.sor-footer-contact{width:100%;}.sor-footer-contact-actions{display:grid;grid-template-columns:1fr;}.sor-contact-btn{width:100%;}.sor-footer-copy{text-align:left;}}
 `;

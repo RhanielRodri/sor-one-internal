@@ -53,10 +53,10 @@ export const DESIRED_OUTCOMES = [
 ] as const;
 
 export const SOLUTION_NAMES = {
-  agendafacil: "AgendaFácil",
-  mesaflow: "MesaFlow",
-  catalogpro: "CatalogPro",
-  sor_presenca: "SOR ONE Presença & Conversão",
+  agendafacil: "Agendamento e relacionamento",
+  mesaflow: "Cardápio, pedidos e retirada",
+  catalogpro: "Catálogo e orçamentos",
+  sor_presenca: "Presença e conversão",
 } as const;
 
 export const SOLUTION_MODULES = {

@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "SOR ONE — Sites e sistemas para pequenos negócios";
+export const alt = "SOR ONE — Sistemas que organizam atendimento, vendas e operação";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -39,7 +39,7 @@ export default function OpengraphImage() {
             color: "#9A9DA6",
           }}
         >
-          Sites e sistemas para pequenos negócios
+          Sistemas e automações configurados para a sua operação
         </div>
         <div
           style={{

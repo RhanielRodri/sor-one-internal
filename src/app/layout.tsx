@@ -19,15 +19,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "SOR ONE | Desenvolvedor freelance — Sites e sistemas para pequenos negócios",
+    default: "SOR ONE | Sistemas que organizam atendimento, vendas e operação",
     template: "%s | SOR ONE",
   },
   description:
-    "Desenvolvedor freelance em Vila Velha, ES. Crio sites, sistemas e automações para pequenos negócios venderem mais, organizarem processos e reduzirem trabalho manual.",
-  keywords: ["desenvolvedor freelance Vila Velha", "sites para pequenos negócios", "sistemas digitais ES", "automação pequenos negócios", "freelancer Espírito Santo"],
+    "A SOR ONE implanta sites, sistemas e automações configurados para o porte, os processos e os objetivos de cada empresa — de operações essenciais para pequenos negócios a soluções completas com inteligência artificial e integrações.",
+  keywords: ["implantação de sistemas", "sistemas para negócios", "automação com IA", "agendamento e atendimento", "SOR ONE Vila Velha ES"],
   openGraph: {
-    title: "SOR ONE | Desenvolvedor freelance em Vila Velha, ES",
-    description: "Sites, sistemas e automações para pequenos negócios. Atendimento remoto em todo o Brasil.",
+    title: "SOR ONE | Sistemas que organizam atendimento, vendas e operação",
+    description: "Implantação de sites, sistemas e automações configurados para a operação de cada negócio. Vila Velha, ES — atendimento em todo o Brasil.",
     url: siteUrl,
     siteName: "SOR ONE",
     locale: "pt_BR",
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SOR ONE | Desenvolvedor freelance em Vila Velha, ES",
+    title: "SOR ONE | Sistemas que organizam atendimento, vendas e operação",
     description:
-      "Sites, sistemas e automações para pequenos negócios. Atendimento remoto em todo o Brasil.",
+      "Implantação de sites, sistemas e automações configurados para a operação de cada negócio. Vila Velha, ES — atendimento em todo o Brasil.",
   },
 };
 

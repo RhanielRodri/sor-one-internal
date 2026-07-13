@@ -5,17 +5,17 @@ const professionalServiceSchema = {
   "@type": "ProfessionalService",
   name: "SOR ONE",
   description:
-    "Desenvolvedor freelance em Vila Velha, ES. Crio sites, sistemas e automações para pequenos negócios venderem mais, organizarem processos e reduzirem trabalho manual.",
+    "A SOR ONE implanta sites, sistemas e automações configurados para o porte, os processos e os objetivos de cada empresa, de operações essenciais a soluções completas com inteligência artificial e integrações.",
   areaServed: ["Vila Velha, ES", "Brasil"],
   url: siteUrl,
   sameAs: ["https://instagram.com/soroneoficial"],
-  priceRange: "R$500–R$4.000",
   knowsAbout: [
-    "sites",
-    "landing pages",
-    "sistemas de agendamento",
-    "catálogos digitais",
-    "gestão de tráfego pago",
+    "implantação de sistemas",
+    "presença e conversão",
+    "agendamento e relacionamento",
+    "catálogos, pedidos e orçamentos",
+    "operação e gestão",
+    "atendimento e automação com inteligência artificial",
   ],
 };
 

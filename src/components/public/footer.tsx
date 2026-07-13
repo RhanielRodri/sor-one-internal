@@ -11,38 +11,25 @@ type FooterLink = {
 
 const columns: { title: string; links: FooterLink[] }[] = [
   {
-    title: "Produto",
+    title: "SOR ONE",
     links: [
       { label: "Soluções", href: "/#solucoes" },
+      { label: "Portes de implantação", href: "/#portes" },
+      { label: "Como trabalhamos", href: "/#processo" },
+    ],
+  },
+  {
+    title: "Explorar",
+    links: [
+      { label: "Demonstrações", href: "/#demonstracoes" },
       { label: "Projetos", href: "/projetos" },
       { label: "Diagnóstico", href: "/diagnostico" },
     ],
   },
   {
-    title: "Plataforma",
-    links: [
-      {
-        label: "AgendaFácil",
-        href: "https://agendafacil-sistema.vercel.app",
-        external: true,
-      },
-      {
-        label: "CatalogPro",
-        href: "https://catalogpro-b2b.vercel.app",
-        external: true,
-      },
-      {
-        label: "MesaFlow",
-        href: "https://mesaflow-menu.vercel.app",
-        external: true,
-      },
-      { label: "Console", href: "/console" },
-    ],
-  },
-  {
     title: "Empresa",
     links: [
-      { label: "Sobre", href: "/#problemas" },
+      { label: "Sobre", href: "/#sobre" },
       { label: "Contato", href: "/#cta" },
       {
         label: "GitHub",
@@ -60,9 +47,8 @@ const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Suporte",
     links: [
-      { label: "Central de ajuda", href: "/#cta" },
+      { label: "Solicitar diagnóstico", href: "/diagnostico" },
       { label: "WhatsApp", href: SOR_WHATSAPP_URL, external: true },
-      { label: "Status", href: "/projetos" },
     ],
   },
 ];
