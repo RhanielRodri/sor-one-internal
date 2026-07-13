@@ -161,7 +161,7 @@ export function SorLogo({
         </span>
       </div>
       <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.3em] text-[#C9A84C]">
-        Hub profissional
+        Sistemas &amp; operação
       </div>
     </div>
   );

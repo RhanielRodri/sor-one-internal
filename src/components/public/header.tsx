@@ -26,6 +26,12 @@ export function Header() {
         borderColor: "var(--border-soft)",
       }}
     >
+      <a
+        href="#conteudo"
+        className="absolute left-4 top-2 z-[60] -translate-y-20 rounded-lg bg-[var(--champagne)] px-4 py-2 text-sm font-bold text-[#060709] transition-transform focus-visible:translate-y-0"
+      >
+        Pular para o conteúdo
+      </a>
       <Container className="grid min-h-18 max-w-[92rem] grid-cols-[1fr_auto_1fr] items-center gap-4">
         <Link
           href="/"

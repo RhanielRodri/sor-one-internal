@@ -20,6 +20,16 @@ import { MATURITY_LABELS, type Recommendation } from "@/lib/diagnostic/types";
 const TOTAL_STEPS = 7;
 const SESSION_STORAGE_KEY = "sor_diagnostic_session_id";
 
+const STEP_LABELS = [
+  "Contato",
+  "Prioridade",
+  "Seu negócio",
+  "Canais de atendimento",
+  "Gargalos e volume",
+  "Resultado esperado",
+  "Dados do negócio",
+] as const;
+
 type Answers = {
   primaryGoal: string;
   businessType: string;
@@ -468,14 +478,29 @@ export function DiagnosticForm() {
             ← Voltar
           </button>
           <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--sor-champagne)]">
-            Etapa {step + 1}/{TOTAL_STEPS}
+            Etapa {step + 1} de {TOTAL_STEPS}
+            <span className="hidden font-semibold normal-case tracking-normal text-[var(--sor-text-soft)] sm:inline">
+              {" "}
+              · {STEP_LABELS[step]}
+            </span>
           </span>
         </div>
-        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/6">
-          <div
-            className="h-full rounded-full bg-[linear-gradient(90deg,var(--sor-blue),var(--sor-champagne))] transition-[width] duration-300"
-            style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
-          />
+        <div
+          role="progressbar"
+          aria-valuemin={1}
+          aria-valuemax={TOTAL_STEPS}
+          aria-valuenow={step + 1}
+          aria-label={`Etapa ${step + 1} de ${TOTAL_STEPS}: ${STEP_LABELS[step]}`}
+          className="mt-4 flex gap-1.5"
+        >
+          {Array.from({ length: TOTAL_STEPS }, (_, index) => (
+            <span
+              key={index}
+              className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+                index <= step ? "bg-[var(--champagne)]" : "bg-white/6"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
@@ -485,8 +510,10 @@ export function DiagnosticForm() {
             <h2 className="text-2xl font-black tracking-[-0.03em]">
               Vamos começar pelo seu contato.
             </h2>
-            <p className="mt-2 text-sm text-muted">
-              Preciso do seu nome e WhatsApp para guardar o diagnóstico e falar sobre o próximo passo. As perguntas vêm logo depois.
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Seu nome e WhatsApp guardam o diagnóstico e permitem falar sobre
+              o próximo passo. Usaremos seus dados apenas para registrar,
+              analisar e acompanhar esta solicitação.
             </p>
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               <Input
@@ -520,7 +547,7 @@ export function DiagnosticForm() {
               />
             </div>
 
-            <label className="mt-6 flex cursor-pointer items-start gap-3 text-sm text-muted">
+            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--sor-border-main)] bg-[var(--sor-bg-soft)] px-4 py-3.5 text-sm leading-6 text-muted transition hover:border-[var(--sor-border-champagne)]">
               <input
                 type="checkbox"
                 required
@@ -552,6 +579,7 @@ export function DiagnosticForm() {
             <Button
               type="submit"
               disabled={!canContinue || isSubmitting}
+              aria-busy={isSubmitting}
               className="mt-8 w-full sm:w-auto"
             >
               {isSubmitting ? "Iniciando..." : "Começar diagnóstico"}
@@ -663,6 +691,7 @@ export function DiagnosticForm() {
             <Button
               type="submit"
               disabled={!canContinue || isSubmitting}
+              aria-busy={isSubmitting}
               className="mt-8 w-full sm:w-auto"
             >
               {isSubmitting ? "Enviando..." : "Ver minha recomendação"}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Inter } from "next/font/google";
 import "./globals.css";
 import { siteUrl } from "@/lib/constants";
@@ -15,6 +15,10 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
 });
+
+export const viewport: Viewport = {
+  themeColor: "#060709",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
