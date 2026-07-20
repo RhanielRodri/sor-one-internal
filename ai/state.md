@@ -4,29 +4,59 @@ updated_at: 2026-07-19
 review_at: 2026-07-23
 status: active
 current_phase: null
+technical_baseline: 4235657
 source: descoberta somente leitura, reconciliada após correção do README
 source_of_truth: .
 ---
 
 # Estado do projeto
 
-## Git observado
+## Baseline técnica
 
-- Branch `main`, upstream `origin/main`.
-- `HEAD` em `a17690a3fbdd8c5731707f7f84a9436534b169b9`.
-- Remoto `origin` em `github.com/RhanielRodri/sor-one-internal`.
-- Consulta remota ao vivo retornou `a17690a` para `refs/heads/main`.
-- Divergência `0/0`.
-- Sincronização Git: **sincronizado**, com evidência remota atual.
+`4235657` — `feat: reformula experiência pública como empresa de implantação`.
+
+É o último commit que alterou código, confirmado pelos arquivos que ele toca:
+`src/app`, `src/components` e `src/app/globals.css`. Tudo publicado depois dele
+é exclusivamente documental e **não** move esta baseline.
+
+Ressalva de confiança: a baseline é o último commit de código, não um commit
+com validação funcional registrada. Nenhum teste, build ou verificação de
+produção foi executado sobre ela nesta trilha de trabalho.
+
+## Snapshot Git
+
+Observação histórica, congelada no instante em que foi feita. Não precisa
+continuar igual ao `HEAD`.
+
+- `observed_at`: 2026-07-20
+- branch observada: `main`, upstream `origin/main`
+- `head_at_observation`: `b3fdbbc0363d5522ff70a10c97f77bdffbd8488d`
+- sincronização observada: sincronizado, com consulta remota ao vivo,
+  divergência `0/0`
+- classificação da working tree: limpa, com `.claude/` não rastreado
+
+Este snapshot ficará anterior ao `HEAD` assim que o commit que o registra for
+criado. **Isso é o comportamento correto e não exige novo checkpoint.** O Git
+atual é consultado ao vivo por `/continue`, `/status`, `/overview` e
+`/sync-registry`, nunca lido daqui.
+
+## Commits documentais
+
+Posteriores à baseline técnica, todos sem uma linha de código:
+
+- `5c66057` — adoção ao padrão `ai/`; toca só `ai/context.md`, `ai/scope.md` e
+  `ai/state.md`.
+- `a17690a` — correção da documentação pública; toca só `README.md`.
+- `b3fdbbc` — reconciliação do estado; toca só `ai/state.md`.
+
+Classificação confirmada pelo Git, arquivo a arquivo, e não pela mensagem dos
+commits.
 
 ## Working tree
 
-Classificação observada:
-
 - `Código/configuração alterados`: nenhum.
-- `Documentação ai/ alterada`: nenhum pendente; as alterações documentais foram
-  versionadas em `5c66057` e `a17690a`.
-- Arquivos não rastreados: `.claude/`.
+- `Documentação ai/ alterada`: nenhum pendente.
+- Arquivos não rastreados: `.claude/`, contendo só `launch.json`.
 
 O diretório `.claude/` contém um único arquivo, `launch.json`. É configuração
 local de ferramenta de desenvolvimento, não código de aplicação e não mudança de
@@ -46,10 +76,8 @@ observável: identidade exclusivamente SOR ONE, Next.js 16, rotas reais,
 badge de produção saudável. O commit `5c66057` registrou a adoção ao padrão
 `ai/`.
 
-Esses dois commits são **exclusivamente documentais**. Eles não constituem
-baseline técnica validada. A baseline técnica de código continua sendo
-`4235657`, `feat: reformula experiência pública como empresa de implantação`,
-que fecha a sequência de reposicionamento iniciada em `b9b4017`.
+A classificação desses commits está na seção **Commits documentais**; a baseline
+técnica permanece `4235657`.
 
 Nenhuma validação funcional, build, teste ou verificação de produção foi
 executada. A saúde de produção permanece **não confirmada**.
