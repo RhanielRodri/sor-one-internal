@@ -1,47 +1,45 @@
-# SOR OS
+# SOR ONE
 
-Site portfólio e sistema operacional da SOR OS Soluções Digitais — agência de desenvolvimento freelancer. O site público apresenta projetos, serviços e formulário de diagnóstico. O console interno gerencia leads captados.
+Site público e console operacional da SOR ONE, empresa de implantação de soluções digitais. O site apresenta a oferta, as implantações demonstrativas e o diagnóstico que qualifica o interessado. O console interno acompanha os leads captados.
 
-![Em produção](https://img.shields.io/badge/status-live-brightgreen)
-
-## Demo
+## Páginas
 
 | | URL |
 |---|---|
-| **Site público** | https://sor-one-internal.vercel.app/ |
-| **Projetos** | https://sor-one-internal.vercel.app/projetos |
-| **Soluções** | https://sor-one-internal.vercel.app/solucoes |
+| **Home** | https://sor-one-internal.vercel.app/ |
+| **Implantações** | https://sor-one-internal.vercel.app/projetos |
 | **Diagnóstico** | https://sor-one-internal.vercel.app/diagnostico |
-| **Console admin** | https://sor-one-internal.vercel.app/console |
+| **Privacidade** | https://sor-one-internal.vercel.app/privacidade |
+| **Console** | https://sor-one-internal.vercel.app/console |
 
 ## Funcionalidades
 
 ### Site público
 
-- Home com métricas operacionais, proposta de valor e diagnóstico de dores
-- Página de projetos com demos ao vivo e links para GitHub
-- Página de soluções (landing pages, cardápios, catálogos, agendamentos, SaaS)
-- Formulário de diagnóstico digital com captura de lead
-- Página de contato
-- SEO técnico completo: metadata por página, OpenGraph, robots.txt, sitemap.xml dinâmico
+- Home com contraste de problema, categorias de solução, níveis de implantação, metodologia, fluxo operacional e chamada final
+- Página de implantações demonstrativas, com demos ao vivo e links para o código
+- Diagnóstico em duas fases: a captura registra o contato antes da qualificação completa, de modo que um preenchimento interrompido ainda gera lead
+- Página de privacidade
+- Contato por WhatsApp, Instagram e e-mail no rodapé
+- SEO técnico: metadata por rota, OpenGraph, `robots.txt` e `sitemap.xml` gerados dinamicamente
 
-### Console operacional (admin)
+### Console operacional
 
-- Login protegido por sessão
+- Login protegido por cookie de sessão
 - Dashboard com visão geral de leads
-- Lista de leads capturados pelo diagnóstico com status e dados de contato
+- Lista de leads com status, observações e cadastro manual
 
 ## Tecnologias
 
 **Frontend**
-- Next.js 15 + React + TypeScript
-- CSS com Tailwind (sistema de componentes próprio)
-- Deploy: Vercel
+- Next.js 16 + React 19 + TypeScript
+- Tailwind CSS 4, com sistema de componentes próprio
+- Hospedagem na Vercel
 
 **Backend / Dados**
-- Supabase (PostgreSQL gerenciado)
+- Supabase (PostgreSQL gerenciado), com migrations versionadas
 - API Routes do Next.js
-- Autenticação via cookie de sessão
+- Autenticação por cookie de sessão
 
 **SEO**
 - Metadata API do Next.js por rota
@@ -56,8 +54,8 @@ Site portfólio e sistema operacional da SOR OS Soluções Digitais — agência
 ### Home — mobile
 ![Home mobile](docs/screenshots/home-mobile.png)
 
-### Projetos
-![Projetos](docs/screenshots/projetos-desktop.png)
+### Implantações
+![Implantações](docs/screenshots/projetos-desktop.png)
 
 ### Diagnóstico
 ![Diagnóstico](docs/screenshots/diagnostico-desktop.png)
@@ -73,13 +71,15 @@ cd sor-one-internal
 npm install
 ```
 
-`.env.local`:
+Crie um `.env.local` com estas variáveis. O arquivo não é versionado e os valores ficam apenas no ambiente local ou no painel da Vercel.
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SITE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
-ADMIN_SECRET=
+ADMIN_PASSWORD=
+ADMIN_SESSION_SECRET=
 ```
 
 ```bash
@@ -90,11 +90,12 @@ Abre em `http://localhost:3000`.
 
 ## O que este projeto demonstra
 
-- **SEO técnico via Next.js Metadata API**: cada rota tem title, description e OpenGraph distintos; `sitemap.ts` e `robots.ts` gerados dinamicamente
-- **App Router com route groups**: separação entre rotas públicas `(public)` e console `console/` com middlewares distintos
-- **Captura de leads com Supabase**: formulário de diagnóstico persiste no banco sem backend dedicado, usando API Routes do Next.js
-- **Autenticação stateless com cookie httpOnly**: console protegido sem biblioteca de auth, usando apenas `cookies()` do Next.js
-- **TypeScript end-to-end**: tipos definidos para dados de serviços, leads e métricas, sem any implícito
+- **SEO técnico via Metadata API**: cada rota tem title, description e OpenGraph próprios; `sitemap.ts` e `robots.ts` gerados dinamicamente
+- **App Router com route groups**: rotas públicas em `(public)` e console em `console/`, separados na estrutura
+- **Captura de leads em duas fases**: o diagnóstico persiste o contato antes da qualificação completa, usando API Routes e Supabase, sem backend dedicado
+- **Autenticação com cookie httpOnly**: console protegido por verificação em cada rota administrativa, sem biblioteca de auth
+- **Acesso ao banco endurecido por migration**: RPC com `security definer`, grants de papel administrativo e revogação do insert anônimo em leads
+- **TypeScript com `strict` ativo**: tipos definidos para serviços, leads e métricas
 
 ## Autor
 
