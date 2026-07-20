@@ -4,7 +4,7 @@ updated_at: 2026-07-19
 review_at: 2026-07-23
 status: active
 current_phase: null
-source: adoção por descoberta somente leitura do repositório
+source: descoberta somente leitura, reconciliada após correção do README
 source_of_truth: .
 ---
 
@@ -13,9 +13,9 @@ source_of_truth: .
 ## Git observado
 
 - Branch `main`, upstream `origin/main`.
-- `HEAD` em `42356578ccd2ae61c4d74b584b015804367bc63f`.
+- `HEAD` em `a17690a3fbdd8c5731707f7f84a9436534b169b9`.
 - Remoto `origin` em `github.com/RhanielRodri/sor-one-internal`.
-- Consulta remota ao vivo retornou `42356578` para `refs/heads/main`.
+- Consulta remota ao vivo retornou `a17690a` para `refs/heads/main`.
 - Divergência `0/0`.
 - Sincronização Git: **sincronizado**, com evidência remota atual.
 
@@ -24,7 +24,8 @@ source_of_truth: .
 Classificação observada:
 
 - `Código/configuração alterados`: nenhum.
-- `Documentação ai/ alterada`: nenhum antes desta adoção.
+- `Documentação ai/ alterada`: nenhum pendente; as alterações documentais foram
+  versionadas em `5c66057` e `a17690a`.
 - Arquivos não rastreados: `.claude/`.
 
 O diretório `.claude/` contém um único arquivo, `launch.json`. É configuração
@@ -38,12 +39,20 @@ aparecem no Git.
 
 ## Último resultado confirmado
 
-O commit `4235657`, `feat: reformula experiência pública como empresa de
-implantação`, é o topo de `main` e está publicado no remoto. Ele fecha uma
-sequência de reposicionamento iniciada em `b9b4017`.
+A documentação pública foi corrigida e publicada. O commit `a17690a`,
+`docs: atualiza documentação pública do SOR ONE`, alinhou o `README` ao código
+observável: identidade exclusivamente SOR ONE, Next.js 16, rotas reais,
+`ADMIN_PASSWORD` e `ADMIN_SESSION_SECRET`, sem alegação de middleware e sem
+badge de produção saudável. O commit `5c66057` registrou a adoção ao padrão
+`ai/`.
 
-Confirmado apenas como estado versionado e sincronizado. Nenhuma validação
-funcional, build, teste ou verificação de produção foi executada nesta adoção.
+Esses dois commits são **exclusivamente documentais**. Eles não constituem
+baseline técnica validada. A baseline técnica de código continua sendo
+`4235657`, `feat: reformula experiência pública como empresa de implantação`,
+que fecha a sequência de reposicionamento iniciada em `b9b4017`.
+
+Nenhuma validação funcional, build, teste ou verificação de produção foi
+executada. A saúde de produção permanece **não confirmada**.
 
 ## Em andamento
 
@@ -73,22 +82,13 @@ autorização para implementá-la.
 
 ## Divergências
 
-Entre `README.md` e o código:
+Entre `README.md` e o código: **resolvidas em `a17690a`**.
 
-- O `README` declara "Next.js 15"; o `package.json` declara `next` 16.2.9.
-- O `README` anuncia as rotas `/solucoes` e `/contato`; nenhuma das duas existe
-  em `src/app`.
-- O `README` documenta `ADMIN_SECRET`; o código referencia `ADMIN_PASSWORD` e
-  `ADMIN_SESSION_SECRET`.
-- O `README` descreve o projeto como "SOR OS Soluções Digitais — agência de
-  desenvolvimento freelancer", enquanto os commits `b9b4017` e `4235657`
-  reposicionam o produto como SOR ONE, empresa de implantação. O texto público
-  expõe o nome interno, contrariando a invariante de marca.
-- O `README` afirma que as rotas públicas e o console usam "middlewares
-  distintos"; não existe `middleware.ts` no projeto. A proteção é por rota, com
-  cookie `httpOnly`.
-- O `README` lista uma página de contato entre as funcionalidades; não existe
-  rota `/contato`. O contato acontece por links de WhatsApp e e-mail no rodapé.
+Ficam como histórico do que foi corrigido, não como divergência aberta: versão
+do Next declarada, rotas `/solucoes` e `/contato` inexistentes, variável
+`ADMIN_SECRET` obsoleta, identidade com nome interno e posicionamento antigo,
+alegação de middleware inexistente e página de contato sem rota. A busca atual
+no `README` por cada um desses termos retorna zero ocorrências.
 
 Entre `projetos/registro.md` e o código:
 
@@ -99,8 +99,8 @@ Entre `projetos/registro.md` e o código:
 - O registro lista "adicionar página do produto Atendimento Inteligente"; essa
   pendência se confirma.
 
-O registro global não foi corrigido nesta operação. `/sincronizar-projetos` é a
-ação possível para tratá-lo.
+O registro global vive no SOR OS e não é alterado a partir daqui. Corrigi-lo é
+operação separada, do lado do SOR OS.
 
 ## Validações confirmadas
 
@@ -108,13 +108,20 @@ ação possível para tratá-lo.
   evidência remota atual, estrutura de rotas e API mapeada, stack confirmada por
   `package.json`, migrations Supabase listadas, nomes de variáveis de ambiente
   coletados sem leitura de valores.
+- 2026-07-19 — reconciliação documental, commits `5c66057` e `a17690a`
+  publicados: ausência de `middleware.ts` confirmada por índice do Git e por
+  varredura do sistema de arquivos; `README` conferido termo a termo, com zero
+  ocorrências de `SOR OS`, `freelancer`, `ADMIN_SECRET`, `Next.js 15`,
+  `/solucoes`, `/contato` e `middleware`; ausência de `Atendimento Inteligente`
+  em `src` reconfirmada; `HEAD` igual ao remoto por consulta ao vivo.
 
 Nenhuma execução de teste, build, lint ou deploy ocorreu. Nenhuma URL de produção
 foi acessada. A saúde de produção permanece não confirmada.
 
 ## Informações substituídas
 
-- A descrição do `README` deixa de ser fonte confiável de stack, rotas e
-  posicionamento; permanece como documento a ser corrigido.
+- O `README` volta a ser fonte confiável de stack, rotas e posicionamento a
+  partir de `a17690a`. A ressalva anterior, que o tratava como documento a
+  corrigir, deixa de valer.
 - As pendências do registro global relativas ao card Lumière e ao link do
   Instagram deixam de descrever o estado atual do código.
