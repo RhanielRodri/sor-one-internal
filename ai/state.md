@@ -4,7 +4,21 @@ updated_at: 2026-07-19
 review_at: 2026-07-23
 status: active
 current_phase: null
-technical_baseline: 4235657
+technical_baseline:
+  commit: 4235657
+  validation_status: unvalidated
+  validated_at: não confirmado
+  validated: []
+  not_validated:
+    - build atual
+    - runtime local
+    - produção
+    - autenticação administrativa
+    - persistência do diagnóstico
+    - fluxos públicos principais
+  evidence:
+    - último commit de código identificado pelo Git
+    - nenhuma validação funcional executada durante a adoção
 source: descoberta somente leitura, reconciliada após correção do README
 source_of_truth: .
 ---
@@ -22,6 +36,11 @@ source_of_truth: .
 Ressalva de confiança: a baseline é o último commit de código, não um commit
 com validação funcional registrada. Nenhum teste, build ou verificação de
 produção foi executado sobre ela nesta trilha de trabalho.
+
+Daí `validation_status: unvalidated`. O commit está identificado com precisão —
+`unvalidated` descreve a ausência de evidência funcional, não desconhecimento do
+código. Existir, ter sido publicado no passado ou ter o README corrigido não
+sustenta `partial`; só evidência exercitada agora sustentaria.
 
 ## Snapshot Git
 
@@ -48,6 +67,7 @@ Posteriores à baseline técnica, todos sem uma linha de código:
   `ai/state.md`.
 - `a17690a` — correção da documentação pública; toca só `README.md`.
 - `b3fdbbc` — reconciliação do estado; toca só `ai/state.md`.
+- `3b863f6` — normalização de baseline e snapshot; toca só `ai/state.md`.
 
 Classificação confirmada pelo Git, arquivo a arquivo, e não pela mensagem dos
 commits.
