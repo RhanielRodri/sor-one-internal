@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Como funciona", href: "/#metodologia" },
   { label: "Sobre", href: "/#sobre" },
   { label: "Implantações demonstrativas", href: "/projetos" },
+  { label: "Solução de agendamento", href: "/solucoes/agendamento" },
   { label: "Diagnóstico", href: "/diagnostico" },
 ];
 

@@ -104,6 +104,10 @@ const implementations: Implementation[] = [
         />
       </BrowserFrame>
     ),
+    externalCta: {
+      label: "Testar versão para barbearias",
+      href: "https://studio-cut-public.sor-os-demos.workers.dev",
+    },
   },
   {
     id: "lumiere",
@@ -138,6 +142,10 @@ const implementations: Implementation[] = [
         />
       </BrowserFrame>
     ),
+    externalCta: {
+      label: "Testar versão para estética",
+      href: "https://lumiere-public.sor-os-demos.workers.dev",
+    },
   },
 ];
 

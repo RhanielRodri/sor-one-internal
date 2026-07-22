@@ -114,8 +114,8 @@ const showcases: Showcase[] = [
     ),
     cta: {
       kind: "internal",
-      label: "Ver detalhes da implantação",
-      href: "/projetos#studio-cut",
+      label: "Conhecer solução de agendamento",
+      href: "/solucoes/agendamento#demos",
     },
   },
   {
@@ -145,8 +145,8 @@ const showcases: Showcase[] = [
     ),
     cta: {
       kind: "internal",
-      label: "Ver detalhes da implantação",
-      href: "/projetos#lumiere",
+      label: "Conhecer solução de agendamento",
+      href: "/solucoes/agendamento#demos",
     },
   },
 ];
